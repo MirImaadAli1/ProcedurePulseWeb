@@ -44,11 +44,20 @@ import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
+import LandingPage from "layouts/landing-page";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
 
 const routes = [
+  {
+    type: "collapse",
+    name: "Landing-Page",
+    key: "landing-page",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "/",
+    component: <LandingPage />,
+  },
   {
     type: "collapse",
     name: "Dashboard",
