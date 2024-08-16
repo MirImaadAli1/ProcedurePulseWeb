@@ -1,35 +1,34 @@
 import PropTypes from 'prop-types';
-import { Fragment } from 'react';
-import Box from '@material-ui/core/Box';
-import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
 
 const Header = ({ title, description, setTitle, setDescription }) => {
   return (
-    <Box sx={{ mb: 3 }}>
-      <Paper elevation={2}>
-        <TextField
+    <div className="mb-6 pt-4 shadow-lg rounded-lg">
+      {/* Purple Bar */}
+      <div style={{ backgroundColor: '#328CED' }} className="h-2 rounded-t-lg"></div>
+
+      <div className="bg-white p-6 rounded-b-lg">
+        {/* Title Input */}
+        <input
+          type="text"
           defaultValue={title}
           onBlur={(e) => setTitle(e.target.value)}
-          variant="standard"
-          placeholder="Form Title"
-          name="title"
-          sx={{ mb: 3 }}
-          fullWidth
+          placeholder="Untitled form"
+          className="w-full text-2xl font-semibold text-gray-900 focus:outline-none mb-2"
         />
-        <TextField
-          name="description"
+
+        {/* Black Line */}
+        <hr className="border-t-2 border-black mb-2" />
+
+        {/* Description Input */}
+        <input
+          type="text"
           defaultValue={description}
           onBlur={(e) => setDescription(e.target.value)}
-          variant="standard"
-          placeholder="Form Description"
-          fullWidth
-          sx={{ mb: 2 }}
-          multiline
-          rows={2}
+          placeholder="Form description"
+          className="w-full text-base text-gray-500 focus:outline-none"
         />
-      </Paper>
-    </Box>
+      </div>
+    </div>
   );
 };
 
