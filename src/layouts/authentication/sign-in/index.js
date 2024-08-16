@@ -14,6 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // react-router-dom components
 import { Link } from 'react-router-dom';
@@ -37,12 +38,27 @@ import MDButton from 'components/MDButton';
 
 // Authentication layout components
 import BasicLayout from 'layouts/authentication/components/BasicLayout';
-
-// Images
-import bgImage from 'assets/images/bg-sign-in-basic.jpeg';
+import { auth } from '../../../Firebase.js';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { SetMeal } from '@mui/icons-material';
 
 function Basic() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  const SignIn = (e) => {
+    e.preventDefault();
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log(userCredential);
+        navigate('/dashboard');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
@@ -83,10 +99,22 @@ function Basic() {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" fullWidth />
+              <MDInput
+                type="email"
+                label="Email"
+                fullWidth
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" fullWidth />
+              <MDInput
+                type="password"
+                label="Password"
+                fullWidth
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -101,7 +129,7 @@ function Basic() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton variant="gradient" color="info" fullWidth onClick={SignIn}>
                 sign in
               </MDButton>
             </MDBox>
