@@ -40,7 +40,7 @@ function LandingPage() {
     <BasicLayout image={bgImage}>
       <Card>
         <MDBox display="flex" justifyContent="center" alignItems="center" pt={0} pb={1} px={1}>
-          <MDTypography variant="subtitle2" fontWeight="regular" color="black" mt={1}>
+          <MDTypography variant="subtitle2" fontWeight="regular" color="dark" mt={1}>
             {`ProcedurePulse is a user-owned process standardization tool and sharing website that allows you to create and distribute standard methods, with responses available and accessible to You`}
           </MDTypography>
         </MDBox>

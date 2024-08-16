@@ -49,31 +49,12 @@ const TextFieldInput = ({
                 placeholder="Textfield Label"
                 sx={{ mb: 2 }}
               />
-              <TextField
+              {/* <TextField
                 variant="outlined"
                 fullWidth
                 placeholder="Textfield Input Field"
                 disabled
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <FormControl fullWidth>
-                <InputLabel id="el-type-label">Type</InputLabel>
-                <Select
-                  labelId="el-type-label"
-                  id="el-type"
-                  label="Type"
-                  value={item.type}
-                  onChange={(e) => handleElType(item.id, e.target.value)}
-                >
-                  {formEl &&
-                    formEl.map((el, key) => (
-                      <MenuItem key={key} value={el.value}>
-                        {el.label}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
+              /> */}
             </Grid>
           </Grid>
         </Box>
@@ -88,7 +69,7 @@ const TextFieldInput = ({
               <DeleteOutlineOutlinedIcon color="secondary" />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Duplicate Element" aria-label="duplicate-element">
+          {/* <Tooltip title="Duplicate Element" aria-label="duplicate-element">
             <IconButton
               aria-label="duplicate-element"
               onClick={() => duplicateElement(item.id, item.type)}
@@ -96,9 +77,9 @@ const TextFieldInput = ({
             >
               <FileCopyIcon color="secondary" />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
 
-          <FormControlLabel
+          {/* <FormControlLabel
             control={
               <Switch
                 checked={item.required}
@@ -109,7 +90,7 @@ const TextFieldInput = ({
             }
             label="Required"
             sx={{ ml: 2 }}
-          />
+          /> */}
         </FormGroup>
       </Paper>
     </Fragment>
