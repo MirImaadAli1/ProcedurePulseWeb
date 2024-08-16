@@ -28,17 +28,24 @@ import MDButton from 'components/MDButton';
 
 // Authentication layout components
 import CoverLayout from 'layouts/authentication/components/CoverLayout';
+import BasicLayout from 'layouts/authentication/components/BasicLayout';
 
 // Images
-import bgImage from 'assets/images/bg-sign-up-cover.jpeg';
+//import bgImage from 'assets/images/bg-sign-up-cover.jpeg';
 
 function Cover() {
   return (
-    <CoverLayout image={bgImage}>
+    <BasicLayout
+      variant="gradient"
+      bgColor="dark"
+      color="dark"
+      style={{ backgroundColor: '#000000' }}
+    >
       <Card>
         <MDBox
           variant="gradient"
-          bgColor="info"
+          bgColor="dark"
+          color="dark"
           borderRadius="lg"
           coloredShadow="success"
           mx={2}
@@ -54,7 +61,7 @@ function Cover() {
             Enter your email and password to register
           </MDTypography>
         </MDBox>
-        <MDBox pt={4} pb={3} px={3}>
+        <MDBox pt={4} pb={3} px={3} variant="gradient" bgColor="dark" color="dark">
           <MDBox component="form" role="form">
             <MDBox mb={2}>
               <MDInput type="text" label="Name" variant="standard" fullWidth />
@@ -73,7 +80,7 @@ function Cover() {
                 color="text"
                 sx={{ cursor: 'pointer', userSelect: 'none', ml: -1 }}
               >
-                &nbsp;&nbsp;I agree the&nbsp;
+                &nbsp;&nbsp;I agree with the&nbsp;
               </MDTypography>
               <MDTypography
                 component="a"
@@ -109,7 +116,7 @@ function Cover() {
           </MDBox>
         </MDBox>
       </Card>
-    </CoverLayout>
+    </BasicLayout>
   );
 }
 
