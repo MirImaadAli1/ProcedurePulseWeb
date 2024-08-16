@@ -20,20 +20,10 @@ import { Link } from 'react-router-dom';
 
 // @mui material components
 import Card from '@mui/material/Card';
-import Switch from '@mui/material/Switch';
-import Grid from '@mui/material/Grid';
-import MuiLink from '@mui/material/Link';
-
-// @mui icons
-import FacebookIcon from '@mui/icons-material/Facebook';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import GoogleIcon from '@mui/icons-material/Google';
 
 // Material Dashboard 2 React components
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
-import MDInput from 'components/MDInput';
-import MDButton from 'components/MDButton';
 
 // Authentication layout components
 import BasicLayout from 'layouts/authentication/components/BasicLayout';
@@ -50,7 +40,7 @@ function LandingPage() {
     <BasicLayout image={bgImage}>
       <Card>
         <MDBox display="flex" justifyContent="center" alignItems="center" pt={0} pb={1} px={1}>
-          <MDTypography variant="subtitle2" fontWeight="regular" color="black" mt={1}>
+          <MDTypography variant="subtitle2" fontWeight="regular" color="dark" mt={1}>
             {`ProcedurePulse is a user-owned process standardization tool and sharing website that allows you to create and distribute standard methods, with responses available and accessible to You`}
           </MDTypography>
         </MDBox>
