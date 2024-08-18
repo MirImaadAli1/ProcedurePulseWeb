@@ -36,28 +36,28 @@ const Header = ({ title, description, setTitle, setDescription }) => {
                 setTitle(e.target.value);
               }}
               onFocus={() => setIsTitleFocused(true)}
-              placeholder="Untitled Audit"
+              placeholder="Audit Title"
               variant="standard"
               InputProps={{
                 disableUnderline: true,
                 style: { fontSize: '42px', fontWeight: 'bold' },
               }}
             />
-            <hr
+            {/* <hr
               style={{
                 position: 'absolute',
                 bottom: 0,
                 left: 0,
                 width: isTitleFocused ? '100%' : '0%',
                 height: isTitleFocused ? '4px' : '2px',
-                backgroundColor: 'black',
+                backgroundColor: 'grey',
                 transition: 'width 0.3s ease, height 0.3s ease',
               }}
-            />
+            /> */}
           </div>
 
           {/* Space between Title and Description */}
-          <div className="border-t-2 border-black mb-4" />
+          <div className="border-t-2 border-grey mb-4" />
 
           {/* Description Input */}
           <div style={{ position: 'relative' }}>
@@ -70,13 +70,13 @@ const Header = ({ title, description, setTitle, setDescription }) => {
               }}
               onFocus={() => setIsDescriptionFocused(true)}
               placeholder="Form description"
-              variant="standard"
+              variant="outlined"
               InputProps={{
                 disableUnderline: true,
-                style: { fontSize: '30px', color: '#6B7280' },
+                style: { fontSize: '30px', color: '#6B7280', marginTop: '15px'},
               }}
             />
-            <hr
+            {/* <hr
               style={{
                 position: 'absolute',
                 bottom: 0,
@@ -86,9 +86,9 @@ const Header = ({ title, description, setTitle, setDescription }) => {
                 backgroundColor: 'black',
                 transition: 'width 0.3s ease, height 0.3s ease',
               }}
-            />
+            /> */}
           </div>
-          <div className="border-t-2 border-black mb-4" />
+          {/* <div className="border-t-2 border-black mb-4" /> */}
         </div>
       </div>
     </div>
