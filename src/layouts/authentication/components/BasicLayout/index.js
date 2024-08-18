@@ -22,6 +22,8 @@ import Grid from '@mui/material/Grid';
 // Material Dashboard 2 React components
 import MDBox from 'components/MDBox';
 
+import { useMaterialUIController } from 'context';
+
 // Material Dashboard 2 React example components
 import DefaultNavbar from 'examples/Navbars/DefaultNavbar';
 import PageLayout from 'examples/LayoutContainers/PageLayout';
@@ -30,6 +32,16 @@ import PageLayout from 'examples/LayoutContainers/PageLayout';
 import Footer from 'layouts/authentication/components/Footer';
 
 function BasicLayout({ image, children }) {
+  const [controller] = useMaterialUIController();
+  const { darkMode } = controller;
+  const backgroundStyle = {
+    backgroundImage: darkMode
+      ? `linear-gradient(rgba(0, 0, 90, 0.5), rgba(0, 0, 90, 0.6)), url(${image})`
+      : `url(${image})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+  };
   return (
     <PageLayout>
       <DefaultNavbar />
@@ -37,17 +49,17 @@ function BasicLayout({ image, children }) {
         position="absolute"
         width="100%"
         minHeight="100vh"
-        sx={{
-          backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
-            image &&
-            `${linearGradient(
-              rgba(gradients.dark.main, 0.6),
-              rgba(gradients.dark.state, 0.6)
-            )}, url(${image})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
+        sx={backgroundStyle}
+        // backgroundImage: `url(${image})`,
+        //({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
+        //   image &&
+        //   `${linearGradient(
+        //     rgba(gradients.dark.main, 0.6),
+        //     rgba(gradients.dark.state, 0.6)
+        //   )}, url(${image})`,
+        // backgroundSize: 'cover',
+        // backgroundPosition: 'center',
+        // backgroundRepeat: 'no-repeat',
       />
       <MDBox px={1} width="100%" height="100vh" mx="auto">
         <Grid container spacing={1} justifyContent="center" alignItems="center" height="100%">
