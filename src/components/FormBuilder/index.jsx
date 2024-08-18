@@ -18,7 +18,7 @@ import Header from './Header';
 
 const FormBuilder = () => {
   //State
-  const [title, setTitle] = useState('Untitled Form');
+  const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [data, setData] = useState([]);
   const [message, setMessage] = useState(null); // State for messages
@@ -197,7 +197,7 @@ const FormBuilder = () => {
   return (
     <Fragment>
       <Grid container spacing={1} direction="row" justifyContent="center">
-        <Grid item md={6}>
+        <Grid item md={5}>
           <Header
             title={title}
             setTitle={setTitle}
@@ -213,7 +213,7 @@ const FormBuilder = () => {
           <div className="flex justify-end mt-4">
             <button
               onClick={handleSubmit}
-              className="bg-white text-black py-2 px-4 rounded-lg hover:bg-green-500"
+              className="bg-white text-2xl text-black py-2 px-4 rounded-lg hover:bg-green-500"
             >
               Save Form
             </button>
