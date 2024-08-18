@@ -27,73 +27,67 @@ const TextFieldInput = ({
   item,
   handleValue,
   deleteEl,
-  handleRequired,
   handleElType,
   duplicateElement,
 }) => {
-  return (
-    <Fragment>
-      <Paper elevation={1}>
-        <Box sx={{ textAlign: 'center' }}>
-          <DragIndicatorIcon sx={{ transform: 'rotate(-90deg)', cursor: 'all-scroll' }} />
-        </Box>
-        <Box sx={{ p: 3 }}>
-          <Grid container spacing={1}>
-            <Grid item xs={9}>
-              <TextField
-                value={item.value}
-                variant="outlined"
-                onChange={(e) => handleValue(item.id, e)}
-                fullWidth
-                required={item.required}
-                placeholder="Textfield Label"
-                sx={{ mb: 2 }}
-              />
-              {/* <TextField
-                variant="outlined"
-                fullWidth
-                placeholder="Textfield Input Field"
-                disabled
-              /> */}
-            </Grid>
-          </Grid>
-        </Box>
-        <Divider light />
-        <FormGroup row sx={{ alignItems: 'center' }}>
-          <Tooltip title="Delete Element" aria-label="delete-element">
-            <IconButton
-              aria-label="delete-element"
-              onClick={() => deleteEl(item.id)}
-              sx={{ ml: 2 }}
-            >
-              <DeleteOutlineOutlinedIcon color="secondary" />
-            </IconButton>
-          </Tooltip>
-          {/* <Tooltip title="Duplicate Element" aria-label="duplicate-element">
-            <IconButton
-              aria-label="duplicate-element"
-              onClick={() => duplicateElement(item.id, item.type)}
-              sx={{ ml: 2 }}
-            >
-              <FileCopyIcon color="secondary" />
-            </IconButton>
-          </Tooltip> */}
 
-          {/* <FormControlLabel
-            control={
-              <Switch
-                checked={item.required}
-                onChange={() => handleRequired(item.id)}
-                name="required-field"
-                color="secondary"
-              />
-            }
-            label="Required"
-            sx={{ ml: 2 }}
-          /> */}
-        </FormGroup>
-      </Paper>
-    </Fragment>
+  const [isElementFocused, setIsElementFocused] = useState(false);
+
+  const isFocused = isElementFocused;
+  return (
+    <div className="mb-6 pt-4 shadow-lg rounded-lg transition-all duration-300">
+      <div
+        className={`transition-transform duration-300 ${isFocused ? 'transform scale-105 shadow-2xl' : ''
+          }`}
+      >
+        <Paper elevation={1}>
+          <Box sx={{ textAlign: 'center' }}>
+            <DragIndicatorIcon sx={{ transform: 'rotate(-90deg)', cursor: 'all-scroll' }} />
+          </Box>
+          <div style={{ position: 'relative' }}>
+            <TextField
+              value={item.value}
+              variant="outlined"
+              onBlur={(e) => {
+                setIsElementFocused(false);
+              }}
+              onFocus={() => setIsElementFocused(true)}
+              onChange={(e) => handleValue(item.id, e)}
+              fullWidth
+              placeholder="Textfield Label"
+              sx={{ mb: 2 }}
+              InputProps={{
+                disableUnderline: true,
+                style: { fontSize: '24px', fontWeight: 'bold' },
+              }}
+            />
+            <hr
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                width: isElementFocused ? '100%' : '0%',
+                height: isElementFocused ? '4px' : '2px',
+                backgroundColor: 'black',
+                transition: 'width 0.3s ease, height 0.3s ease',
+              }}
+            />
+          </div>
+          <Divider light />
+          <FormGroup row sx={{ alignItems: 'center' }}>
+            <Tooltip title="Delete Element" aria-label="delete-element">
+              <IconButton
+                aria-label="delete-element"
+                onClick={() => deleteEl(item.id)}
+                sx={{ ml: 2 }}
+              >
+                <DeleteOutlineOutlinedIcon color="secondary" />
+              </IconButton>
+            </Tooltip>
+          </FormGroup>
+        </Paper>
+      </div>
+    </div>
   );
 };
 
