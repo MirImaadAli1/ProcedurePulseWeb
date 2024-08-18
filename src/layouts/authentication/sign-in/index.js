@@ -15,6 +15,9 @@ Coded by www.creative-tim.com
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
+
+import bgImage from 'assets/images/greybg.jpg';
 
 // react-router-dom components
 import { Link } from 'react-router-dom';
@@ -42,11 +45,15 @@ import { auth } from '../../../Firebase.js';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { SetMeal } from '@mui/icons-material';
 
+import { useMaterialUIController } from 'context';
+
 function Basic() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate(); // Initialize useNavigate
+  const [controller] = useMaterialUIController();
+  const { darkMode } = controller;
 
   const SignIn = (e) => {
     e.preventDefault();
@@ -63,40 +70,36 @@ function Basic() {
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
   return (
-    <BasicLayout>
-      <Card>
+    <BasicLayout image={bgImage}>
+      <Card
+        sx={{
+          borderRadius: '16px',
+          overflow: 'hidden',
+        }}
+      >
         <MDBox
           variant="gradient"
-          bgColor="info"
+          bgColor={darkMode ? 'dark' : 'white'}
           borderRadius="lg"
           coloredShadow="dark"
-          mt={-3}
-          p={2}
+          mt={-1}
+          p={1}
+          pt={2}
           mb={1}
           textAlign="center"
+          sx={{
+            borderTopLeftRadius: '16px',
+            borderTopRightRadius: '16px',
+            borderBottomLeftRadius: '0px',
+            borderBottomRightRadius: '0px',
+            marginBottom: '0px',
+          }}
         >
-          <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
+          <MDTypography variant="h4" fontWeight="medium" color="dark" mt={1}>
             Sign in
           </MDTypography>
-          <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <FacebookIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <GitHubIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <GoogleIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-          </Grid>
         </MDBox>
-        <MDBox pt={4} pb={3} px={3}>
+        <MDBox pt={4} pb={3} px={3} bgColor={darkMode ? 'dark' : 'white'} variant="gradient">
           <MDBox component="form" role="form">
             <MDBox mb={2}>
               <MDInput
@@ -105,6 +108,10 @@ function Basic() {
                 fullWidth
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                variant="outlined"
+                InputProps={{
+                  style: { color: 'dark' }, // Input text color to white
+                }}
               />
             </MDBox>
             <MDBox mb={2}>
@@ -114,14 +121,18 @@ function Basic() {
                 fullWidth
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                variant="outlined"
+                InputProps={{
+                  style: { color: 'dark' }, // Input text color to white
+                }}
               />
             </MDBox>
-            <MDBox display="flex" alignItems="center" ml={-1}>
+            <MDBox display="flex" alignItems="center" ml={-1} pt={1} pb={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
               <MDTypography
                 variant="button"
                 fontWeight="regular"
-                color="text"
+                color="dark"
                 onClick={handleSetRememberMe}
                 sx={{ cursor: 'pointer', userSelect: 'none', ml: -1 }}
               >
@@ -134,7 +145,7 @@ function Basic() {
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
-              <MDTypography variant="button" color="text">
+              <MDTypography variant="button" color="dark" fontWeight="regular">
                 Don&apos;t have an account?{' '}
                 <MDTypography
                   component={Link}
