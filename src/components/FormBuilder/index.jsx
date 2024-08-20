@@ -29,28 +29,36 @@ const FormBuilder = () => {
   // Function to handle form submission
   const handleSubmit = async () => {
     try {
-      const auditCollectionRef = collection(db, 'Audit');
-
-      // Create a new document in the "audit" collection
-      const docRef = await addDoc(auditCollectionRef, {
-        title,
-        description,
-        questions: data.map((item, index) => ({
-          question: `Question ${index + 1}`,
-          ...item,
-        })),
-      });
-
-      console.log('Document written with ID: ', docRef.id);
-      setMessageType('success'); // Set message type
-      setMessage('Form saved successfully!'); // Set success message
+      const user = auth.currentUser; // Get the current user
+  
+      if (user) {
+        const auditCollectionRef = collection(db, 'Audit');
+  
+        // Create a new document in the "Audit" collection with the user ID
+        const docRef = await addDoc(auditCollectionRef, {
+          title,
+          description,
+          userId: user.uid, // Store the user ID
+          questions: data.map((item, index) => ({
+            question: `Question ${index + 1}`,
+            ...item,
+          })),
+        });
+  
+        console.log('Document written with ID: ', docRef.id);
+        setMessageType('success'); // Set message type
+        setMessage('Form saved successfully!'); // Set success message
+      } else {
+        setMessageType('error');
+        setMessage('User not logged in.'); // Handle case when user is not logged in
+      }
     } catch (e) {
       console.error('Error adding document: ', e);
       setMessageType('error'); // Set message type
       setMessage('Error saving form. Please try again.'); // Set error message
     }
   };
-
+  
   //Function to add new element
   const addElement = () => {
     const data = {
