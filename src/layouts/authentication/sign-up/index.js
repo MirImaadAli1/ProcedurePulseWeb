@@ -13,93 +13,153 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-// react-router-dom components
+// Importing necessary React and Firebase functionalities
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
+
+import bgImage from 'assets/images/greybg.jpg'; // Background image
+
+// Importing components from react-router-dom for navigation
 import { Link } from 'react-router-dom';
 
-// @mui material components
+// Importing Material UI components for UI design
 import Card from '@mui/material/Card';
-import Checkbox from '@mui/material/Checkbox';
+import Switch from '@mui/material/Switch';
+import Grid from '@mui/material/Grid';
+import MuiLink from '@mui/material/Link';
 
-// Material Dashboard 2 React components
+// Importing icons from Material UI
+import FacebookIcon from '@mui/icons-material/Facebook';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import GoogleIcon from '@mui/icons-material/Google';
+
+// Importing custom Material Dashboard components
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 import MDInput from 'components/MDInput';
 import MDButton from 'components/MDButton';
 
-// Authentication layout components
-import CoverLayout from 'layouts/authentication/components/CoverLayout';
+// Importing layout component for authentication pages
 import BasicLayout from 'layouts/authentication/components/BasicLayout';
+import { auth } from '../../../Firebase.js'; // Importing Firebase authentication
+import { createUserWithEmailAndPassword } from 'firebase/auth';  // Firebase method for creating a new user
 
-// Images
-//import bgImage from 'assets/images/bg-sign-up-cover.jpeg';
+import { useMaterialUIController } from 'context'; // Custom hook for accessing Material UI Controller context
 
-function Cover() {
+// Main functional component for the Sign-Up page
+function Basic() {
+  // Setting up state variables for email, password, and remember me functionality
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+
+  const navigate = useNavigate(); // Initialize useNavigate for programmatic navigation
+  const [controller] = useMaterialUIController(); // Destructure the controller object from context
+  const { darkMode } = controller; // Extract darkMode state from the controller
+
+  // Function to handle user sign-up
+  const SignUp = (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
+    createUserWithEmailAndPassword(auth, email, password) // Firebase method to create a new user with email and password
+      .then((userCredential) => {
+        console.log(userCredential); // Log user credentials on successful sign-up
+        navigate('/dashboard'); // Navigate to the dashboard page upon successful sign-up
+      })
+      .catch((error) => {
+        console.log(error); // Log any errors encountered during sign-up
+      });
+  };
+
+  // Function to toggle the remember me state
+  const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  // Rendering the sign-up form layout
   return (
-    <BasicLayout
-      variant="gradient"
-      bgColor="dark"
-      color="dark"
-      style={{ backgroundColor: '#000000' }}
-    >
-      <Card>
+    <BasicLayout image={bgImage}>
+      <Card
+        sx={{
+          borderRadius: '16px',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Header section with title */}
         <MDBox
           variant="gradient"
-          bgColor="dark"
-          color="dark"
+          bgColor={darkMode ? 'dark' : 'white'}
           borderRadius="lg"
-          coloredShadow="success"
-          mx={2}
-          mt={-3}
-          p={3}
+          coloredShadow="dark"
+          mt={-1}
+          p={1}
+          pt={2}
           mb={1}
           textAlign="center"
+          sx={{
+            borderTopLeftRadius: '16px',
+            borderTopRightRadius: '16px',
+            borderBottomLeftRadius: '0px',
+            borderBottomRightRadius: '0px',
+            marginBottom: '0px',
+          }}
         >
-          <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Join us today
-          </MDTypography>
-          <MDTypography display="block" variant="button" color="white" my={1}>
-            Enter your email and password to register
+          <MDTypography variant="h4" fontWeight="medium" color="dark" mt={1}>
+            Sign up
           </MDTypography>
         </MDBox>
-        <MDBox pt={4} pb={3} px={3} variant="gradient" bgColor="dark" color="dark">
+
+        {/* Form section for input fields and buttons */}
+        <MDBox pt={4} pb={3} px={3} bgColor={darkMode ? 'dark' : 'white'} variant="gradient">
           <MDBox component="form" role="form">
+            {/* Email input field */}
             <MDBox mb={2}>
-              <MDInput type="text" label="Name" variant="standard" fullWidth />
+              <MDInput
+                type="email"
+                label="Email"
+                fullWidth
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                variant="outlined"
+                InputProps={{
+                  style: { color: 'dark' }, // Input text color based on theme
+                }}
+              />
             </MDBox>
+            {/* Password input field */}
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" variant="standard" fullWidth />
+              <MDInput
+                type="password"
+                label="Password"
+                fullWidth
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                variant="outlined"
+                InputProps={{
+                  style: { color: 'dark' }, // Input text color based on theme
+                }}
+              />
             </MDBox>
-            <MDBox mb={2}>
-              <MDInput type="password" label="Password" variant="standard" fullWidth />
-            </MDBox>
-            <MDBox display="flex" alignItems="center" ml={-1}>
-              <Checkbox />
+            {/* Remember me switch */}
+            <MDBox display="flex" alignItems="center" ml={-1} pt={1} pb={-1}>
+              <Switch checked={rememberMe} onChange={handleSetRememberMe} />
               <MDTypography
                 variant="button"
                 fontWeight="regular"
-                color="text"
+                color="dark"
+                onClick={handleSetRememberMe}
                 sx={{ cursor: 'pointer', userSelect: 'none', ml: -1 }}
               >
-                &nbsp;&nbsp;I agree with the&nbsp;
-              </MDTypography>
-              <MDTypography
-                component="a"
-                href="#"
-                variant="button"
-                fontWeight="bold"
-                color="info"
-                textGradient
-              >
-                Terms and Conditions
+                &nbsp;&nbsp;Remember me
               </MDTypography>
             </MDBox>
+            {/* Sign up button */}
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
-                sign in
+              <MDButton variant="gradient" color="info" fullWidth onClick={SignUp}>
+                sign up
               </MDButton>
             </MDBox>
+            {/* Link to sign-in page for existing users */}
             <MDBox mt={3} mb={1} textAlign="center">
-              <MDTypography variant="button" color="text">
+              <MDTypography variant="button" color="dark" fontWeight="regular">
                 Already have an account?{' '}
                 <MDTypography
                   component={Link}
@@ -109,7 +169,7 @@ function Cover() {
                   fontWeight="medium"
                   textGradient
                 >
-                  Sign In
+                  Sign in
                 </MDTypography>
               </MDTypography>
             </MDBox>
@@ -120,4 +180,4 @@ function Cover() {
   );
 }
 
-export default Cover;
+export default Basic;
