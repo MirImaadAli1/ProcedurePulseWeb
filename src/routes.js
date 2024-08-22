@@ -45,9 +45,10 @@ import Profile from 'layouts/profile';
 import SignIn from 'layouts/authentication/sign-in';
 import SignUp from 'layouts/authentication/sign-up';
 import LandingPage from 'layouts/landing-page';
-
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 // @mui icons
 import Icon from '@mui/material/Icon';
+import Audits from 'layouts/audits';
 
 const routes = [
   {
@@ -81,6 +82,14 @@ const routes = [
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: '/billing',
     component: <Billing />,
+  },
+  {
+    type: 'collapse',
+    name: 'Audits',
+    key: 'audits',
+    icon: <LibraryBooksIcon />,
+    route: '/audits',
+    component: <Audits/>,
   },
   {
     type: 'collapse',

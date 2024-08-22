@@ -44,11 +44,35 @@ const FormBuilder = () => {
       setData([]); // Clear the questions
       setCreatedAuditId(auditId); // Set the created auditId
       setOpenModal(true); // Show the modal on success
+      const user = auth.currentUser; // Get the current user
+  
+      if (user) {
+        const auditCollectionRef = collection(db, 'Audit');
+  
+        // Create a new document in the "Audit" collection with the user ID
+        const docRef = await addDoc(auditCollectionRef, {
+          title,
+          description,
+          userId: user.uid, // Store the user ID
+          questions: data.map((item, index) => ({
+            question: `Question ${index + 1}`,
+            ...item,
+          })),
+        });
+  
+        console.log('Document written with ID: ', docRef.id);
+        setMessageType('success'); // Set message type
+        setMessage('Form saved successfully!'); // Set success message
+      } else {
+        setMessageType('error');
+        setMessage('User not logged in.'); // Handle case when user is not logged in
+      }
     } catch (e) {
       console.error('Error adding document: ', e);
     }
   };
-
+  
+  //Function to add new element
   const addElement = () => {
     const data = {
       id: uuid(),
