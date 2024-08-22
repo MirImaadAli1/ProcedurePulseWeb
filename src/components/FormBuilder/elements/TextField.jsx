@@ -1,5 +1,4 @@
-import { useState } from 'react';
-// Material UI Components
+import { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
@@ -7,42 +6,46 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-// Icons
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import PropTypes from 'prop-types';
 
-// CSS styling for scaling on hover
-const scaleStyle = `
-  .hover-effect {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  .hover-effect:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  }
-`;
-
 const TextFieldInput = ({
   item,
   handleValue,
+  handleCheckboxChange,
   deleteEl,
 }) => {
-  const [yesNoChecked, setYesNoChecked] = useState(true);
-  const [commentsChecked, setCommentsChecked] = useState(true);
-  const [imageChecked, setImageChecked] = useState(true);
+  const [yesNoChecked, setYesNoChecked] = useState(item.yesNoChecked ?? true);
+  const [commentsChecked, setCommentsChecked] = useState(item.commentsChecked ?? true);
+  const [imageChecked, setImageChecked] = useState(item.imageChecked ?? true);
+
+  // Use useEffect to inform the parent component of the initial checkbox states
+  useEffect(() => {
+    handleCheckboxChange(item.id, {
+      yesNoChecked,
+      commentsChecked,
+      imageChecked,
+    });
+  }, []);
+
+  const handleCheckbox = (key, value) => {
+    if (key === 'yesNoChecked') setYesNoChecked(value);
+    if (key === 'commentsChecked') setCommentsChecked(value);
+    if (key === 'imageChecked') setImageChecked(value);
+
+    handleCheckboxChange(item.id, {
+      yesNoChecked: key === 'yesNoChecked' ? value : yesNoChecked,
+      commentsChecked: key === 'commentsChecked' ? value : commentsChecked,
+      imageChecked: key === 'imageChecked' ? value : imageChecked,
+    });
+  };
 
   return (
-    <div
-      className="hover-effect mb-6 pt-4 shadow-lg rounded-lg"
-      onMouseEnter={() => { }}
-      onMouseLeave={() => { }}
-    >
-      <style>{scaleStyle}</style>
+    <div className="hover-effect mb-6 pt-4 shadow-lg rounded-lg">
       <Paper elevation={1}>
         <Box style={{ textAlign: 'center', padding: '16px' }}>
           <DragIndicatorIcon style={{ transform: 'rotate(-90deg)', cursor: 'all-scroll' }} />
@@ -65,18 +68,17 @@ const TextFieldInput = ({
             style={{
               marginTop: '10px',
               textAlign: 'center',
-              border: '1px solid #ccc', // Add a border
-              borderRadius: '8px', // Add border-radius
-              padding: '10px', // Optional: add padding for better spacing
+              border: '1px solid #ccc',
+              borderRadius: '8px',
+              padding: '10px',
             }}
           >
-            {/* <FormLabel component="legend">Answer Type</FormLabel> */}
             <FormGroup row style={{ justifyContent: 'center' }}>
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={yesNoChecked}
-                    onChange={() => setYesNoChecked(!yesNoChecked)}
+                    onChange={() => handleCheckbox('yesNoChecked', !yesNoChecked)}
                   />
                 }
                 label="Yes/No/N/A"
@@ -85,7 +87,7 @@ const TextFieldInput = ({
                 control={
                   <Checkbox
                     checked={commentsChecked}
-                    onChange={() => setCommentsChecked(!commentsChecked)}
+                    onChange={() => handleCheckbox('commentsChecked', !commentsChecked)}
                   />
                 }
                 label="Comments"
@@ -94,14 +96,13 @@ const TextFieldInput = ({
                 control={
                   <Checkbox
                     checked={imageChecked}
-                    onChange={() => setImageChecked(!imageChecked)}
+                    onChange={() => handleCheckbox('imageChecked', !imageChecked)}
                   />
                 }
                 label="Image"
               />
             </FormGroup>
           </FormControl>
-
         </Box>
         <Divider light />
         <Box style={{ padding: '16px' }}>
@@ -124,10 +125,12 @@ TextFieldInput.propTypes = {
   item: PropTypes.shape({
     id: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
-    required: PropTypes.bool.isRequired,
-    type: PropTypes.string.isRequired,
+    yesNoChecked: PropTypes.bool,
+    commentsChecked: PropTypes.bool,
+    imageChecked: PropTypes.bool,
   }).isRequired,
   handleValue: PropTypes.func.isRequired,
+  handleCheckboxChange: PropTypes.func.isRequired,
   deleteEl: PropTypes.func.isRequired,
 };
 

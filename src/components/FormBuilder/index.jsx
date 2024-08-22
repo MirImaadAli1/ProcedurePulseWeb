@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import uuid from 'react-uuid';
 import Nestable from 'react-nestable';
 import Grid from '@material-ui/core/Grid';
@@ -8,56 +8,54 @@ import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOut
 import { TextFieldInput } from './elements';
 import { collection, addDoc } from 'firebase/firestore';
 import { Button } from '@mui/material';
-import { Alert } from '@material-ui/lab';
 import Header from './Header';
 import { db } from '../../Firebase';
-
+import SuccessModal from 'components/Modals/SuccessModal';
 
 const FormBuilder = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [data, setData] = useState([]);
-  const [message, setMessage] = useState(null);
-  const [messageType, setMessageType] = useState('');
+  const [openModal, setOpenModal] = useState(false);
+  const [createdAuditId, setCreatedAuditId] = useState(''); // State to hold the auditId
 
   const items = data;
 
   const handleSubmit = async () => {
     try {
+      const auditId = uuid();
       const auditCollectionRef = collection(db, 'Audit');
       const docRef = await addDoc(auditCollectionRef, {
+        id: auditId,
         title,
         description,
         questions: data.map((item, index) => ({
-          question: `Question ${index + 1}`,
-          ...item,
+          questionNumber: `Question ${index + 1}`,
+          value: item.value,
+          yesNoChecked: item.yesNoChecked,
+          commentsChecked: item.commentsChecked,
+          imageChecked: item.imageChecked,
         })),
       });
 
       console.log('Document written with ID: ', docRef.id);
-      setMessageType('success');
-      setMessage('Form saved successfully!');
       setTitle(''); // Clear title
       setDescription(''); // Clear description
       setData([]); // Clear the questions
+      setCreatedAuditId(auditId); // Set the created auditId
+      setOpenModal(true); // Show the modal on success
     } catch (e) {
       console.error('Error adding document: ', e);
-      setMessageType('error');
-      setMessage('Error saving form. Please try again.');
     }
-
-    // Display message for 2 seconds
-    setTimeout(() => {
-      setMessage(null);
-      setMessageType('');
-    }, 2000);
   };
 
   const addElement = () => {
     const data = {
       id: uuid(),
-      value: null,
-      required: false,
+      value: '',
+      yesNoChecked: true,
+      commentsChecked: true,
+      imageChecked: true,
     };
     setData((prevState) => [...prevState, data]);
   };
@@ -71,25 +69,19 @@ const FormBuilder = () => {
   };
 
   const handleValue = (id, e) => {
-    let newArr = data.map((el) => {
-      if (el.id === id) {
-        return { ...el, value: e.target.value };
-      } else {
-        return el;
-      }
-    });
-    setData(newArr);
+    setData((prevState) =>
+      prevState.map((el) =>
+        el.id === id ? { ...el, value: e.target.value } : el
+      )
+    );
   };
 
-  const handleRequired = (id) => {
-    let newArr = data.map((el) => {
-      if (el.id === id) {
-        return { ...el, required: !el.required };
-      } else {
-        return el;
-      }
-    });
-    setData(newArr);
+  const handleCheckboxChange = (id, checkboxState) => {
+    setData((prevState) =>
+      prevState.map((el) =>
+        el.id === id ? { ...el, ...checkboxState } : el
+      )
+    );
   };
 
   const renderElements = ({ item }) => {
@@ -97,20 +89,19 @@ const FormBuilder = () => {
       <TextFieldInput
         item={item}
         handleValue={handleValue}
+        handleCheckboxChange={handleCheckboxChange}
         deleteEl={deleteEl}
-        handleRequired={handleRequired}
       />
     );
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false); // Close the modal
   };
 
   return (
     <Fragment>
       <Grid container spacing={1} direction="row" justifyContent="center">
-        {message && (
-          <Grid item xs={12} style={{ textAlign: 'center', marginBottom: '1rem' }}>
-            <Alert severity={messageType}>{message}</Alert>
-          </Grid>
-        )}
         <Grid item md={5}>
           <Header
             title={title}
@@ -121,40 +112,33 @@ const FormBuilder = () => {
           <Nestable
             items={items}
             renderItem={renderElements}
-            maxDepth={1}
             onChange={handleOnChangeSort}
           />
-          <div className="flex justify-end mt-4">
-            <Button
-              variant='contained'
-              onClick={handleSubmit}
-              style={{
-                backgroundColor: 'white',
-                fontSize: '1.5rem',
-                color: 'black',
-                paddingTop: '0.5rem',
-                paddingBottom: '0.5rem',
-                paddingLeft: '1rem',
-                paddingRight: '1rem',
-                borderRadius: '0.5rem',
-                // transition: 'background-color 0.3s ease',
-                cursor: 'pointer'
-              }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = '#328CED'} // For hover effect
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
-            >
-              Save Form
-            </Button>
-          </div>
-        </Grid>
-        <Grid item md={1}>
           <Tooltip title="Add Element" aria-label="add-element">
-            <IconButton aria-label="add-element" onClick={addElement}>
-              <AddCircleOutlineOutlinedIcon color="secondary" />
+            <IconButton
+              aria-label="add-element"
+              onClick={addElement}
+              style={{ marginTop: '1rem', float: 'right' }}
+            >
+              <AddCircleOutlineOutlinedIcon color="primary" />
             </IconButton>
           </Tooltip>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+            style={{ marginTop: '1rem' }}
+            fullWidth
+          >
+            Save Form
+          </Button>
         </Grid>
       </Grid>
+      <SuccessModal
+        open={openModal}
+        handleClose={handleCloseModal}
+        auditId={createdAuditId} // Pass the created auditId to the modal
+      />
     </Fragment>
   );
 };

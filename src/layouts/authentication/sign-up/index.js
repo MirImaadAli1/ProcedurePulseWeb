@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // Importing necessary React and Firebase functionalities
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -42,14 +27,16 @@ import MDButton from 'components/MDButton';
 
 // Importing layout component for authentication pages
 import BasicLayout from 'layouts/authentication/components/BasicLayout';
-import { auth } from '../../../Firebase.js'; // Importing Firebase authentication
+import { auth, db } from '../../../Firebase.js'; // Importing Firebase authentication and Firestore
 import { createUserWithEmailAndPassword } from 'firebase/auth';  // Firebase method for creating a new user
+import { setDoc, doc } from 'firebase/firestore'; // Firebase Firestore methods for setting document
 
 import { useMaterialUIController } from 'context'; // Custom hook for accessing Material UI Controller context
 
 // Main functional component for the Sign-Up page
 function Basic() {
-  // Setting up state variables for email, password, and remember me functionality
+  // Setting up state variables for username, email, password, and remember me functionality
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -62,8 +49,17 @@ function Basic() {
   const SignUp = (e) => {
     e.preventDefault(); // Prevent default form submission behavior
     createUserWithEmailAndPassword(auth, email, password) // Firebase method to create a new user with email and password
-      .then((userCredential) => {
+      .then(async (userCredential) => {
+        const user = userCredential.user;
         console.log(userCredential); // Log user credentials on successful sign-up
+
+        // Store user details in Firestore
+        await setDoc(doc(db, 'Users', user.uid), {
+          uid: user.uid,
+          name: username,
+          email: user.email,
+        });
+
         navigate('/dashboard'); // Navigate to the dashboard page upon successful sign-up
       })
       .catch((error) => {
@@ -110,6 +106,20 @@ function Basic() {
         {/* Form section for input fields and buttons */}
         <MDBox pt={4} pb={3} px={3} bgColor={darkMode ? 'dark' : 'white'} variant="gradient">
           <MDBox component="form" role="form">
+            {/* Username input field */}
+            <MDBox mb={2}>
+              <MDInput
+                type="text"
+                label="Username"
+                fullWidth
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                variant="outlined"
+                InputProps={{
+                  style: { color: 'dark' }, // Input text color based on theme
+                }}
+              />
+            </MDBox>
             {/* Email input field */}
             <MDBox mb={2}>
               <MDInput
