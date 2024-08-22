@@ -9,7 +9,7 @@ import { TextFieldInput } from './elements';
 import { collection, addDoc } from 'firebase/firestore';
 import { Button } from '@mui/material';
 import Header from './Header';
-import { db } from '../../Firebase';
+import { db, auth } from '../../Firebase';
 import SuccessModal from 'components/Modals/SuccessModal';
 
 const FormBuilder = () => {
@@ -23,10 +23,16 @@ const FormBuilder = () => {
 
   const handleSubmit = async () => {
     try {
+      const user = auth.currentUser; // Get the current user
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
       const auditId = uuid();
       const auditCollectionRef = collection(db, 'Audit');
       const docRef = await addDoc(auditCollectionRef, {
         id: auditId,
+        userId: user.uid, // Store the userId
         title,
         description,
         questions: data.map((item, index) => ({
@@ -44,29 +50,6 @@ const FormBuilder = () => {
       setData([]); // Clear the questions
       setCreatedAuditId(auditId); // Set the created auditId
       setOpenModal(true); // Show the modal on success
-      const user = auth.currentUser; // Get the current user
-  
-      if (user) {
-        const auditCollectionRef = collection(db, 'Audit');
-  
-        // Create a new document in the "Audit" collection with the user ID
-        const docRef = await addDoc(auditCollectionRef, {
-          title,
-          description,
-          userId: user.uid, // Store the user ID
-          questions: data.map((item, index) => ({
-            question: `Question ${index + 1}`,
-            ...item,
-          })),
-        });
-  
-        console.log('Document written with ID: ', docRef.id);
-        setMessageType('success'); // Set message type
-        setMessage('Form saved successfully!'); // Set success message
-      } else {
-        setMessageType('error');
-        setMessage('User not logged in.'); // Handle case when user is not logged in
-      }
     } catch (e) {
       console.error('Error adding document: ', e);
     }

@@ -57,6 +57,10 @@ function Audits() {
             id: doc.id,
             ...doc.data(),
           }));
+          // Log the fetched forms
+          console.log("Fetched audits:", userForms);
+          // Log the fetched forms
+          console.log("userid:", user.uid);
           setForms(userForms);
         }
       };
