@@ -1,4 +1,4 @@
-# [ProcedurePulse Audit Website]
+# ProcedurePulse Audit Website
 ![Image](https://s3.amazonaws.com/creativetim_bucket/products/71/original/material-dashboard-react.jpg?1638950990)
 
 Our professional auditing website is designed for managers and employers to effortlessly create, share, and manage audits, prioritizing a streamlined and efficient auditing process. 
