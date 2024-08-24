@@ -152,7 +152,7 @@ At present, we officially aim to support the last two versions of the following 
 
 ## Technical Support or Questions
 
-If you have questions please [contact us](mailto:aurora.tech@outlook.com).
+If you have questions please [contact us](mailto:aurora.technologies@outlook.com).
 
 ## Licensing
 
