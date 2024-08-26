@@ -6,8 +6,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 import { TextFieldInput } from './elements';
-import { collection, addDoc } from 'firebase/firestore';
-import { Button } from '@mui/material';
+import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
+import { Button, Alert } from '@mui/material'; // Import Alert from MUI
 import Header from './Header';
 import { db, auth } from '../../Firebase';
 import SuccessModal from 'components/Modals/SuccessModal';
@@ -17,22 +17,29 @@ const FormBuilder = () => {
   const [description, setDescription] = useState('');
   const [data, setData] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-  const [createdAuditId, setCreatedAuditId] = useState(''); // State to hold the auditId
+  const [createdAuditId, setCreatedAuditId] = useState('');
+  const [showAlert, setShowAlert] = useState(false); // State to control the alert visibility
 
   const items = data;
 
   const handleSubmit = async () => {
+    if (!title || !description) {
+      setShowAlert(true); // Show alert if title or description is empty
+      return;
+    }
+
     try {
-      const user = auth.currentUser; // Get the current user
+      const user = auth.currentUser;
       if (!user) {
         throw new Error('User not authenticated');
       }
 
       const auditId = uuid();
+      const creationDate = new Date();
       const auditCollectionRef = collection(db, 'Audit');
-      const docRef = await addDoc(auditCollectionRef, {
-        id: auditId,
-        userId: user.uid, // Store the userId
+      const docRef = doc(auditCollectionRef, auditId); // Specify the document ID as auditId
+      await setDoc(docRef, {
+        userId: user.uid,
         title,
         description,
         questions: data.map((item, index) => ({
@@ -42,20 +49,21 @@ const FormBuilder = () => {
           commentsChecked: item.commentsChecked,
           imageChecked: item.imageChecked,
         })),
+        createdAt: creationDate,
       });
 
       console.log('Document written with ID: ', docRef.id);
-      setTitle(''); // Clear title
-      setDescription(''); // Clear description
-      setData([]); // Clear the questions
-      setCreatedAuditId(auditId); // Set the created auditId
-      setOpenModal(true); // Show the modal on success
+      setTitle('');
+      setDescription('');
+      setData([]);
+      setCreatedAuditId(auditId);
+      setOpenModal(true);
+      setShowAlert(false); // Hide the alert on successful submission
     } catch (e) {
       console.error('Error adding document: ', e);
     }
   };
-  
-  //Function to add new element
+
   const addElement = () => {
     const data = {
       id: uuid(),
@@ -103,13 +111,18 @@ const FormBuilder = () => {
   };
 
   const handleCloseModal = () => {
-    setOpenModal(false); // Close the modal
+    setOpenModal(false);
   };
 
   return (
     <Fragment>
       <Grid container spacing={1} direction="row" justifyContent="center">
         <Grid item md={5}>
+          {showAlert && (
+            <Alert severity="error" onClose={() => setShowAlert(false)} style={{ marginBottom: '1rem' }}>
+              Please fill in the title and description.
+            </Alert>
+          )}
           <Header
             title={title}
             setTitle={setTitle}
@@ -144,7 +157,7 @@ const FormBuilder = () => {
       <SuccessModal
         open={openModal}
         handleClose={handleCloseModal}
-        auditId={createdAuditId} // Pass the created auditId to the modal
+        auditId={createdAuditId}
       />
     </Fragment>
   );

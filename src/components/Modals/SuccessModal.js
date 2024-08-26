@@ -1,25 +1,40 @@
 import React, { useState } from 'react';
-import { Box, Modal, Typography, Button } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { Modal, Typography, Button, IconButton } from '@mui/material';
+import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
+import { Close } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import ShareModal from './ShareModal'; // Import the ShareModal component
 
-const style = {
+const modalStyle = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
+  backgroundColor: 'white',
+  boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+  padding: '24px',
   textAlign: 'center',
   borderRadius: '10px',
+  position: 'relative', // For positioning the close button
+};
+
+const blackBarStyle = {
+  width: '100%',
+  height: '2px',
+  backgroundColor: 'black',
+  marginTop: '16px',
+  marginBottom: '16px',
+  borderRadius: '10px',
+};
+
+const buttonStyle = {
+  borderRadius: '10px',
+  padding:'10px'
 };
 
 const SuccessModal = ({ open, handleClose, auditId }) => {
   const [shareOpen, setShareOpen] = useState(false);
-  console.log("hai prequel", auditId)
 
   const handleShareOpen = () => {
     setShareOpen(true);
@@ -42,20 +57,44 @@ const SuccessModal = ({ open, handleClose, auditId }) => {
           },
         }}
       >
-        <Box sx={style}>
-          <CheckCircleIcon style={{ color: 'green', fontSize: 'lg' }} />
-          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mt: 2 }}>
+        <div style={modalStyle}>
+          {/* Close button in the top-right corner */}
+          <IconButton
+            aria-label="close"
+            onClick={handleClose}
+            style={{ position: 'absolute', top: '8px', right: '8px' }}
+          >
+            <Close />
+          </IconButton>
+
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <IoIosCheckmarkCircleOutline style={{ color: 'green', fontSize: '128px' }} />
+          </div>
+          <Typography id="modal-modal-title" variant="h6" component="h2" style={{ fontSize: '20px' }}>
             AUDIT SUCCESSFULLY CREATED
           </Typography>
-          <Box sx={{ width: '100%', height: '2px', bgcolor: 'black', my: 2 }} />
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Would you like to share your audit?
-          </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'space-around', mt: 3 }}>
-            <Button variant="contained" onClick={handleClose}>Close</Button>
-            <Button variant="contained" color="primary" onClick={handleShareOpen}>Share</Button>
-          </Box>
-        </Box>
+
+          {/* Black bar underneath the title with rounded ends */}
+          <div style={blackBarStyle}></div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '24px' }}>
+            <Button
+              variant="contained"
+              color="primary"
+              style={buttonStyle}
+            >
+              View Audit
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleShareOpen}
+              style={buttonStyle}
+            >
+              Share Audit
+            </Button>
+          </div>
+        </div>
       </Modal>
 
       {/* ShareModal for sharing the audit */}

@@ -1,17 +1,7 @@
 import { useState, useEffect } from 'react';
-import TextField from '@material-ui/core/TextField';
-import Box from '@material-ui/core/Box';
-import Paper from '@material-ui/core/Paper';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControl from '@material-ui/core/FormControl';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import PropTypes from 'prop-types';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
-import PropTypes from 'prop-types';
 
 const TextFieldInput = ({
   item,
@@ -23,7 +13,6 @@ const TextFieldInput = ({
   const [commentsChecked, setCommentsChecked] = useState(item.commentsChecked ?? true);
   const [imageChecked, setImageChecked] = useState(item.imageChecked ?? true);
 
-  // Use useEffect to inform the parent component of the initial checkbox states
   useEffect(() => {
     handleCheckboxChange(item.id, {
       yesNoChecked,
@@ -45,78 +34,61 @@ const TextFieldInput = ({
   };
 
   return (
-    <div className="hover-effect mb-6 pt-4 shadow-lg rounded-lg">
-      <Paper elevation={1}>
-        <Box style={{ textAlign: 'center', padding: '16px' }}>
-          <DragIndicatorIcon style={{ transform: 'rotate(-90deg)', cursor: 'all-scroll' }} />
-        </Box>
-        <Box style={{ textAlign: 'center', padding: '16px' }}>
-          <TextField
-            value={item.value}
-            variant="outlined"
-            onChange={(e) => handleValue(item.id, e)}
-            fullWidth
-            placeholder="Enter Your Audit Question!"
-            style={{ marginBottom: '16px' }}
-            InputProps={{
-              disableUnderline: true,
-              style: { fontSize: '24px', fontWeight: 'bold' },
-            }}
-          />
-          <FormControl
-            component="fieldset"
-            style={{
-              marginTop: '10px',
-              textAlign: 'center',
-              border: '1px solid #ccc',
-              borderRadius: '8px',
-              padding: '10px',
-            }}
-          >
-            <FormGroup row style={{ justifyContent: 'center' }}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={yesNoChecked}
-                    onChange={() => handleCheckbox('yesNoChecked', !yesNoChecked)}
-                  />
-                }
-                label="Yes/No/N/A"
+    <div className="mb-6 pt-4 shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
+      <div className="bg-white p-4 text-center">
+        <div className="transform rotate-[-90deg] cursor-grab">
+          <DragIndicatorIcon />
+        </div>
+      </div>
+      <div className="bg-white p-4 text-center">
+        <input
+          type="text"
+          value={item.value}
+          onChange={(e) => handleValue(item.id, e)}
+          placeholder="Enter Your Audit Question!"
+          className="w-full border border-gray-300 rounded-md py-2 px-4 mb-4 text-lg font-bold"
+        />
+        <div className="border border-gray-300 rounded-md p-2">
+          <div className="flex justify-center space-x-4">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={yesNoChecked}
+                onChange={() => handleCheckbox('yesNoChecked', !yesNoChecked)}
+                className="mr-2"
               />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={commentsChecked}
-                    onChange={() => handleCheckbox('commentsChecked', !commentsChecked)}
-                  />
-                }
-                label="Comments"
+              Yes/No/N/A
+            </label>
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={commentsChecked}
+                onChange={() => handleCheckbox('commentsChecked', !commentsChecked)}
+                className="mr-2"
               />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={imageChecked}
-                    onChange={() => handleCheckbox('imageChecked', !imageChecked)}
-                  />
-                }
-                label="Image"
+              Comments
+            </label>
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={imageChecked}
+                onChange={() => handleCheckbox('imageChecked', !imageChecked)}
+                className="mr-2"
               />
-            </FormGroup>
-          </FormControl>
-        </Box>
-        <Divider light />
-        <Box style={{ padding: '16px' }}>
-          <Tooltip title="Delete Element" aria-label="delete-element">
-            <IconButton
-              aria-label="delete-element"
-              onClick={() => deleteEl(item.id)}
-              style={{ marginLeft: '16px' }}
-            >
-              <DeleteOutlineOutlinedIcon color="secondary" />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </Paper>
+              Image
+            </label>
+          </div>
+        </div>
+      </div>
+      <div className="p-4">
+        <button
+          onClick={() => deleteEl(item.id)}
+          className="text-red-600 hover:text-red-800 transition-colors duration-300"
+          aria-label="delete-element"
+        >
+          <DeleteOutlineOutlinedIcon />
+        </button>
+      </div>
     </div>
   );
 };
