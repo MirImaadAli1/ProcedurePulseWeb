@@ -1,81 +1,86 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
+import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
-
-// Material Dashboard 2 React components
-
-import { Fragment } from 'react';
-// Material Dashboard 2 React examples
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
-import FormBuilder from 'components/FormBuilder';
-import 'react-nestable/dist/styles/index.css';
-
-import Card from '@mui/material/Card';
-import React, { useEffect, useState } from 'react';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { auth, db } from '../../Firebase';
-import Cards from './components/Cards';
-// Material Dashboard 2 React components
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
-
-// Material Dashboard 2 React example components
+import Card from '@mui/material/Card';
 import Footer from 'examples/Footer';
-import DataTable from 'examples/Tables/DataTable';
-
-// Data
-import authorsTableData from 'layouts/tables/data/authorsTableData';
-import projectsTableData from 'layouts/tables/data/projectsTableData';
+import AuditsTable from './components/Cards';
+import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { auth, db } from '../../Firebase';
+import EditFormModal from './components/EditFormModel';
 
 function Audits() {
-  const UserFormsPage = () => {
-    const [forms, setForms] = useState([]);
+  const [forms, setForms] = useState([]);
+  const [selectedForm, setSelectedForm] = useState(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
-    useEffect(() => {
-      const fetchForms = async () => {
-        const user = auth.currentUser;
-        if (user) {
-          const formsCollectionRef = collection(db, 'Audit');
-          const q = query(formsCollectionRef, where('userId', '==', user.uid));
-          const querySnapshot = await getDocs(q);
-          const userForms = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setForms(userForms);
-        }
-      };
-      fetchForms();
-    }, []);
+  useEffect(() => {
+    const fetchForms = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const formsCollectionRef = collection(db, 'Audit');
+        const q = query(formsCollectionRef, where('userId', '==', user.uid));
+        const querySnapshot = await getDocs(q);
+        const userForms = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setForms(userForms);
+      }
+    };
+    fetchForms();
+  }, []);
 
-    return (
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', padding: '16px' }}>
-        {forms.map(form => (
-          <Cards key={form.id} form={form} />
-        ))}
-      </div>
-    );
+  const handleEdit = (form) => {
+    setSelectedForm(form);
+    setEditModalOpen(true);
+  };
+
+  const handleSave = async (updatedForm) => {
+    const formDocRef = doc(db, 'Audit', updatedForm.id);
+    await updateDoc(formDocRef, updatedForm);
+    setForms(forms.map((form) => (form.id === updatedForm.id ? updatedForm : form)));
+    setEditModalOpen(false);
   };
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <UserFormsPage />
+      <MDBox pt={6} pb={3}>
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Audits Table
+                </MDTypography>
+              </MDBox>
+              <MDBox pt={3}>
+                <AuditsTable forms={forms} handleEdit={handleEdit} />
+              </MDBox>
+            </Card>
+          </Grid>
+        </Grid>
+      </MDBox>
+      {selectedForm && (
+        <EditFormModal
+          open={editModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          formData={selectedForm}
+          onSave={handleSave}
+        />
+      )}
     </DashboardLayout>
   );
 }

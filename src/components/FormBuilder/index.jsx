@@ -165,6 +165,6 @@ const FormBuilder = () => {
       </Grid>
     </Fragment>
   );
-};
+};``
 
 export default FormBuilder;
