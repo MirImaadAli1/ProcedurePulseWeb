@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Modal, Typography, Button, TextField, List, ListItem, ListItemText } from '@mui/material';
+import { Box, Modal, Typography, Button, TextField, List, ListItem, ListItemText, Alert } from '@mui/material';
 import PropTypes from 'prop-types';
-import { collection, query, where, getDocs, addDoc, startAt, endAt } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { db, auth } from '../../Firebase.js'; // Adjust path if necessary
 
 const style = {
@@ -17,12 +17,21 @@ const style = {
   borderRadius: '10px',
 };
 
+const listItemStyle = {
+  padding: '12px 16px', // Add padding to the ListItem
+};
+
+const selectedListItemStyle = {
+  ...listItemStyle,
+  border: '2px solid #328CED', // Blue border for selected items
+  borderRadius: '4px', // Optional: add border radius
+};
+
 const ShareModal = ({ open, handleClose, auditId }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [users, setUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
-
-  console.log("hai", auditId)
+  const [message, setMessage] = useState(''); // State to handle the success message
 
   useEffect(() => {
     if (searchTerm) {
@@ -65,9 +74,20 @@ const ShareModal = ({ open, handleClose, auditId }) => {
         auditId,
         sharedAt: new Date(),
       });
+      await addDoc(collection(db, 'Notifications'), {
+        senderId: currentUser.uid, // The user who is sharing
+        receiverId: user.id, // The user with whom the audit is shared
+        auditId: auditId,
+        sharedAt: new Date(),
+        notificationType: 'auditShare', // Optional: to categorize the notification
+      });
     }
 
-    handleClose(); // Close the modal after sharing
+    setMessage('Audit successfully shared!'); // Show success message
+    setTimeout(() => {
+      setMessage(''); // Clear the message after 2 seconds
+      handleClose(); // Close the modal after the message is shown
+    }, 2000);
   };
 
   return (
@@ -99,12 +119,21 @@ const ShareModal = ({ open, handleClose, auditId }) => {
               key={user.id}
               button
               onClick={() => handleUserSelect(user)}
-              selected={selectedUsers.some((u) => u.id === user.id)}
+              style={
+                selectedUsers.some((u) => u.id === user.id)
+                  ? selectedListItemStyle
+                  : listItemStyle
+              }
             >
               <ListItemText primary={user.name} />
             </ListItem>
           ))}
         </List>
+        {message && (
+          <Alert severity="success" sx={{ mt: 3 }}>
+            {message}
+          </Alert>
+        )}
         <Box sx={{ display: 'flex', justifyContent: 'space-around', mt: 3 }}>
           <Button variant="contained" onClick={handleClose}>Cancel</Button>
           <Button variant="contained" color="primary" onClick={handleShare} disabled={selectedUsers.length === 0}>
