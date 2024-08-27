@@ -16,22 +16,26 @@ function Audits() {
   const [selectedForm, setSelectedForm] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchForms = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        const formsCollectionRef = collection(db, 'Audit');
-        const q = query(formsCollectionRef, where('userId', '==', user.uid));
-        const querySnapshot = await getDocs(q);
-        const userForms = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setForms(userForms);
-      }
-    };
-    fetchForms();
-  }, []);
+    useEffect(() => {
+      const fetchForms = async () => {
+        const user = auth.currentUser;
+        if (user) {
+          const formsCollectionRef = collection(db, 'Audit');
+          const q = query(formsCollectionRef, where('userId', '==', user.uid));
+          const querySnapshot = await getDocs(q);
+          const userForms = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          // Log the fetched forms
+          console.log("Fetched audits:", userForms);
+          // Log the fetched forms
+          console.log("userid:", user.uid);
+          setForms(userForms);
+        }
+      };
+      fetchForms();
+    }, []);
 
   const handleEdit = (form) => {
     setSelectedForm(form);

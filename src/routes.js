@@ -38,17 +38,19 @@ Coded by www.creative-tim.com
 // Material Dashboard 2 React layouts
 import Dashboard from 'layouts/dashboard';
 import Tables from 'layouts/tables';
-import Billing from 'layouts/billing';
+import CreateAudit from 'layouts/createAudit';
 import RTL from 'layouts/rtl';
 import Notifications from 'layouts/notifications';
 import Profile from 'layouts/profile';
 import SignIn from 'layouts/authentication/sign-in';
+import RespondAudit from 'layouts/respondAudit';
 import SignUp from 'layouts/authentication/sign-up';
 import LandingPage from 'layouts/landing-page';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 // @mui icons
 import Icon from '@mui/material/Icon';
 import Audits from 'layouts/audits';
+import Audit_search from 'layouts/audit-search';
 
 const routes = [
   {
@@ -77,11 +79,19 @@ const routes = [
   },
   {
     type: 'collapse',
-    name: 'Billing',
-    key: 'billing',
+    name: 'Search Audits',
+    key: 'Search Audits',
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: '/SearchAudits',
+    component: <Audit_search />,
+  },
+  {
+    type: 'collapse',
+    name: 'Create Audit',
+    key: 'createaudit',
     icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: '/billing',
-    component: <Billing />,
+    route: '/createaudit',
+    component: <CreateAudit />
   },
   {
     type: 'collapse',
@@ -89,7 +99,7 @@ const routes = [
     key: 'audits',
     icon: <LibraryBooksIcon />,
     route: '/audits',
-    component: <Audits/>,
+    component: <Audits />,
   },
   {
     type: 'collapse',
@@ -130,6 +140,12 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: '/authentication/sign-up',
     component: <SignUp />,
+  },
+  {
+    key: 'respond-audit',
+    route: '/respond-audit/:auditId',
+    component: <RespondAudit />,
+    // No `type`, `name`, or `icon` so it's not displayed in the sidebar
   },
 ];
 

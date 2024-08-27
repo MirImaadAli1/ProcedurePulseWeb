@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import uuid from 'react-uuid';
 import Nestable from 'react-nestable';
 import Grid from '@material-ui/core/Grid';
@@ -6,66 +6,71 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 import { TextFieldInput } from './elements';
-import { collection, addDoc } from 'firebase/firestore';
-import { Button } from '@mui/material';
-import { Alert } from '@material-ui/lab';
+import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
+import { Button, Alert } from '@mui/material'; // Import Alert from MUI
 import Header from './Header';
-import { db } from '../../Firebase';
-
+import { db, auth } from '../../Firebase';
+import SuccessModal from 'components/Modals/SuccessModal';
 
 const FormBuilder = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [data, setData] = useState([]);
-  const [message, setMessage] = useState(null);
-  const [messageType, setMessageType] = useState('');
+  const [openModal, setOpenModal] = useState(false);
+  const [createdAuditId, setCreatedAuditId] = useState('');
+  const [showAlert, setShowAlert] = useState(false); // State to control the alert visibility
 
   const items = data;
 
   const handleSubmit = async () => {
-    try {
-      const user = auth.currentUser; // Get the current user
-  
-      if (user) {
-        const auditCollectionRef = collection(db, 'Audit');
-  
-        // Create a new document in the "Audit" collection with the user ID
-        const docRef = await addDoc(auditCollectionRef, {
-          title,
-          description,
-          userId: user.uid, // Store the user ID
-          questions: data.map((item, index) => ({
-            question: `Question ${index + 1}`,
-            ...item,
-          })),
-        });
-  
-        console.log('Document written with ID: ', docRef.id);
-        setMessageType('success'); // Set message type
-        setMessage('Form saved successfully!'); // Set success message
-      } else {
-        setMessageType('error');
-        setMessage('User not logged in.'); // Handle case when user is not logged in
-      }
-    } catch (e) {
-      console.error('Error adding document: ', e);
-      setMessageType('error');
-      setMessage('Error saving form. Please try again.');
+    if (!title || !description) {
+      setShowAlert(true); // Show alert if title or description is empty
+      return;
     }
 
-    // Display message for 2 seconds
-    setTimeout(() => {
-      setMessage(null);
-      setMessageType('');
-    }, 2000);
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      const auditId = uuid();
+      const creationDate = new Date();
+      const auditCollectionRef = collection(db, 'Audit');
+      const docRef = doc(auditCollectionRef, auditId); // Specify the document ID as auditId
+      await setDoc(docRef, {
+        userId: user.uid,
+        title,
+        description,
+        questions: data.map((item, index) => ({
+          questionNumber: `Question ${index + 1}`,
+          value: item.value,
+          yesNoChecked: item.yesNoChecked,
+          commentsChecked: item.commentsChecked,
+          imageChecked: item.imageChecked,
+        })),
+        createdAt: creationDate,
+      });
+
+      console.log('Document written with ID: ', docRef.id);
+      setTitle('');
+      setDescription('');
+      setData([]);
+      setCreatedAuditId(auditId);
+      setOpenModal(true);
+      setShowAlert(false); // Hide the alert on successful submission
+    } catch (e) {
+      console.error('Error adding document: ', e);
+    }
   };
-  
-  //Function to add new element
+
   const addElement = () => {
     const data = {
       id: uuid(),
-      value: null,
-      required: false,
+      value: '',
+      yesNoChecked: true,
+      commentsChecked: true,
+      imageChecked: true,
     };
     setData((prevState) => [...prevState, data]);
   };
@@ -79,25 +84,19 @@ const FormBuilder = () => {
   };
 
   const handleValue = (id, e) => {
-    let newArr = data.map((el) => {
-      if (el.id === id) {
-        return { ...el, value: e.target.value };
-      } else {
-        return el;
-      }
-    });
-    setData(newArr);
+    setData((prevState) =>
+      prevState.map((el) =>
+        el.id === id ? { ...el, value: e.target.value } : el
+      )
+    );
   };
 
-  const handleRequired = (id) => {
-    let newArr = data.map((el) => {
-      if (el.id === id) {
-        return { ...el, required: !el.required };
-      } else {
-        return el;
-      }
-    });
-    setData(newArr);
+  const handleCheckboxChange = (id, checkboxState) => {
+    setData((prevState) =>
+      prevState.map((el) =>
+        el.id === id ? { ...el, ...checkboxState } : el
+      )
+    );
   };
 
   const renderElements = ({ item }) => {
@@ -105,21 +104,25 @@ const FormBuilder = () => {
       <TextFieldInput
         item={item}
         handleValue={handleValue}
+        handleCheckboxChange={handleCheckboxChange}
         deleteEl={deleteEl}
-        handleRequired={handleRequired}
       />
     );
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
   };
 
   return (
     <Fragment>
       <Grid container spacing={1} direction="row" justifyContent="center">
-        {message && (
-          <Grid item xs={12} style={{ textAlign: 'center', marginBottom: '1rem' }}>
-            <Alert severity={messageType}>{message}</Alert>
-          </Grid>
-        )}
         <Grid item md={5}>
+          {showAlert && (
+            <Alert severity="error" onClose={() => setShowAlert(false)} style={{ marginBottom: '1rem' }}>
+              Please fill in the title and description.
+            </Alert>
+          )}
           <Header
             title={title}
             setTitle={setTitle}
@@ -129,40 +132,33 @@ const FormBuilder = () => {
           <Nestable
             items={items}
             renderItem={renderElements}
-            maxDepth={1}
             onChange={handleOnChangeSort}
           />
-          <div className="flex justify-end mt-4">
-            <Button
-              variant='contained'
-              onClick={handleSubmit}
-              style={{
-                backgroundColor: 'white',
-                fontSize: '1.5rem',
-                color: 'black',
-                paddingTop: '0.5rem',
-                paddingBottom: '0.5rem',
-                paddingLeft: '1rem',
-                paddingRight: '1rem',
-                borderRadius: '0.5rem',
-                // transition: 'background-color 0.3s ease',
-                cursor: 'pointer'
-              }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = '#328CED'} // For hover effect
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
-            >
-              Save Form
-            </Button>
-          </div>
-        </Grid>
-        <Grid item md={1}>
           <Tooltip title="Add Element" aria-label="add-element">
-            <IconButton aria-label="add-element" onClick={addElement}>
-              <AddCircleOutlineOutlinedIcon color="secondary" />
+            <IconButton
+              aria-label="add-element"
+              onClick={addElement}
+              style={{ marginTop: '1rem', float: 'right' }}
+            >
+              <AddCircleOutlineOutlinedIcon color="primary" />
             </IconButton>
           </Tooltip>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+            style={{ marginTop: '1rem' }}
+            fullWidth
+          >
+            Save Form
+          </Button>
         </Grid>
       </Grid>
+      <SuccessModal
+        open={openModal}
+        handleClose={handleCloseModal}
+        auditId={createdAuditId}
+      />
     </Fragment>
   );
 };``

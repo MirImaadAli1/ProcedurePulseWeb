@@ -1,114 +1,59 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-import { useState } from 'react';
-
-// @mui material components
+import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook
+import { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
-
-// Material Dashboard 2 React components
+import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+import { db, auth } from '../../Firebase.js'; // Adjust path if necessary
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
-import MDAlert from 'components/MDAlert';
-import MDButton from 'components/MDButton';
-import MDSnackbar from 'components/MDSnackbar';
-
-// Material Dashboard 2 React example components
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import Footer from 'examples/Footer';
+import { formatDistanceToNow } from 'date-fns';
 
 function Notifications() {
-  const [successSB, setSuccessSB] = useState(false);
-  const [infoSB, setInfoSB] = useState(false);
-  const [warningSB, setWarningSB] = useState(false);
-  const [errorSB, setErrorSB] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const navigate = useNavigate(); // Initialize navigate hook
 
-  const openSuccessSB = () => setSuccessSB(true);
-  const closeSuccessSB = () => setSuccessSB(false);
-  const openInfoSB = () => setInfoSB(true);
-  const closeInfoSB = () => setInfoSB(false);
-  const openWarningSB = () => setWarningSB(true);
-  const closeWarningSB = () => setWarningSB(false);
-  const openErrorSB = () => setErrorSB(true);
-  const closeErrorSB = () => setErrorSB(false);
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const currentUser = auth.currentUser; // Get the currently logged-in user
+      const notificationsRef = collection(db, 'Notifications');
+      const q = query(notificationsRef, where('receiverId', '==', currentUser.uid));
 
-  const alertContent = (name) => (
-    <MDTypography variant="body2" color="white">
-      A simple {name} alert with{' '}
-      <MDTypography component="a" href="#" variant="body2" fontWeight="medium" color="white">
-        an example link
-      </MDTypography>
-      . Give it a click if you like.
-    </MDTypography>
-  );
+      const notificationsSnapshot = await getDocs(q);
+      const notificationsList = await Promise.all(
+        notificationsSnapshot.docs.map(async (notificationDoc) => {
+          const notificationData = notificationDoc.data();
 
-  const renderSuccessSB = (
-    <MDSnackbar
-      color="success"
-      icon="check"
-      title="Material Dashboard"
-      content="Hello, world! This is a notification message"
-      dateTime="11 mins ago"
-      open={successSB}
-      onClose={closeSuccessSB}
-      close={closeSuccessSB}
-      bgWhite
-    />
-  );
+          // Fetch the sender's name
+          const senderDoc = await getDoc(doc(db, 'Users', notificationData.senderId));
+          const senderName = senderDoc.exists() ? senderDoc.data().name : 'Unknown User';
 
-  const renderInfoSB = (
-    <MDSnackbar
-      icon="notifications"
-      title="Material Dashboard"
-      content="Hello, world! This is a notification message"
-      dateTime="11 mins ago"
-      open={infoSB}
-      onClose={closeInfoSB}
-      close={closeInfoSB}
-    />
-  );
+          // Fetch the audit's name
+          const auditDoc = await getDoc(doc(db, 'Audit', notificationData.auditId));
+          const auditName = auditDoc.exists() ? auditDoc.data().title : 'Unknown Audit';
 
-  const renderWarningSB = (
-    <MDSnackbar
-      color="warning"
-      icon="star"
-      title="Material Dashboard"
-      content="Hello, world! This is a notification message"
-      dateTime="11 mins ago"
-      open={warningSB}
-      onClose={closeWarningSB}
-      close={closeWarningSB}
-      bgWhite
-    />
-  );
+          return {
+            id: notificationDoc.id,
+            senderName,
+            auditName,
+            auditId: notificationData.auditId, // Store auditId for navigation
+            sharedAt: notificationData.sharedAt.toDate(),
+          };
+        })
+      );
 
-  const renderErrorSB = (
-    <MDSnackbar
-      color="error"
-      icon="warning"
-      title="Material Dashboard"
-      content="Hello, world! This is a notification message"
-      dateTime="11 mins ago"
-      open={errorSB}
-      onClose={closeErrorSB}
-      close={closeErrorSB}
-      bgWhite
-    />
-  );
+      setNotifications(notificationsList);
+    };
+
+    fetchNotifications();
+  }, []);
+
+  // Handler for clicking a notification
+  const handleNotificationClick = (auditId) => {
+    navigate(`/respond-audit/${auditId}`); // Navigate to RespondAudit with the auditId
+  };
 
   return (
     <DashboardLayout>
@@ -117,79 +62,32 @@ function Notifications() {
         <Grid container spacing={3} justifyContent="center">
           <Grid item xs={12} lg={8}>
             <Card>
-              <MDBox p={2}>
-                <MDTypography variant="h5">Alerts</MDTypography>
-              </MDBox>
               <MDBox pt={2} px={2}>
-                <MDAlert color="primary" dismissible>
-                  {alertContent('primary')}
-                </MDAlert>
-                <MDAlert color="secondary" dismissible>
-                  {alertContent('secondary')}
-                </MDAlert>
-                <MDAlert color="success" dismissible>
-                  {alertContent('success')}
-                </MDAlert>
-                <MDAlert color="error" dismissible>
-                  {alertContent('error')}
-                </MDAlert>
-                <MDAlert color="warning" dismissible>
-                  {alertContent('warning')}
-                </MDAlert>
-                <MDAlert color="info" dismissible>
-                  {alertContent('info')}
-                </MDAlert>
-                <MDAlert color="light" dismissible>
-                  {alertContent('light')}
-                </MDAlert>
-                <MDAlert color="dark" dismissible>
-                  {alertContent('dark')}
-                </MDAlert>
-              </MDBox>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} lg={8}>
-            <Card>
-              <MDBox p={2} lineHeight={0}>
-                <MDTypography variant="h5">Notifications</MDTypography>
-                <MDTypography variant="button" color="text" fontWeight="regular">
-                  Notifications on this page use Toasts from Bootstrap. Read more details here.
-                </MDTypography>
-              </MDBox>
-              <MDBox p={2}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="success" onClick={openSuccessSB} fullWidth>
-                      success notification
-                    </MDButton>
-                    {renderSuccessSB}
-                  </Grid>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="info" onClick={openInfoSB} fullWidth>
-                      info notification
-                    </MDButton>
-                    {renderInfoSB}
-                  </Grid>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="warning" onClick={openWarningSB} fullWidth>
-                      warning notification
-                    </MDButton>
-                    {renderWarningSB}
-                  </Grid>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="error" onClick={openErrorSB} fullWidth>
-                      error notification
-                    </MDButton>
-                    {renderErrorSB}
-                  </Grid>
-                </Grid>
+                {notifications.length > 0 ? (
+                  notifications.map((notification) => (
+                    <MDBox
+                      key={notification.id}
+                      mb={2}
+                      onClick={() => handleNotificationClick(notification.auditId)} // Add click event
+                      style={{ cursor: 'pointer', border: '1px solid #ccc', padding: '10px', borderRadius: '5px' }} // Optional: Add some styling to make it look clickable
+                    >
+                      <MDTypography variant="body1">
+                        <strong>{notification.senderName}</strong> shared an audit{' '}
+                        <strong>{notification.auditName}</strong> with you{' '}
+                        {formatDistanceToNow(notification.sharedAt)} ago.
+                      </MDTypography>
+                    </MDBox>
+                  ))
+                ) : (
+                  <MDTypography variant="body1" color="textSecondary">
+                    No notifications yet.
+                  </MDTypography>
+                )}
               </MDBox>
             </Card>
           </Grid>
         </Grid>
       </MDBox>
-      <Footer />
     </DashboardLayout>
   );
 }

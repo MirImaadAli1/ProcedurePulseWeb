@@ -1,50 +1,44 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-import { useState } from 'react';
-
-// react-router-dom components
 import { Link } from 'react-router-dom';
-
-// @mui material components
-import Card from '@mui/material/Card';
-
-// Material Dashboard 2 React components
-import MDBox from 'components/MDBox';
-import MDTypography from 'components/MDTypography';
 
 // Authentication layout components
 import BasicLayout from 'layouts/authentication/components/BasicLayout';
-
-// Images
-import bgImage from 'assets/images/bg-sign-in-basic.jpeg';
+import './landing-page-style.css';
+import svgImage from './../../assets/images/bg-landing-page-layered-waves-haikei.svg'
 
 function LandingPage() {
-  const [rememberMe, setRememberMe] = useState(false);
-
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
-
   return (
-    <BasicLayout image={bgImage}>
-      <Card>
-        <MDBox display="flex" justifyContent="center" alignItems="center" pt={0} pb={1} px={1}>
-          <MDTypography variant="subtitle2" fontWeight="regular" color="dark" mt={1}>
-            {`ProcedurePulse is a user-owned process standardization tool and sharing website that allows you to create and distribute standard methods, with responses available and accessible to You`}
-          </MDTypography>
-        </MDBox>
-      </Card>
+    <BasicLayout>
+      {/* Gradient Background */}
+
+      {/* <div className="absolute inset-0 bg-gradient-to-b from-blue-600 to-blue-300 z-[-1]" /> */}
+
+      {/* <div className="flex ">
+      </div> */}
+
+      <div className="flex items-center justify-center min-h-screen">
+        {/* Card with Text */}
+        <div className="p-12 text-center w-auto mx-auto">
+          <div className="flex flex-col items-center text-center whitespace-nowrap">
+            {/* Title */}
+            <div className="mb-4 font-bold text-4xl text-white">
+              Create and Record Audits in a Few Simple Steps !
+            </div>
+
+            {/* Subtitle */}
+            <div className="mb-6 text-lg text-white">
+              ProcedurePulse is a user-owned process standardization tool and sharing <br></br> website that allows you to create and distribute standard  methods, <br></br> with responses available and accessible to you.
+            </div>
+
+            {/* Sign Up Button */}
+            <button className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-md whitespace-nowrap mr-2 z-10">
+              Get Started !
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="flex min-h-screen">
+        <img src={svgImage} alt="SVG" />
+      </div>
     </BasicLayout>
   );
 }
