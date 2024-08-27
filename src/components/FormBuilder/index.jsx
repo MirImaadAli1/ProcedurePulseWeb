@@ -161,6 +161,6 @@ const FormBuilder = () => {
       />
     </Fragment>
   );
-};
+};``
 
 export default FormBuilder;

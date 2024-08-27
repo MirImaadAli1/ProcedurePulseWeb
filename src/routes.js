@@ -50,6 +50,7 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 // @mui icons
 import Icon from '@mui/material/Icon';
 import Audits from 'layouts/audits';
+import Audit_search from 'layouts/audit-search';
 
 const routes = [
   {
@@ -78,11 +79,19 @@ const routes = [
   },
   {
     type: 'collapse',
+    name: 'Search Audits',
+    key: 'Search Audits',
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: '/SearchAudits',
+    component: <Audit_search />,
+  },
+  {
+    type: 'collapse',
     name: 'Create Audit',
     key: 'createaudit',
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: '/createaudit',
-    component: <CreateAudit/> 
+    component: <CreateAudit />
   },
   {
     type: 'collapse',
@@ -90,7 +99,7 @@ const routes = [
     key: 'audits',
     icon: <LibraryBooksIcon />,
     route: '/audits',
-    component: <Audits/>,
+    component: <Audits />,
   },
   {
     type: 'collapse',
