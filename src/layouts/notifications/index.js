@@ -44,6 +44,9 @@ function Notifications() {
         })
       );
 
+      // Sort the notifications in descending order by the sharedAt timestamp
+      notificationsList.sort((a, b) => b.sharedAt - a.sharedAt);
+
       setNotifications(notificationsList);
     };
 

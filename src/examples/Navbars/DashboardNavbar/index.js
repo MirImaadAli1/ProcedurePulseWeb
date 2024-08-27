@@ -8,7 +8,7 @@ import Menu from '@mui/material/Menu';
 import Icon from '@mui/material/Icon';
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
-import { collection, query, where, orderBy, getDocs, doc, getDoc } from 'firebase/firestore';
+import { collection, query, where, orderBy, getDocs, doc, getDoc, writeBatch } from 'firebase/firestore';
 import { db, auth } from '../../../Firebase'; // Adjust the path if necessary
 import {
   navbar,
@@ -35,28 +35,19 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const route = useLocation().pathname.split('/').slice(1);
 
   useEffect(() => {
-    // Setting the navbar type
     if (fixedNavbar) {
       setNavbarType('sticky');
     } else {
       setNavbarType('static');
     }
 
-    // A function that sets the transparent state of the navbar.
     function handleTransparentNavbar() {
       setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
     }
 
-    /** 
-     The event listener that's calling the handleTransparentNavbar function when 
-     scrolling the window.
-    */
     window.addEventListener('scroll', handleTransparentNavbar);
-
-    // Call the handleTransparentNavbar function to set the state with the initial value.
     handleTransparentNavbar();
 
-    // Remove event listener on cleanup
     return () => window.removeEventListener('scroll', handleTransparentNavbar);
   }, [dispatch, fixedNavbar]);
 
@@ -66,25 +57,22 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
       const userId = auth.currentUser.uid;
 
-      // Create a query for notifications
       const notificationsQuery = query(
         collection(db, 'Notifications'),
         where('receiverId', '==', userId),
+        where('seen', '==', false),
         orderBy('sharedAt', 'desc')
       );
 
       try {
-        // Fetch notifications for the current user
         const notificationsSnapshot = await getDocs(notificationsQuery);
         const notificationsData = await Promise.all(notificationsSnapshot.docs.map(async (docSnapshot) => {
           const notification = docSnapshot.data();
 
-          // Fetch audit details
           const auditDocRef = doc(db, 'Audit', notification.auditId);
           const auditDocSnapshot = await getDoc(auditDocRef);
           const audit = auditDocSnapshot.data();
 
-          // Fetch sender details
           const senderDocRef = doc(db, 'Users', notification.senderId);
           const senderDocSnapshot = await getDoc(senderDocRef);
           const sender = senderDocSnapshot.data();
@@ -93,7 +81,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
             ...notification,
             auditTitle: audit ? audit.title : 'Unknown Audit',
             senderName: sender ? sender.name : 'Unknown Sender',
-            sharedAt: formatDistanceToNow(notification.sharedAt.toDate(), { addSuffix: true }), // Adjust date formatting as needed
+            sharedAt: formatDistanceToNow(notification.sharedAt.toDate(), { addSuffix: true }),
           };
         }));
 
@@ -104,15 +92,41 @@ function DashboardNavbar({ absolute, light, isMini }) {
       }
     };
 
-    fetchNotifications();
-  }, []);
+    if (openMenu) {
+      fetchNotifications();
+    }
+  }, [openMenu]);
 
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
-  const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
+  const handleOpenMenu = (event) => {
+    setOpenMenu(event.currentTarget);
+  };
   const handleCloseMenu = () => setOpenMenu(false);
 
-  // Render the notifications menu
+  const markNotificationsAsSeen = async (notificationIds) => {
+    if (!notificationIds.length) return;
+
+    console.log('Marking notifications as seen:', notificationIds);
+    const batch = writeBatch(db);
+
+    notificationIds.forEach(id => {
+      if (id) {
+        const notificationRef = doc(db, 'Notifications', id);
+        batch.update(notificationRef, { seen: true });
+      } else {
+        console.error('Invalid notification ID:', id);
+      }
+    });
+
+    try {
+      await batch.commit();
+      console.log('Notifications marked as seen');
+    } catch (error) {
+      console.error('Error during batch commit:', error);
+    }
+  };
+
   const renderMenu = () => (
     <Menu
       anchorEl={openMenu}
@@ -125,20 +139,30 @@ function DashboardNavbar({ absolute, light, isMini }) {
       onClose={handleCloseMenu}
       sx={{ mt: 2 }}
     >
-      {notifications.map((notification, index) => (
-        <MDBox key={index} p={2} display="flex" flexDirection="column">
+      {notifications.length > 0 ? (
+        notifications.map((notification, index) => (
+          <MDBox key={index} p={2} display="flex" flexDirection="column">
+            <MDTypography variant="body2" color="textPrimary">
+              {notification.senderName} shared audit "{notification.auditTitle}" with you
+            </MDTypography>
+            <MDTypography variant="caption" color="textSecondary">
+              {notification.sharedAt}
+            </MDTypography>
+          </MDBox>
+        ))
+      ) : (
+        <MDBox p={2} display="flex" flexDirection="column">
           <MDTypography variant="body2" color="textPrimary">
-            {notification.senderName} shared audit "{notification.auditTitle}" with you
+            You have caught up with all notifications! 
           </MDTypography>
-          <MDTypography variant="caption" color="textSecondary">
-            {notification.sharedAt}
+          <MDTypography variant="body2" color="textPrimary">
+            <Link to="/notifications">Click here to view all your previous notifications!</Link>
           </MDTypography>
         </MDBox>
-      ))}
+      )}
     </Menu>
   );
 
-  // Styles for the navbar icons
   const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
     color: () => {
       let colorValue = light || darkMode ? white.main : dark.main;
@@ -159,7 +183,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
     >
       <Toolbar sx={(theme) => navbarContainer(theme)}>
         <MDBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
-        <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
+          <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
         </MDBox>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>

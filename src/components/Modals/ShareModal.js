@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Modal, Typography, Button, TextField, List, ListItem, ListItemText, Alert } from '@mui/material';
+import { Box, Modal, Typography, Button, TextField, List, ListItem, ListItemText, Alert, Chip } from '@mui/material';
 import PropTypes from 'prop-types';
 import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { db, auth } from '../../Firebase.js'; // Adjust path if necessary
@@ -18,19 +18,30 @@ const style = {
 };
 
 const listItemStyle = {
-  padding: '12px 16px', // Add padding to the ListItem
+  padding: '12px 16px',
+  border: '1px solid #ccc', // Add border to the ListItem
+  borderRadius: '10px', // Rounded corners
+  marginBottom: '10px', // Space between search results
 };
 
 const selectedListItemStyle = {
   ...listItemStyle,
   border: '2px solid #328CED', // Blue border for selected items
-  borderRadius: '4px', // Optional: add border radius
+};
+
+const selectedUserChipStyle = {
+  border: '1px solid #ccc', // Add border to the Chip
+  borderRadius: '10px', // Rounded corners
+  backgroundColor: '#4CAF50', // Green background color
+  color: '#fff', // White text color
+  margin: '4px',
 };
 
 const ShareModal = ({ open, handleClose, auditId }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [users, setUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [shareArrayList, setShareArrayList] = useState([]); // Array to visually track selected users
   const [message, setMessage] = useState(''); // State to handle the success message
 
   useEffect(() => {
@@ -39,7 +50,7 @@ const ShareModal = ({ open, handleClose, auditId }) => {
         const q = query(
           collection(db, 'Users'),
           where('name', '>=', searchTerm),
-          where('name', '<=', searchTerm + '\uf8ff') // Ensure it captures names starting with searchTerm
+          where('name', '<=', searchTerm + '\uf8ff')
         );
         const querySnapshot = await getDocs(q);
         const usersList = querySnapshot.docs.map((doc) => ({
@@ -62,12 +73,20 @@ const ShareModal = ({ open, handleClose, auditId }) => {
         return [...prevSelectedUsers, user];
       }
     });
+
+    setShareArrayList((prevShareArrayList) => {
+      if (prevShareArrayList.find((u) => u.id === user.id)) {
+        return prevShareArrayList.filter((u) => u.id !== user.id);
+      } else {
+        return [...prevShareArrayList, user];
+      }
+    });
   };
 
   const handleShare = async () => {
     const currentUser = auth.currentUser;
 
-    for (let user of selectedUsers) {
+    for (let user of shareArrayList) {
       await addDoc(collection(db, 'SharedAudits'), {
         sharedBy: currentUser.uid,
         sharedWith: user.id,
@@ -75,11 +94,12 @@ const ShareModal = ({ open, handleClose, auditId }) => {
         sharedAt: new Date(),
       });
       await addDoc(collection(db, 'Notifications'), {
-        senderId: currentUser.uid, // The user who is sharing
-        receiverId: user.id, // The user with whom the audit is shared
+        senderId: currentUser.uid,
+        receiverId: user.id,
         auditId: auditId,
         sharedAt: new Date(),
-        notificationType: 'auditShare', // Optional: to categorize the notification
+        notificationType: 'auditShare',
+        seen: false,
       });
     }
 
@@ -129,6 +149,21 @@ const ShareModal = ({ open, handleClose, auditId }) => {
             </ListItem>
           ))}
         </List>
+        {shareArrayList.length > 0 && (
+          <Box sx={{ mt: 3 }}>
+            <Typography variant="subtitle1" gutterBottom>
+              Selected Users:
+            </Typography>
+            {shareArrayList.map((user) => (
+              <Chip
+                key={user.id}
+                label={user.name}
+                onDelete={() => handleUserSelect(user)} // Allow removal of users from the list
+                sx={selectedUserChipStyle}
+              />
+            ))}
+          </Box>
+        )}
         {message && (
           <Alert severity="success" sx={{ mt: 3 }}>
             {message}
@@ -136,7 +171,7 @@ const ShareModal = ({ open, handleClose, auditId }) => {
         )}
         <Box sx={{ display: 'flex', justifyContent: 'space-around', mt: 3 }}>
           <Button variant="contained" onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" color="primary" onClick={handleShare} disabled={selectedUsers.length === 0}>
+          <Button variant="contained" color="primary" onClick={handleShare} disabled={shareArrayList.length === 0}>
             Share
           </Button>
         </Box>
