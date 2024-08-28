@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
@@ -7,9 +7,10 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import Icon from '@mui/material/Icon';
 import MDBox from 'components/MDBox';
+import CaughtUp from 'components/States/caughtUp';
 import MDTypography from 'components/MDTypography';
 import { collection, query, where, orderBy, getDocs, doc, getDoc, writeBatch } from 'firebase/firestore';
-import { db, auth } from '../../../Firebase'; // Adjust the path if necessary
+import { db, auth } from '../../../Firebase';
 import {
   navbar,
   navbarContainer,
@@ -32,7 +33,31 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [viewedNotificationIds, setViewedNotificationIds] = useState([]);
   const route = useLocation().pathname.split('/').slice(1);
+
+  const markNotificationsAsSeen = async (notificationIds) => {
+    if (!notificationIds.length) return;
+
+    console.log('Marking notifications as seen:', notificationIds);
+    const batch = writeBatch(db);
+
+    notificationIds.forEach(id => {
+      if (id) {
+        const notificationRef = doc(db, 'Notifications', id);
+        batch.update(notificationRef, { seen: true });
+      } else {
+        console.error('Invalid notification ID:', id);
+      }
+    });
+
+    try {
+      await batch.commit();
+      console.log('Notifications marked as seen');
+    } catch (error) {
+      console.error('Error during batch commit:', error);
+    }
+  };
 
   useEffect(() => {
     if (fixedNavbar) {
@@ -79,6 +104,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
           return {
             ...notification,
+            id: docSnapshot.id,  // Add the ID to track viewed notifications
             auditTitle: audit ? audit.title : 'Unknown Audit',
             senderName: sender ? sender.name : 'Unknown Sender',
             sharedAt: formatDistanceToNow(notification.sharedAt.toDate(), { addSuffix: true }),
@@ -86,7 +112,6 @@ function DashboardNavbar({ absolute, light, isMini }) {
         }));
 
         setNotifications(notificationsData);
-        console.log("Notifications fetched:", notificationsData);
       } catch (error) {
         console.error('Error fetching notifications:', error);
       }
@@ -102,28 +127,19 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleOpenMenu = (event) => {
     setOpenMenu(event.currentTarget);
   };
-  const handleCloseMenu = () => setOpenMenu(false);
 
-  const markNotificationsAsSeen = async (notificationIds) => {
-    if (!notificationIds.length) return;
+  const handleCloseMenu = useCallback(() => {
+    setOpenMenu(false);
+    // Mark viewed notifications as seen
+    if (viewedNotificationIds.length > 0) {
+      markNotificationsAsSeen(viewedNotificationIds);
+      setViewedNotificationIds([]);
+    }
+  }, [viewedNotificationIds]);
 
-    console.log('Marking notifications as seen:', notificationIds);
-    const batch = writeBatch(db);
-
-    notificationIds.forEach(id => {
-      if (id) {
-        const notificationRef = doc(db, 'Notifications', id);
-        batch.update(notificationRef, { seen: true });
-      } else {
-        console.error('Invalid notification ID:', id);
-      }
-    });
-
-    try {
-      await batch.commit();
-      console.log('Notifications marked as seen');
-    } catch (error) {
-      console.error('Error during batch commit:', error);
+  const handleNotificationView = (notificationId) => {
+    if (!viewedNotificationIds.includes(notificationId)) {
+      setViewedNotificationIds((prevIds) => [...prevIds, notificationId]);
     }
   };
 
@@ -141,7 +157,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
     >
       {notifications.length > 0 ? (
         notifications.map((notification, index) => (
-          <MDBox key={index} p={2} display="flex" flexDirection="column">
+          <MDBox key={index} p={2} display="flex" flexDirection="column" onClick={() => handleNotificationView(notification.id)}>
             <MDTypography variant="body2" color="textPrimary">
               {notification.senderName} shared audit "{notification.auditTitle}" with you
             </MDTypography>
@@ -152,12 +168,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
         ))
       ) : (
         <MDBox p={2} display="flex" flexDirection="column">
-          <MDTypography variant="body2" color="textPrimary">
-            You have caught up with all notifications! 
-          </MDTypography>
-          <MDTypography variant="body2" color="textPrimary">
-            <Link to="/notifications">Click here to view all your previous notifications!</Link>
-          </MDTypography>
+          <CaughtUp />
         </MDBox>
       )}
     </Menu>
