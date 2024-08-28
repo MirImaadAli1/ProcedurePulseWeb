@@ -54,12 +54,12 @@ During the development of this dashboard, we have used many existing resources f
 
 ##Test
 
-###FormBuilder
+### FormBuilder
 
-####Overview
+#### Overview
 The Layout component is a reusable React component designed to provide a structured layout for form elements. It utilizes Material-UI components to create a visually consistent and user-friendly interface. The component supports dynamic form element handling, including deletion, duplication, type selection, and setting the "required" status. The Layout component is highly customizable, allowing developers to pass child components that represent specific form elements.
 
-####Component Props
+#### Component Props
 
 | Prop Name        | Type       | Required | Description                                                                                                                                    | Relations/Connections                                                                                              |
 |------------------|------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
@@ -72,11 +72,11 @@ The Layout component is a reusable React component designed to provide a structu
 | children       | Node       | No       | React children components that represent the specific form element to be rendered within the `Layout`.                                           | Directly rendered within the `Grid` component, providing the visual representation of the form element.            |
 
 
-####State
+#### State
 The Layout component does not manage its own state. Instead, it relies on the parent component to pass down the necessary data and handler functions via props.
-####LifeCycle Methods
+#### LifeCycle Methods
 The Layout component is a functional component and does not utilize any lifecycle methods directly. However, it uses the Fragment component to wrap its content, ensuring that no unnecessary DOM elements are added.
-####Methods
+#### Methods
 handleElType(id: string, value: string)
 This method is passed down as a prop and is used to handle changes in the form element's type. When a new type is selected from the dropdown, this function is called with the id of the element and the new value selected.
 handleRequired(id: string)
