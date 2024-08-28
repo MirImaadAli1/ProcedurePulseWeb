@@ -16,25 +16,43 @@ function AuditSearch() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredRows, setFilteredRows] = useState([]);
   const [fuse, setFuse] = useState(null);
+  const userMap = {};
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const formsCollectionRef = collection(db, 'Audit');
-        const querySnapshot = await getDocs(formsCollectionRef);
+        // Fetch users collection to map userId to names
+        const usersCollectionRef = collection(db, 'Users');
+        const usersSnapshot = await getDocs(usersCollectionRef);
 
-        const dataArray = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          title: doc.data().title,
-          creator: doc.data().userId,
-          createdAt: doc.data().createdAt?.toDate() || new Date(),
-        }));
+        // Create a user map of userId -> name
+        usersSnapshot.docs.forEach(doc => {
+          const userData = doc.data();
+          userMap[userData.uid] = userData.name;
+        });
 
+
+        // Fetch audits collection
+        const auditsCollectionRef = collection(db, 'Audit');
+        const auditsSnapshot = await getDocs(auditsCollectionRef);
+
+        // Process audit data and replace userId with corresponding name
+        const dataArray = auditsSnapshot.docs.map(doc => {
+          const auditData = doc.data();
+          return {
+            id: doc.id,
+            title: auditData.title,
+            creator: userMap[auditData.userId],  // Replace userId with name if available
+            createdAt: auditData.createdAt?.toDate() || new Date(),  // Convert Firestore Timestamp to JS Date
+          };
+        });
+
+        // Prepare table rows with processed data
         const tableRows = dataArray.map((item) => ({
           author: (
             <MDBox display="flex" alignItems="center" lineHeight={1}>
               <MDTypography display="block" variant="button" fontWeight="medium">
-                {item.creator}
+                {item.creator}  {/* This will now show the user's name */}
               </MDTypography>
             </MDBox>
           ),
@@ -53,7 +71,7 @@ function AuditSearch() {
               Edit
             </MDTypography>
           ),
-          rawItem: item // Store raw item for matching with Fuse.js results
+          rawItem: item  // Store raw item for matching with Fuse.js results
         }));
 
         setRows(tableRows);
@@ -77,18 +95,17 @@ function AuditSearch() {
     const searchValue = e.target.value;
     setSearchTerm(searchValue);
 
-    if (searchValue && fuse) {
+    // If the search bar is empty, clear the filtered results
+    if (!searchValue) {
+      setFilteredRows([]);  // Clear the table when search bar is empty
+    } else if (fuse) {
       const fuzzyResults = fuse.search(searchValue);
-
-      // Map fuzzy search results to corresponding rows
       const filtered = fuzzyResults.map(result => {
         const matchedItem = result.item;
-        return rows.find(row => row.rawItem.id === matchedItem.id);  // Match by ID
-      }).filter(Boolean);  // Remove undefined values
+        return rows.find(row => row.rawItem.id === matchedItem.id);  // Match by unique ID
+      }).filter(Boolean);  // Filter out undefined values
 
       setFilteredRows(filtered);
-    } else {
-      setFilteredRows([]);  // Clear filtered rows when search is empty
     }
   };
 
@@ -133,7 +150,7 @@ function AuditSearch() {
 
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns, rows: filteredRows.length > 0 ? filteredRows : rows }} // Show filtered rows if search term exists
+                  table={{ columns, rows: searchTerm ? filteredRows : [] }}  // Conditionally show rows
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}

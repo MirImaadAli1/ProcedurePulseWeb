@@ -8,37 +8,38 @@ import svgImage from './../../assets/images/bg-landing-page-layered-waves-haikei
 function LandingPage() {
   return (
     <BasicLayout>
-      {/* Gradient Background */}
+      {/* Wrapper div for positioning */}
+      <div className="relative min-h-screen flex flex-col">
+        {/* Main content */}
+        <div className="flex items-center justify-center flex-grow z-10">
+          <div className="p-12 text-center w-auto mx-auto">
+            <div className="flex flex-col items-center text-center whitespace-nowrap">
+              {/* Title */}
+              <div className="mb-4 font-bold text-4xl text-dark ">
+                Create and Record Audits in a Few Simple Steps!
+              </div>
 
-      {/* <div className="absolute inset-0 bg-gradient-to-b from-blue-600 to-blue-300 z-[-1]" /> */}
+              {/* Subtitle */}
+              <div className="mb-6 text-lg text-dark">
+                ProcedurePulse is a user-owned process standardization tool and sharing <br />
+                website that allows you to create and distribute standard methods, <br />
+                with responses available and accessible to you.
+              </div>
 
-      {/* <div className="flex ">
-      </div> */}
-
-      <div className="flex items-center justify-center min-h-screen">
-        {/* Card with Text */}
-        <div className="p-12 text-center w-auto mx-auto">
-          <div className="flex flex-col items-center text-center whitespace-nowrap">
-            {/* Title */}
-            <div className="mb-4 font-bold text-4xl text-white">
-              Create and Record Audits in a Few Simple Steps !
+              {/* Sign Up Button */}
+              <button className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-md whitespace-nowrap mr-2 z-10">
+                Get Started!
+              </button>
             </div>
-
-            {/* Subtitle */}
-            <div className="mb-6 text-lg text-white">
-              ProcedurePulse is a user-owned process standardization tool and sharing <br></br> website that allows you to create and distribute standard  methods, <br></br> with responses available and accessible to you.
-            </div>
-
-            {/* Sign Up Button */}
-            <button className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-md whitespace-nowrap mr-2 z-10">
-              Get Started !
-            </button>
           </div>
         </div>
       </div>
-      <div className="flex min-h-screen">
-        <img src={svgImage} alt="SVG" />
-      </div>
+      {/* SVG Image at the bottom */}
+      <img
+        src={svgImage}
+        alt="SVG Background"
+        className="absolute bottom-0 left-0 w-screen h-auto z-0 pointer-events-none"
+      />
     </BasicLayout>
   );
 }
