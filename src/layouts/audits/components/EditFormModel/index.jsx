@@ -8,6 +8,8 @@ import {
   TextField,
   Box,
   IconButton,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { DeleteOutline } from '@mui/icons-material';
@@ -29,7 +31,11 @@ const EditFormModal = ({ open, onClose, formData, onSave }) => {
 
   const handleSave = async () => {
     const updatedQuestions = questions.map((question) => ({
-      question: question.question,
+      commentsChecked: question.commentsChecked ?? false,
+      imageChecked: question.imageChecked ?? false,
+      questionNumber: question.questionNumber ?? 0,
+      value: question.value ?? '',
+      yesNoChecked: question.yesNoChecked ?? false,
     }));
 
     try {
@@ -44,14 +50,20 @@ const EditFormModal = ({ open, onClose, formData, onSave }) => {
     }
   };
 
-  const handleQuestionChange = (index, value) => {
+  const handleQuestionChange = (index, field, value) => {
     const updatedQuestions = [...questions];
-    updatedQuestions[index] = { ...updatedQuestions[index], question: value };
+    updatedQuestions[index] = { ...updatedQuestions[index], [field]: value };
     setQuestions(updatedQuestions);
   };
 
   const addQuestion = async () => {
-    const newQuestion = { question: '' };
+    const newQuestion = {
+      commentsChecked: false,
+      imageChecked: false,
+      questionNumber: questions.length + 1,
+      value: '',
+      yesNoChecked: false,
+    };
     const updatedQuestions = [...questions, newQuestion];
     setQuestions(updatedQuestions);
     
@@ -98,13 +110,40 @@ const EditFormModal = ({ open, onClose, formData, onSave }) => {
           margin="normal"
         />
         {questions.map((question, index) => (
-          <Box key={index} display="flex" alignItems="center">
+          <Box key={index} display="flex" flexDirection="column" mb={2}>
             <TextField
               fullWidth
               label={`Question ${index + 1}`}
-              value={question.question}
-              onChange={(e) => handleQuestionChange(index, e.target.value)}
+              value={question.value}
+              onChange={(e) => handleQuestionChange(index, 'value', e.target.value)}
               margin="normal"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={question.commentsChecked ?? false}
+                  onChange={(e) => handleQuestionChange(index, 'commentsChecked', e.target.checked)}
+                />
+              }
+              label="Comments"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={question.imageChecked ?? false}
+                  onChange={(e) => handleQuestionChange(index, 'imageChecked', e.target.checked)}
+                />
+              }
+              label="Image"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={question.yesNoChecked ?? false}
+                  onChange={(e) => handleQuestionChange(index, 'yesNoChecked', e.target.checked)}
+                />
+              }
+              label="Yes/No"
             />
             <IconButton onClick={() => deleteQuestion(index)} aria-label="Delete question">
               <DeleteOutline />
@@ -136,7 +175,11 @@ EditFormModal.propTypes = {
     description: PropTypes.string,
     questions: PropTypes.arrayOf(
       PropTypes.shape({
-        question: PropTypes.string,
+        commentsChecked: PropTypes.bool,
+        imageChecked: PropTypes.bool,
+        questionNumber: PropTypes.number,
+        value: PropTypes.string,
+        yesNoChecked: PropTypes.bool,
       })
     ),
   }).isRequired,
