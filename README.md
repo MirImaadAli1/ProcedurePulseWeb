@@ -67,7 +67,13 @@ During the development of this dashboard, we have used many existing resources f
 
 ## Documentation
 
-src/components/Modals/ShareModal.js
+The documentation for the MD components can be found [here](https://www.creative-tim.com/learning-lab/react/overview/material-dashboard/?ref=readme-mdr).
+
+The documentation for our original components can be found below:
+
+### Modals:
+
+#### src/components/Modals/ShareModal.js
 
 | **Prop Name** | **Type**  | **Required** | **Description** | **Relationships/Connections** |
 |---------------|-----------|--------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------|
@@ -75,7 +81,14 @@ src/components/Modals/ShareModal.js
 | `handleClose` | `func`    | Yes          | Callback function to close the `ShareModal`. It updates the state in the parent component. | Connected to the `open` prop. Passed down from `SuccessModal`'s `handleShareClose` function. |
 | `auditId`     | `string`  | Yes          | The ID of the audit being shared. Used to track and store which audit is being shared with selected users. | Passed from `SuccessModal` as a prop. Used in Firestore operations to identify the audit being shared. |
 
-The documentation for the Material Dashboard is hosted at our [website](https://www.creative-tim.com/learning-lab/react/overview/material-dashboard/?ref=readme-mdr).
+#### src/components/Modals/SuccessModal.js
+
+| **Prop Name** | **Type**  | **Required** | **Description** | **Relationships/Connections** |
+|---------------|-----------|--------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| `open`        | `bool`    | Yes          | Controls whether the `SuccessModal` is open (`true`) or closed (`false`).       | Typically managed by the parent component’s state. Controls the visibility of the `SuccessModal`. |
+| `handleClose` | `func`    | Yes          | Callback function to close the `SuccessModal`. It should update the state that controls the `open` prop. | Relates to the `open` prop. When invoked, it changes `open` to `false`, closing the modal. Also indirectly related to `ShareModal` because it closes the modal that triggers the share functionality. |
+| `auditId`     | `string`  | Yes          | The ID of the audit that was created, used to pass to the `ShareModal` for sharing. | Passed down to the `ShareModal` component. The `ShareModal` uses this ID for Firestore operations related to sharing the audit. |
+
 
 ### What's included
 
