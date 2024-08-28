@@ -6,8 +6,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 import { TextFieldInput } from './elements';
-import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
-import { Button, Alert } from '@mui/material'; // Import Alert from MUI
+import { collection, doc, setDoc } from 'firebase/firestore';
+import { Button, Alert } from '@mui/material'; 
 import Header from './Header';
 import { db, auth } from '../../Firebase';
 import SuccessModal from 'components/Modals/SuccessModal';
@@ -18,13 +18,11 @@ const FormBuilder = () => {
   const [data, setData] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [createdAuditId, setCreatedAuditId] = useState('');
-  const [showAlert, setShowAlert] = useState(false); // State to control the alert visibility
-
-  const items = data;
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleSubmit = async () => {
     if (!title || !description) {
-      setShowAlert(true); // Show alert if title or description is empty
+      setShowAlert(true);
       return;
     }
 
@@ -37,7 +35,8 @@ const FormBuilder = () => {
       const auditId = uuid();
       const creationDate = new Date();
       const auditCollectionRef = collection(db, 'Audit');
-      const docRef = doc(auditCollectionRef, auditId); // Specify the document ID as auditId
+      const docRef = doc(auditCollectionRef, auditId);
+      
       await setDoc(docRef, {
         userId: user.uid,
         title,
@@ -52,31 +51,33 @@ const FormBuilder = () => {
         createdAt: creationDate,
       });
 
-      console.log('Document written with ID: ', docRef.id);
       setTitle('');
       setDescription('');
       setData([]);
       setCreatedAuditId(auditId);
       setOpenModal(true);
-      setShowAlert(false); // Hide the alert on successful submission
+      setShowAlert(false);
     } catch (e) {
       console.error('Error adding document: ', e);
+      setShowAlert(true);
     }
   };
 
   const addElement = () => {
-    const data = {
-      id: uuid(),
-      value: '',
-      yesNoChecked: true,
-      commentsChecked: true,
-      imageChecked: true,
-    };
-    setData((prevState) => [...prevState, data]);
+    setData(prevState => [
+      ...prevState, 
+      { 
+        id: uuid(), 
+        value: '', 
+        yesNoChecked: true, 
+        commentsChecked: true, 
+        imageChecked: true 
+      }
+    ]);
   };
 
   const deleteEl = (id) => {
-    setData((prevState) => prevState.filter((val) => val.id !== id));
+    setData(prevState => prevState.filter(val => val.id !== id));
   };
 
   const handleOnChangeSort = ({ items }) => {
@@ -84,31 +85,29 @@ const FormBuilder = () => {
   };
 
   const handleValue = (id, e) => {
-    setData((prevState) =>
-      prevState.map((el) =>
+    setData(prevState =>
+      prevState.map(el =>
         el.id === id ? { ...el, value: e.target.value } : el
       )
     );
   };
 
   const handleCheckboxChange = (id, checkboxState) => {
-    setData((prevState) =>
-      prevState.map((el) =>
+    setData(prevState =>
+      prevState.map(el =>
         el.id === id ? { ...el, ...checkboxState } : el
       )
     );
   };
 
-  const renderElements = ({ item }) => {
-    return (
-      <TextFieldInput
-        item={item}
-        handleValue={handleValue}
-        handleCheckboxChange={handleCheckboxChange}
-        deleteEl={deleteEl}
-      />
-    );
-  };
+  const renderElements = ({ item }) => (
+    <TextFieldInput
+      item={item}
+      handleValue={handleValue}
+      handleCheckboxChange={handleCheckboxChange}
+      deleteEl={deleteEl}
+    />
+  );
 
   const handleCloseModal = () => {
     setOpenModal(false);
@@ -130,7 +129,7 @@ const FormBuilder = () => {
             setDescription={setDescription}
           />
           <Nestable
-            items={items}
+            items={data}
             renderItem={renderElements}
             onChange={handleOnChangeSort}
           />
@@ -161,6 +160,6 @@ const FormBuilder = () => {
       />
     </Fragment>
   );
-};``
+};
 
 export default FormBuilder;

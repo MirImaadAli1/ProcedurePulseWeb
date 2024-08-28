@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  IconButton, Collapse, Typography, Box, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField
+  IconButton, Collapse, Typography, Box, Paper
 } from '@mui/material';
-import { AddCircleOutlineOutlined, EditOutlined } from '@mui/icons-material';
-import MDBox from 'components/MDBox';
+import { AddCircleOutlineOutlined, EditOutlined, DeleteOutlined } from '@mui/icons-material';
 import MDTypography from 'components/MDTypography';
 
-const AuditsTable = ({ forms, handleEdit }) => {
+const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
   const [openRow, setOpenRow] = useState(null);
 
+  // Toggle function to expand/collapse row details
   const handleToggle = (id) => {
     setOpenRow(openRow === id ? null : id);
   };
@@ -42,11 +42,17 @@ const AuditsTable = ({ forms, handleEdit }) => {
                   <MDTypography variant="body1" fontWeight="regular">{form.description}</MDTypography>
                 </TableCell>
                 <TableCell align="center">
-                  <IconButton onClick={() => handleToggle(form.id)}>
+                  <IconButton 
+                    onClick={() => handleToggle(form.id)}
+                    aria-label={openRow === form.id ? 'Collapse row' : 'Expand row'}
+                  >
                     <AddCircleOutlineOutlined />
                   </IconButton>
-                  <IconButton onClick={() => handleEdit(form)}>
+                  <IconButton onClick={() => handleEdit(form)} aria-label="Edit form">
                     <EditOutlined />
+                  </IconButton>
+                  <IconButton onClick={() => handleDelete(form.id)} aria-label="Delete form">
+                    <DeleteOutlined />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -58,7 +64,7 @@ const AuditsTable = ({ forms, handleEdit }) => {
                         form.questions.map((question, index) => (
                           <Typography key={index} sx={questionStyle}>
                             <strong>Question {index + 1}: </strong>
-                            {question.question}
+                            {question.value}
                           </Typography>
                         ))
                       ) : (
@@ -78,6 +84,7 @@ const AuditsTable = ({ forms, handleEdit }) => {
   );
 };
 
+// Styles for dropdown and question display
 const dropdownStyle = {
   marginTop: '0.5rem',
   paddingLeft: '1rem',
@@ -98,12 +105,13 @@ AuditsTable.propTypes = {
       description: PropTypes.string.isRequired,
       questions: PropTypes.arrayOf(
         PropTypes.shape({
-          question: PropTypes.string.isRequired,
+          value: PropTypes.string.isRequired,
         })
       ),
     })
   ).isRequired,
   handleEdit: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
 };
 
 export default AuditsTable;

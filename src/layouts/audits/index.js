@@ -5,9 +5,8 @@ import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 import Card from '@mui/material/Card';
-import Footer from 'examples/Footer';
 import AuditsTable from './components/Cards';
-import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { collection, query, where, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 import { auth, db } from '../../Firebase';
 import EditFormModal from './components/EditFormModel';
 
@@ -15,9 +14,11 @@ function Audits() {
   const [forms, setForms] = useState([]);
   const [selectedForm, setSelectedForm] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-      const fetchForms = async () => {
+  useEffect(() => {
+    const fetchForms = async () => {
+      try {
         const user = auth.currentUser;
         if (user) {
           const formsCollectionRef = collection(db, 'Audit');
@@ -27,15 +28,16 @@ function Audits() {
             id: doc.id,
             ...doc.data(),
           }));
-          // Log the fetched forms
-          console.log("Fetched audits:", userForms);
-          // Log the fetched forms
-          console.log("userid:", user.uid);
           setForms(userForms);
         }
-      };
-      fetchForms();
-    }, []);
+      } catch (error) {
+        console.error('Error fetching forms:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchForms();
+  }, []);
 
   const handleEdit = (form) => {
     setSelectedForm(form);
@@ -43,11 +45,35 @@ function Audits() {
   };
 
   const handleSave = async (updatedForm) => {
-    const formDocRef = doc(db, 'Audit', updatedForm.id);
-    await updateDoc(formDocRef, updatedForm);
-    setForms(forms.map((form) => (form.id === updatedForm.id ? updatedForm : form)));
-    setEditModalOpen(false);
+    try {
+      const formWithValues = {
+        ...updatedForm,
+        questions: updatedForm.questions.map(q => ({
+          value: q.value,
+        })),
+      };
+
+      const formDocRef = doc(db, 'Audit', formWithValues.id);
+      await updateDoc(formDocRef, formWithValues);
+      setForms(forms.map((form) => (form.id === formWithValues.id ? formWithValues : form)));
+      setEditModalOpen(false);
+    } catch (error) {
+      console.error('Error saving form:', error);
+    }
   };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'Audit', id));
+      setForms(forms.filter(form => form.id !== id));
+    } catch (error) {
+      console.error('Error deleting form:', error);
+    }
+  };
+
+  if (loading) {
+    return <MDTypography variant="h6">Loading...</MDTypography>;
+  }
 
   return (
     <DashboardLayout>
@@ -71,7 +97,7 @@ function Audits() {
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
-                <AuditsTable forms={forms} handleEdit={handleEdit} />
+                <AuditsTable forms={forms} handleEdit={handleEdit} handleDelete={handleDelete} />
               </MDBox>
             </Card>
           </Grid>
