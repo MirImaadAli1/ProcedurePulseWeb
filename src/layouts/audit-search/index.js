@@ -8,8 +8,10 @@ import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import DataTable from 'examples/Tables/DataTable';
 import { db } from "../../Firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { getAuth } from "firebase/auth"; // Import for Firebase Auth
 import TextField from '@mui/material/TextField';
-import Fuse from 'fuse.js';  // Correct Fuse.js import
+import Fuse from 'fuse.js';
+import { Button } from '@mui/material';
 
 function AuditSearch() {
   const [rows, setRows] = useState([]);
@@ -21,6 +23,16 @@ function AuditSearch() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const auth = getAuth();
+        const currentUser = auth.currentUser;
+
+        if (!currentUser) {
+          console.error("User not authenticated.");
+          return;
+        }
+
+        const currentUserId = currentUser.uid;
+
         // Fetch users collection to map userId to names
         const usersCollectionRef = collection(db, 'Users');
         const usersSnapshot = await getDocs(usersCollectionRef);
@@ -31,28 +43,30 @@ function AuditSearch() {
           userMap[userData.uid] = userData.name;
         });
 
-
         // Fetch audits collection
         const auditsCollectionRef = collection(db, 'Audit');
         const auditsSnapshot = await getDocs(auditsCollectionRef);
 
-        // Process audit data and replace userId with corresponding name
-        const dataArray = auditsSnapshot.docs.map(doc => {
-          const auditData = doc.data();
-          return {
-            id: doc.id,
-            title: auditData.title,
-            creator: userMap[auditData.userId],  // Replace userId with name if available
-            createdAt: auditData.createdAt?.toDate() || new Date(),  // Convert Firestore Timestamp to JS Date
-          };
-        });
+        // Process audit data, filter out user's own audits
+        const dataArray = auditsSnapshot.docs
+          .map(doc => {
+            const auditData = doc.data();
+            return {
+              id: doc.id,
+              title: auditData.title,
+              creator: userMap[auditData.userId], // Replace userId with name if available
+              userId: auditData.userId, // Keep the userId for filtering
+              createdAt: auditData.createdAt?.toDate() || new Date(),
+            };
+          })
+          .filter(audit => audit.userId !== currentUserId); // Exclude current user's audits
 
         // Prepare table rows with processed data
         const tableRows = dataArray.map((item) => ({
           author: (
             <MDBox display="flex" alignItems="center" lineHeight={1}>
               <MDTypography display="block" variant="button" fontWeight="medium">
-                {item.creator}  {/* This will now show the user's name */}
+                {item.creator} {/* This will now show the user's name */}
               </MDTypography>
             </MDBox>
           ),
@@ -63,23 +77,27 @@ function AuditSearch() {
           ),
           createdAt: (
             <MDTypography variant="caption" color="text" fontWeight="medium">
-              {item.createdAt.toLocaleString()}
+              {item.createdAt.toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}
             </MDTypography>
           ),
           action: (
-            <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-              Edit
-            </MDTypography>
+            <Button
+              variant="contained"
+              style={{ color: 'white', backgroundColor: '#2563eb' }}
+              size="small"
+            >
+              Respond
+            </Button>
           ),
-          rawItem: item  // Store raw item for matching with Fuse.js results
+          rawItem: item, // Store raw item for matching with Fuse.js results
         }));
 
         setRows(tableRows);
 
         // Initialize Fuse.js for fuzzy search
         const fuseInstance = new Fuse(dataArray, {
-          keys: ['title'],  // Search by title
-          threshold: 0.3,   // Sensitivity
+          keys: ['title'], // Search by title
+          threshold: 0.3,  // Sensitivity
         });
         setFuse(fuseInstance);
       } catch (error) {
@@ -97,13 +115,13 @@ function AuditSearch() {
 
     // If the search bar is empty, clear the filtered results
     if (!searchValue) {
-      setFilteredRows([]);  // Clear the table when search bar is empty
+      setFilteredRows([]); // Clear the table when search bar is empty
     } else if (fuse) {
       const fuzzyResults = fuse.search(searchValue);
       const filtered = fuzzyResults.map(result => {
         const matchedItem = result.item;
-        return rows.find(row => row.rawItem.id === matchedItem.id);  // Match by unique ID
-      }).filter(Boolean);  // Filter out undefined values
+        return rows.find(row => row.rawItem.id === matchedItem.id); // Match by unique ID
+      }).filter(Boolean); // Filter out undefined values
 
       setFilteredRows(filtered);
     }
@@ -150,7 +168,7 @@ function AuditSearch() {
 
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns, rows: searchTerm ? filteredRows : [] }}  // Conditionally show rows
+                  table={{ columns, rows: searchTerm ? filteredRows : [] }} // Conditionally show rows
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
