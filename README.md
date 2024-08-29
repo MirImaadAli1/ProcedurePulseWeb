@@ -10,17 +10,7 @@ Special thanks go to:
 
 **Documentation built by Developers**
 
-Each element is well presented in very complex documentation.
-
-You can read more about the [documentation here](https://www.creative-tim.com/learning-lab/react/overview/material-dashboard/).
-
-**Example Pages**
-
-If you want to get inspiration or just show something directly to your clients, you can jump-start your development with our pre-built example pages. You will be able to quickly set up the basic structure for your web project.
-
-View [example pages here](https://demos.creative-tim.com/material-dashboard-react/#/dashboard).
-
-- Check [FAQ Page](https://www.creative-tim.com/faq)
+Each Material Dashboard 2 React (MD) element has existing documentation which can be found [here](https://www.creative-tim.com/learning-lab/react/overview/material-dashboard/).
 
 #### Special thanks
 
@@ -62,9 +52,64 @@ During the development of this dashboard, we have used many existing resources f
 
 [![Deploy to Genezio](https://raw.githubusercontent.com/Genez-io/graphics/main/svg/deploy-button.svg)](https://app.genez.io/start/deploy?repository=https://github.com/creativetimofficial/material-dashboard-react&utm_source=github&utm_medium=referral&utm_campaign=github-creativetim&utm_term=deploy-project&utm_content=button-head)
 
+##Test
+
+### FormBuilder
+
+#### Overview
+The Layout component is a reusable React component designed to provide a structured layout for form elements. It utilizes Material-UI components to create a visually consistent and user-friendly interface. The component supports dynamic form element handling, including deletion, duplication, type selection, and setting the "required" status. The Layout component is highly customizable, allowing developers to pass child components that represent specific form elements.
+
+#### Component Props
+
+| Prop Name        | Type       | Required | Description                                                                                                                                    | Relations/Connections                                                                                              |
+|------------------|------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| item           | Object     | Yes      | An object representing the form element. It contains `id`, `value`, `required`, and `type` properties.                                          | Connected to all form element handler functions (`handleValue`, `deleteEl`, `handleRequired`, `handleElType`).      |
+| handleValue    | Function   | Yes      | Function to handle changes in the form element's value.                                                                                         | Used in child components for updating the value of the specific form element represented by `item`.                |
+| deleteEl       | Function   | Yes      | Function to delete the form element.                                                                                                            | Tied to the delete icon button, allowing the removal of the form element represented by `item`.                    |
+| handleRequired | Function   | Yes      | Function to toggle the "required" status of the form element.                                                                                   | Connected to the switch component to manage the required state of the form element represented by `item`.          |
+| handleElType   | Function   | Yes      | Function to change the type of the form element.                                                                                                | Linked to the Select dropdown, enabling changes to the form element type based on user selection.                   |
+| duplicateElement | Function | Yes      | Function to duplicate the form element.                                                                                                         | Tied to the duplicate icon button, allowing the duplication of the form element represented by `item`.             |
+| children       | Node       | No       | React children components that represent the specific form element to be rendered within the `Layout`.                                           | Directly rendered within the `Grid` component, providing the visual representation of the form element.            |
+
+
+#### State
+The Layout component does not manage its own state. Instead, it relies on the parent component to pass down the necessary data and handler functions via props.
+#### LifeCycle Methods
+The Layout component is a functional component and does not utilize any lifecycle methods directly. However, it uses the Fragment component to wrap its content, ensuring that no unnecessary DOM elements are added.
+#### Methods
+handleElType(id: string, value: string)
+This method is passed down as a prop and is used to handle changes in the form element's type. When a new type is selected from the dropdown, this function is called with the id of the element and the new value selected.
+handleRequired(id: string)
+This method toggles the "required" status of a form element. It's triggered when the user interacts with the switch component.
+deleteEl(id: string)
+This method deletes the form element. It's invoked when the delete icon button is clicked.
+duplicateElement(id: string, type: string)
+This method duplicates the form element, creating a new one with the same type and properties. It is triggered when the duplicate icon button is clicked.
+
 ## Documentation
 
-The documentation for the Material Dashboard is hosted at our [website](https://www.creative-tim.com/learning-lab/react/overview/material-dashboard/?ref=readme-mdr).
+The documentation for the MD components can be found [here](https://www.creative-tim.com/learning-lab/react/overview/material-dashboard/?ref=readme-mdr).
+
+The documentation for our original components can be found below:
+
+### Modals:
+
+#### src/components/Modals/ShareModal.js
+
+| **Prop Name** | **Type**  | **Required** | **Description** | **Relationships/Connections** |
+|---------------|-----------|--------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| `open`        | `bool`    | Yes          | Controls whether the `ShareModal` is open (`true`) or closed (`false`).         | Managed by `SuccessModal`'s state (`shareOpen`). Passed down as a prop from `SuccessModal`. |
+| `handleClose` | `func`    | Yes          | Callback function to close the `ShareModal`. It updates the state in the parent component. | Connected to the `open` prop. Passed down from `SuccessModal`'s `handleShareClose` function. |
+| `auditId`     | `string`  | Yes          | The ID of the audit being shared. Used to track and store which audit is being shared with selected users. | Passed from `SuccessModal` as a prop. Used in Firestore operations to identify the audit being shared. |
+
+#### src/components/Modals/SuccessModal.js
+
+| **Prop Name** | **Type**  | **Required** | **Description** | **Relationships/Connections** |
+|---------------|-----------|--------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| `open`        | `bool`    | Yes          | Controls whether the `SuccessModal` is open (`true`) or closed (`false`).       | Typically managed by the parent component’s state. Controls the visibility of the `SuccessModal`. |
+| `handleClose` | `func`    | Yes          | Callback function to close the `SuccessModal`. It should update the state that controls the `open` prop. | Relates to the `open` prop. When invoked, it changes `open` to `false`, closing the modal. Also indirectly related to `ShareModal` because it closes the modal that triggers the share functionality. |
+| `auditId`     | `string`  | Yes          | The ID of the audit that was created, used to pass to the `ShareModal` for sharing. | Passed down to the `ShareModal` component. The `ShareModal` uses this ID for Firestore operations related to sharing the audit. |
+
 
 ### What's included
 
