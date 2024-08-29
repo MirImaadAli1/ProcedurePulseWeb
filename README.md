@@ -75,12 +75,12 @@ The Layout component is a reusable React component designed to provide a structu
 | duplicateElement | Function | Yes      | Function to duplicate the form element.                                                                                                         | Tied to the duplicate icon button, allowing the duplication of the form element represented by `item`.             |
 | children       | Node       | No       | React children components that represent the specific form element to be rendered within the `Layout`.                                           | Directly rendered within the `Grid` component, providing the visual representation of the form element.            |
 
-## src/components/FormBuilder/elements/TextField.jsx
+### src/components/FormBuilder/elements/TextField.jsx
 
-### Overview
+#### Overview
 The TextFieldInput component is a React component designed to serve as a customizable input field for audit questions. It includes options for additional input types such as Yes/No/N/A checkboxes, comments, and image uploads. The component is flexible, allowing users to toggle these additional options on or off. It utilizes Material-UI icons and Tailwind CSS classes for styling.
 
-### Component Props:
+#### Component Props:
 
 | Prop Name             | Type       | Required | Description                                                                                                                | Relations/Connections                                                                                              |
 |-----------------------|------------|----------|----------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
@@ -89,13 +89,13 @@ The TextFieldInput component is a React component designed to serve as a customi
 | `handleCheckboxChange`| Function   | Yes      | Function to handle the changes in the checkbox selections (Yes/No/N/A, Comments, Image).                                   | Tied to the checkbox inputs, enabling updates to the corresponding properties in `item`.                            |
 | `deleteEl`            | Function   | Yes      | Function to delete the text field element.                                                                                 | Tied to the delete button, allowing the removal of the text field element represented by `item`.                    |
 
-## src/components/FormBuilder/Header.jsx
+### src/components/FormBuilder/Header.jsx
 
-### Overview
+#### Overview
 
 The Header component is a React component designed to serve as a dynamic and customizable header for an audit form. It includes inputs for a title and a description, which can be edited in place. The component also provides a visual enhancement with a hover effect, making the header more interactive and visually appealing. Material-UI's TextField is used for the input fields, and the component is styled using both Tailwind CSS and inline styles.
 
-### Component Props
+#### Component Props
 
 | Prop Name        | Type     | Required | Description                                                                                           | Relations/Connections                                                                                          |
 |------------------|----------|----------|-------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
@@ -104,9 +104,9 @@ The Header component is a React component designed to serve as a dynamic and cus
 | `setTitle`       | Function | Yes      | A function to update the title state in the parent component.                                          | Connected to the `onChange` event of the title `TextField` to handle updates to the title value.                |
 | `setDescription` | Function | Yes      | A function to update the description state in the parent component.                                    | Connected to the `onChange` event of the description `TextField` to handle updates to the description value.     |
 
-## src/components/FormBuilder/index.jsx
+### src/components/FormBuilder/index.jsx
 
-### Overview
+#### Overview
 
 The FormBuilder component is a comprehensive React component designed for building customizable forms. It allows users to add, reorder, and configure various form elements dynamically. The component integrates Firebase for storing the form data and includes features such as validation, success notifications, and modal handling. It leverages Material-UI for styling and Firebase for data management, making it suitable for applications requiring user-generated forms or surveys.
 
