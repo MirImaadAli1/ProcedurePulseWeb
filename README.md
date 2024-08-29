@@ -58,9 +58,9 @@ The documentation for the MD components can be found [here](https://www.creative
 
 The documentation for our original components can be found below:
 
-## FormBuilder
+## - FormBuilder
 
-### src/components/FormBuilder/elements/layout/index.jsx
+###### src/components/FormBuilder/elements/layout/index.jsx
 
 #### Overview
 The Layout component is a reusable React component designed to provide a structured layout for form elements. The component supports dynamic form element handling, including deletion, duplication, type selection, and setting the "required" status. The Layout component is highly customizable, allowing developers to pass child components that represent specific form elements.
@@ -75,7 +75,7 @@ The Layout component is a reusable React component designed to provide a structu
 | duplicateElement | Function | Yes      | Function to duplicate the form element.                                                                                                         | Tied to the duplicate icon button, allowing the duplication of the form element represented by `item`.             |
 | children       | `node`       | No       | React children components that represent the specific form element to be rendered within the `Layout`.                                           | Directly rendered within the `Grid` component, providing the visual representation of the form element.            |
 
-### src/components/FormBuilder/elements/TextField.jsx
+###### src/components/FormBuilder/elements/TextField.jsx
 
 #### Overview
 The TextFieldInput component is a React component designed to serve as a customizable input field for audit questions. It includes options for additional input types such as Yes/No/N/A checkboxes, comments, and image uploads. The component is flexible, allowing users to toggle these additional options on or off. It utilizes Material-UI icons and Tailwind CSS classes for styling.
@@ -89,7 +89,7 @@ The TextFieldInput component is a React component designed to serve as a customi
 | `handleCheckboxChange`| `func`   | Yes      | Function to handle the changes in the checkbox selections (Yes/No/N/A, Comments, Image).                                   | Tied to the checkbox inputs, enabling updates to the corresponding properties in `item`.                            |
 | `deleteEl`            | `func`   | Yes      | Function to delete the text field element.                                                                                 | Tied to the delete button, allowing the removal of the text field element represented by `item`.                    |
 
-### src/components/FormBuilder/Header.jsx
+###### src/components/FormBuilder/Header.jsx
 
 #### Overview
 
@@ -104,7 +104,7 @@ The Header component is a React component designed to serve as a dynamic and cus
 | `setTitle`       | `func` | Yes      | A function to update the title state in the parent component.                                          | Connected to the `onChange` event of the title `TextField` to handle updates to the title value.                |
 | `setDescription` | `func` | Yes      | A function to update the description state in the parent component.                                    | Connected to the `onChange` event of the description `TextField` to handle updates to the description value.     |
 
-### src/components/FormBuilder/index.jsx
+###### src/components/FormBuilder/index.jsx
 
 #### Overview
 
@@ -114,9 +114,9 @@ The FormBuilder component is a powerful React tool for creating dynamic, customi
 
 FormBuilder is a self-contained component and does not accept any props. All state and functionality are managed within the component itself.
 
-## Modals:
+## - Modals:
 
-### src/components/Modals/ShareModal.js
+###### src/components/Modals/ShareModal.js
 
 | **Prop Name** | **Type**  | **Required** | **Description** | **Relationships/Connections** |
 |---------------|-----------|--------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------|
@@ -124,7 +124,7 @@ FormBuilder is a self-contained component and does not accept any props. All sta
 | `handleClose` | `func`    | Yes          | Callback function to close the `ShareModal`. It updates the state in the parent component. | Connected to the `open` prop. Passed down from `SuccessModal`'s `handleShareClose` function. |
 | `auditId`     | `string`  | Yes          | The ID of the audit being shared. Used to track and store which audit is being shared with selected users. | Passed from `SuccessModal` as a prop. Used in Firestore operations to identify the audit being shared. |
 
-### src/components/Modals/SuccessModal.js
+###### src/components/Modals/SuccessModal.js
 
 | **Prop Name** | **Type**  | **Required** | **Description** | **Relationships/Connections** |
 |---------------|-----------|--------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------|
@@ -132,9 +132,9 @@ FormBuilder is a self-contained component and does not accept any props. All sta
 | `handleClose` | `func`    | Yes          | Callback function to close the `SuccessModal`. It should update the state that controls the `open` prop. | Relates to the `open` prop. When invoked, it changes `open` to `false`, closing the modal. Also indirectly related to `ShareModal` because it closes the modal that triggers the share functionality. |
 | `auditId`     | `string`  | Yes          | The ID of the audit that was created, used to pass to the `ShareModal` for sharing. | Passed down to the `ShareModal` component. The `ShareModal` uses this ID for Firestore operations related to sharing the audit. |
 
-## CreateAudit
+## - CreateAudit
 
-### src/layouts/createAudit/index.js
+###### src/layouts/createAudit/index.js
 
 #### Overview
 
@@ -146,100 +146,78 @@ The CreateAudit component is a React component designed to facilitate the creati
 | `columns` | `array`  | Yes      | The columns configuration for the data tables displayed.      | Retrieved from `authorsTableData` and `projectsTableData`. |
 | `rows`    | `array` | Yes      | The rows data for the tables displayed within the component.  | Retrieved from `authorsTableData` and `projectsTableData`. |
 
-### src/layouts/createAudit/components/Bill/index.js
+## - States
 
-#### Overview
+###### src/components/States/caughtUp.js
+- CaughtUp Component: The `CaughtUp` component is a simple React functional component that displays a message indicating that the user is "all caught up." It uses Material-UI for layout and styling, and react-icons to display a green checkmark icon.
 
-The Bill component is a React component that displays billing information in a styled list item format. The component is designed to fit seamlessly into a dark or light theme, adapting its background color based on the theme mode. The Bill component presents key details such as the name, company, email, and VAT number, and includes action buttons for editing and deleting the bill.
+###### src/components/States/empty.js
+- EmptyState Component: The `EmptyState` component provides a visual placeholder for empty states in the UI. 
 
-#### Component Props
+###### src/components/States/loading.js
+Loading Component: The `Loading` component is a React functional component that displays a loading indicator with an hourglass icon and a "loading" message.
 
-| Prop Name | Type    | Required | Description                                                                     | Default Value | Relations/Connections |
-|-----------|---------|----------|---------------------------------------------------------------------------------|---------------|-----------------------|
-| `name`    | `string`  | Yes      | The name associated with the bill.                                               | N/A           | Used in `MDTypography` for displaying the name. |
-| `company` | `string`  | Yes      | The name of the company associated with the bill.                                | N/A           | Used in `MDTypography` for displaying the company name. |
-| `email`   | `string`  | Yes      | The email address associated with the bill.                                      | N/A           | Used in `MDTypography` for displaying the email address. |
-| `vat`     | `string`  | Yes      | The VAT number associated with the bill.                                         | N/A           | Used in `MDTypography` for displaying the VAT number. |
-| `noGutter`| `bool` | No       | Determines whether the component should have a bottom margin (`mb`).             | `false`       | Controls the `mb` prop for the component's margin. |
+## - Respond Audit
 
-### src/layouts/createAudit/components/BillingInformation/index.js
+###### src/layouts/respondAudit/index.js
+The `RespondAudit` component allows users to respond to an audit by answering a set of questions, submitting comments, and uploading images. It interacts with Firebase Firestore to fetch the audit data, store user responses, and manage any associated files.
 
-#### Overview
+| **Prop Name**       | **Type**  | **Required** | **Description**                                                                 | **Relationships/Connections**                                      |
+|---------------------|-----------|--------------|---------------------------------------------------------------------------------|--------------------------------------------------------------------|
+| `auditId`           | `string`  | Yes          | The ID of the audit to which the user is responding. This ID is used to fetch the audit data from Firestore and associate the responses with the correct audit. | Passed from the route parameters via `useParams`. Used in Firestore operations to identify and fetch the audit. |
+| `setAuditOwner`     | `func`    | No           | Function to set the `auditOwner` state, which tracks the user ID of the audit's creator. | Connected to the `auditId` to fetch the relevant user ID from Firestore. |
+| `handleTextChange`  | `func`    | Yes          | Function to handle changes in text input fields, updating the `answers` state.  | Connected to text fields within each question component. Updates the `answers` state. |
+| `handleRadioChange` | `func`    | Yes          | Function to handle changes in radio buttons, updating the `answers` state.      | Connected to radio button inputs within each question component. Updates the `answers` state. |
+| `handleImageChange` | `func`    | Yes          | Function to handle image uploads and update the `answers` state with the image URL. | Connected to image input fields within each question component. Utilizes Firebase Storage to upload images and retrieve URLs. |
+| `handleSubmit`      | `func`    | Yes          | Function to submit all responses, saving them to Firestore under the `Responses` collection. | Executes the Firestore operations to store responses associated with the `auditId` and `auditOwner`. |
 
-The BillingInformation component is a React component that displays a list of billing entries within a styled card layout. It is part of the Material Dashboard 2 React project and utilizes Material-UI components for the card and custom components for layout and typography. The component lists multiple Bill components, each representing an individual billing record with details such as the name, company, email, and VAT number. The BillingInformation component is typically used on a billing page to present a summary of a user's billing details in an organized manner.
+## - Shared Audits
 
-#### Component Props
+###### src/layouts/sharedAudits/index.js
+The `SharedAudit` component displays a list of audits shared with the currently authenticated user. It leverages Firebase Firestore to retrieve both audit and user data, mapping shared audits to the appropriate user names and audit titles. The data is presented in a table format using Material-UI components, with a "Respond" button available for each audit, allowing the user to navigate to a response page specific to that audit.
 
-The BillingInformation component does not accept any props. It is a self-contained component that manages its display logic internally.
-However, it utilizes the Bill component to display individual billing records
+| **Prop Name**        | **Type**  | **Required** | **Description**                                                                 | **Relationships/Connections**                                              |
+|----------------------|-----------|--------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| `auditId`            | `string`  | Yes          | The ID of the audit that is being shared. Used to retrieve and display audit details. | Retrieved from Firestore in the `fetchData` function, used to link the audit to the response. |
+| `setRows`            | `func`    | No           | Function to set the state of `rows`, which contains data for the `DataTable`.   | Populated within the `useEffect` hook after fetching data from Firestore.   |
+| `handleRespondClick` | `func`    | Yes          | Function to handle clicks on the "Respond" button, navigating the user to the `RespondAudit` page. | Connected to the `Button` component for each audit. Uses the `useNavigate` hook to redirect. |
+| `userMap`            | `object`  | No           | An object mapping user IDs to names, used to display the name of the user who shared each audit. | Populated by fetching user data from Firestore in the `fetchData` function. |
+| `auditMap`           | `object`  | No           | An object mapping audit IDs to their titles, used to display the title of each shared audit. | Populated by fetching audit data from Firestore in the `fetchData` function. |
+| `loading`            | `bool`    | No           | A boolean state that determines if the data is still loading. Displays a loading spinner if true. | Managed within the `useEffect` hook. Controls the display of `Loading` or `EmptyState` components. |
+| `noData`             | `bool`    | No           | A boolean state that indicates if there are no shared audits to display.       | Managed within the `useEffect` hook. Controls the display of `EmptyState` component. |
+| `columns`            | `array`   | Yes          | Array defining the columns of the `DataTable`, including headers and accessors. | Passed as a prop to the `DataTable` component to structure the table layout. |
+| `rows`               | `array`   | Yes          | Array containing the data to be displayed in the `DataTable`.                   | Set in the `fetchData` function after processing Firestore data.            |
+| `fetchData`          | `func`    | No           | Function triggered in the `useEffect` hook on component mount to fetch user and audit data from Firestore. | Populates `rows`, `userMap`, and `auditMap`. Connects data to `DataTable`. |
+| `handleRespondClick` | `func`    | Yes          | Handles the "Respond" button click, navigating the user to `RespondAudit` page. | Uses `useNavigate` to redirect, using the `auditId` to link to the correct audit. |
 
-### src/layouts/createAudit/components/Invoice/index.js
+## - Audit Search
 
-#### Overview
+###### src/layouts/audit-search/index.js
+The `AuditSearch` component provides a user interface for searching and viewing audits in a table format. It fetches audit data from Firestore, excluding the current user's own audits, and uses Fuse.js for fuzzy searching of audit titles. The component includes a search bar for filtering audits by title and displays results in a table with options to respond to each audit.
 
-The Invoice component is a React component that displays invoice details in a list item format. It is part of the Material Dashboard 2 React project and uses Material-UI components for layout and icons. The component is designed to present key information about an invoice, such as the date, ID, and price, along with an option to download the invoice as a PDF. The Invoice component is typically used in billing or financial dashboards where users need a quick overview of their invoices.
+| **Prop Name**        | **Type**    | **Required** | **Description**                                                                                     | **Relationships/Connections**                                                                                           |
+|----------------------|-------------|--------------|-----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| `rows`               | `array`     | No           | Array of audit objects formatted for display in the table.                                          | Populated with audit data from Firestore. Includes creator, title, creation date, and action button.                  |
+| `searchTerm`         | `string`    | No           | Current value of the search input field.                                                             | Used to filter audit rows based on title via Fuse.js search results.                                                     |
+| `filteredRows`       | `array`     | No           | Array of audit rows filtered by the search term.                                                     | Updated based on the results of the fuzzy search performed by Fuse.js.                                                  |
+| `fuse`               | `object`    | No           | Instance of Fuse.js used for fuzzy searching of audit titles.                                        | Initialized with audit data for performing search operations.                                                            |
+| `userMap`            | `object`    | No           | Mapping of user IDs to user names, used to display creator names in the table.                        | Populated with user data from the 'Users' collection in Firestore.                                                        |
+| `handleSearch`       | `function`  | Yes          | Handles input changes in the search field and updates filtered results based on the search term.      | Updates `searchTerm` and filters `rows` based on the search term using Fuse.js.                                         |
+| `fetchData`          | `function`  | Yes          | Fetches audit data and user information from Firestore and initializes Fuse.js for search functionality. | Populates `rows`, `userMap`, and `fuse` with data fetched from Firestore.                                                |
+| `columns`            | `array`     | No           | Defines the columns for the DataTable component.                                                     | Includes columns for creator, title, created date, and action button.                                                   |
 
-#### Component Props
+## - Notifications
 
-| Prop Name  | Type    | Required | Description                                                                     | Default Value | Relations/Connections |
-|------------|---------|----------|---------------------------------------------------------------------------------|---------------|-----------------------|
-| `date`     | `string`  | Yes      | The date of the invoice.                                                         | N/A           | Displayed using `MDTypography` for formatting the date text. |
-| `id`       | `string`  | Yes      | The unique identifier for the invoice.                                           | N/A           | Displayed using `MDTypography` for formatting the invoice ID. |
-| `price`    | `string`  | Yes      | The total amount for the invoice.                                                | N/A           | Displayed using `MDTypography` for formatting the price text. |
-| `noGutter` | `bool` | No       | Determines whether the component should have a bottom margin (`mb`).             | `false`       | Controls the `mb` prop for the component's margin. |
+###### src/layouts/notifications/index.js
+The `Notifications` component fetches and displays a list of audit-related notifications for the currently logged-in user. It retrieves data from Firebase Firestore, including details about the audit and the sender, and presents this information in a list. Each notification includes a clickable area that navigates the user to a response page for the audit.
 
-### src/layouts/createAudit/components/Invoices/index.js
+| **Prop Name**     | **Type**    | **Required** | **Description**                                                                                  | **Relationships/Connections**                                                                                                                                           |
+|-------------------|-------------|--------------|--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `notifications`   | `array`     | No           | Array holding the notifications fetched from Firestore.                                          | Populated by fetching data from the 'Notifications' collection in Firestore. Includes sender’s name, audit title, and shared timestamp, sorted by `sharedAt` in descending order. |
+| `loading`         | `bool`      | No           | Indicates whether the component is in a loading state.                                           | Managed internally, used to conditionally render a loading spinner or the notifications.                                                                                 |
+| `navigate`        | `function`  | Yes          | React Router hook used to navigate to different routes.                                          | Used in `handleNotificationClick` to navigate to the RespondAudit page for the clicked audit notification.                                                               |
+| `handleNotificationClick` | `function`  | Yes          | Handles the click event for each notification, navigating to the audit response page. | Triggered when a notification is clicked, leveraging `navigate` to route the user to the corresponding audit response page.                                               |
 
-#### Overview
-
-The Invoices component is a React component that displays a list of invoices within a styled card. The component lists multiple Invoice components, each representing an individual invoice with details such as the date, ID, and price. The Invoices component is typically used on a billing or financial dashboard to provide a summary of recent invoices, with an option to view all invoices through a button.
-
-#### Component Props
-
-The Invoices component does not accept any props. It is a self-contained component that manages its display logic internally.
-However, the Invoices component renders a collection of Invoice components
-
-### src/layouts/createAudit/components/PaymentMethod/index.js
-
-#### Ovewview 
-
-The PaymentMethod component is a React component that displays the user's payment methods in a card layout.  The component presents payment cards, such as MasterCard and Visa, with masked card numbers and provides an option to add a new card or edit existing ones. The PaymentMethod component is typically used on a billing or account settings page where users can manage their payment options.
-
-#### Component Props
-
-The PaymentMethod component does not accept any props. It is a self-contained component that manages its display logic internally.
-However, it utilizes the following internal prop:
-
-| Prop Name | Type   | Required | Description                                                                 | Default Value | Relations/Connections |
-|-----------|--------|----------|-----------------------------------------------------------------------------|---------------|-----------------------|
-| `darkMode`| `bool`| Yes       | A flag indicating whether the dark mode is enabled, used for styling.        | N/A           | Controlled by `useMaterialUIController` context for adapting styles based on the theme. |
-
-### src/layouts/createAudit/components/Transaction/index.js
-
-#### Overview
-
-The Transaction component is a React component designed to display a single transaction's details within a list item format. The component is highly customizable, allowing users to specify the color, icon, name, description, and value associated with a transaction. The Transaction component is typically used in financial or billing dashboards to represent individual transactions.
-
-#### Component Props
-
-| Prop Name    | Type    | Required | Description                                                                     | Default Value | Relations/Connections |
-|--------------|---------|----------|---------------------------------------------------------------------------------|---------------|-----------------------|
-| `color`      | `string`  | Yes      | The color theme for the transaction's icon and value.                            | N/A           | Used in `MDButton` and `MDTypography` for styling. |
-| `icon`       | `node`    | Yes      | The icon representing the transaction, displayed inside a button.                | N/A           | Rendered inside `MDButton` using `Icon`. |
-| `name`       | `string`  | Yes      | The name or title of the transaction.                                            | N/A           | Displayed using `MDTypography` for formatting the name text. |
-| `description`| `string`  | Yes      | A brief description of the transaction.                                          | N/A           | Displayed using `MDTypography` for formatting the description text. |
-| `value`      | `string`  | Yes      | The value or amount associated with the transaction.                             | N/A           | Displayed using `MDTypography` for formatting the value text. |
-
-### src/layouts/createAudit/components/Transactions/index.js
-
-#### Overview
-
-The Transactions component is a React component that displays a list of recent transactions within a card layout. The component organizes transactions into sections based on time (e.g., "newest," "yesterday") and uses the Transaction component to display individual transaction details such as name, description, value, and associated icon. The Transactions component is typically used in financial dashboards to provide users with a summary of their recent financial activities.
-
-#### Component Props
-
-The Transactions component does not accept any props. It is a self-contained component that manages its display logic internally.
-However, it uses the props in src/layouts/createAudit/components/Transaction/index.js internally
 
 
 ## What's included
