@@ -110,6 +110,10 @@ The Header component is a React component designed to serve as a dynamic and cus
 
 The FormBuilder component is a comprehensive React component designed for building customizable forms. It allows users to add, reorder, and configure various form elements dynamically. The component integrates Firebase for storing the form data and includes features such as validation, success notifications, and modal handling. It leverages Material-UI for styling and Firebase for data management, making it suitable for applications requiring user-generated forms or surveys.
 
+#### Component Props
+
+FormBuilder is a self-contained component and does not accept any props. All state and functionality are managed within the component itself.
+
 ## Modals:
 
 ### src/components/Modals/ShareModal.js
