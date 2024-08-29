@@ -52,8 +52,6 @@ During the development of this dashboard, we have used many existing resources f
 
 [![Deploy to Genezio](https://raw.githubusercontent.com/Genez-io/graphics/main/svg/deploy-button.svg)](https://app.genez.io/start/deploy?repository=https://github.com/creativetimofficial/material-dashboard-react&utm_source=github&utm_medium=referral&utm_campaign=github-creativetim&utm_term=deploy-project&utm_content=button-head)
 
-##Test
-
 # Documentation
 
 The documentation for the MD components can be found [here](https://www.creative-tim.com/learning-lab/react/overview/material-dashboard/?ref=readme-mdr).
@@ -124,9 +122,9 @@ handleCheckbox(key: string, value: boolean)
 This method updates the state of the corresponding checkbox (yesNoChecked, commentsChecked, or imageChecked). It also triggers the handleCheckboxChange function to update the parent component with the new state.
 
 
-### Modals:
+## Modals:
 
-#### src/components/Modals/ShareModal.js
+### src/components/Modals/ShareModal.js
 
 | **Prop Name** | **Type**  | **Required** | **Description** | **Relationships/Connections** |
 |---------------|-----------|--------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------|
@@ -134,7 +132,7 @@ This method updates the state of the corresponding checkbox (yesNoChecked, comme
 | `handleClose` | `func`    | Yes          | Callback function to close the `ShareModal`. It updates the state in the parent component. | Connected to the `open` prop. Passed down from `SuccessModal`'s `handleShareClose` function. |
 | `auditId`     | `string`  | Yes          | The ID of the audit being shared. Used to track and store which audit is being shared with selected users. | Passed from `SuccessModal` as a prop. Used in Firestore operations to identify the audit being shared. |
 
-#### src/components/Modals/SuccessModal.js
+### src/components/Modals/SuccessModal.js
 
 | **Prop Name** | **Type**  | **Required** | **Description** | **Relationships/Connections** |
 |---------------|-----------|--------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------|
@@ -143,7 +141,7 @@ This method updates the state of the corresponding checkbox (yesNoChecked, comme
 | `auditId`     | `string`  | Yes          | The ID of the audit that was created, used to pass to the `ShareModal` for sharing. | Passed down to the `ShareModal` component. The `ShareModal` uses this ID for Firestore operations related to sharing the audit. |
 
 
-### What's included
+## What's included
 
 Within the download you'll find the following directories and files:
 
