@@ -138,7 +138,7 @@ FormBuilder is a self-contained component and does not accept any props. All sta
 
 #### Overview
 
-The Bill component is a React component that displays billing information in a styled list item format. It is part of the Material Dashboard 2 React project and leverages Material-UI components along with custom components like MDBox, MDTypography, and MDButton. The component is designed to fit seamlessly into a dark or light theme, adapting its background color based on the theme mode. The Bill component presents key details such as the name, company, email, and VAT number, and includes action buttons for editing and deleting the bill.
+The Bill component is a React component that displays billing information in a styled list item format. The component is designed to fit seamlessly into a dark or light theme, adapting its background color based on the theme mode. The Bill component presents key details such as the name, company, email, and VAT number, and includes action buttons for editing and deleting the bill.
 
 #### Component Props
 
@@ -180,7 +180,7 @@ The Invoice component is a React component that displays invoice details in a li
 
 #### Overview
 
-The Invoices component is a React component that displays a list of invoices within a styled card. It is part of the Material Dashboard 2 React project and uses Material-UI components for layout, typography, and buttons. The component lists multiple Invoice components, each representing an individual invoice with details such as the date, ID, and price. The Invoices component is typically used on a billing or financial dashboard to provide a summary of recent invoices, with an option to view all invoices through a button.
+The Invoices component is a React component that displays a list of invoices within a styled card. The component lists multiple Invoice components, each representing an individual invoice with details such as the date, ID, and price. The Invoices component is typically used on a billing or financial dashboard to provide a summary of recent invoices, with an option to view all invoices through a button.
 
 #### Component Props
 
@@ -191,7 +191,7 @@ However, the Invoices component renders a collection of Invoice components
 
 #### Ovewview 
 
-The PaymentMethod component is a React component that displays the user's payment methods in a card layout. It is part of the Material Dashboard 2 React project and uses Material-UI components for layout, typography, icons, and tooltips. The component presents payment cards, such as MasterCard and Visa, with masked card numbers and provides an option to add a new card or edit existing ones. The PaymentMethod component is typically used on a billing or account settings page where users can manage their payment options.
+The PaymentMethod component is a React component that displays the user's payment methods in a card layout.  The component presents payment cards, such as MasterCard and Visa, with masked card numbers and provides an option to add a new card or edit existing ones. The PaymentMethod component is typically used on a billing or account settings page where users can manage their payment options.
 
 #### Component Props
 
@@ -206,7 +206,7 @@ However, it utilizes the following internal prop:
 
 #### Overview
 
-The Transaction component is a React component designed to display a single transaction's details within a list item format. It is part of the Material Dashboard 2 React project and leverages Material-UI components for styling and icons. The component is highly customizable, allowing users to specify the color, icon, name, description, and value associated with a transaction. The Transaction component is typically used in financial or billing dashboards to represent individual transactions.
+The Transaction component is a React component designed to display a single transaction's details within a list item format. The component is highly customizable, allowing users to specify the color, icon, name, description, and value associated with a transaction. The Transaction component is typically used in financial or billing dashboards to represent individual transactions.
 
 #### Component Props
 
@@ -222,7 +222,7 @@ The Transaction component is a React component designed to display a single tran
 
 #### Overview
 
-The Transactions component is a React component that displays a list of recent transactions within a card layout. It is part of the Material Dashboard 2 React project and leverages Material-UI components for layout, typography, and icons. The component organizes transactions into sections based on time (e.g., "newest," "yesterday") and uses the Transaction component to display individual transaction details such as name, description, value, and associated icon. The Transactions component is typically used in financial dashboards to provide users with a summary of their recent financial activities.
+The Transactions component is a React component that displays a list of recent transactions within a card layout. The component organizes transactions into sections based on time (e.g., "newest," "yesterday") and uses the Transaction component to display individual transaction details such as name, description, value, and associated icon. The Transactions component is typically used in financial dashboards to provide users with a summary of their recent financial activities.
 
 #### Component Props
 
