@@ -54,6 +54,12 @@ During the development of this dashboard, we have used many existing resources f
 
 ##Test
 
+## Documentation
+
+The documentation for the MD components can be found [here](https://www.creative-tim.com/learning-lab/react/overview/material-dashboard/?ref=readme-mdr).
+
+The documentation for our original components can be found below:
+
 ### FormBuilder
 
 #### Overview
@@ -66,8 +72,6 @@ The Layout component is a reusable React component designed to provide a structu
 | item           | Object     | Yes      | An object representing the form element. It contains `id`, `value`, `required`, and `type` properties.                                          | Connected to all form element handler functions (`handleValue`, `deleteEl`, `handleRequired`, `handleElType`).      |
 | handleValue    | Function   | Yes      | Function to handle changes in the form element's value.                                                                                         | Used in child components for updating the value of the specific form element represented by `item`.                |
 | deleteEl       | Function   | Yes      | Function to delete the form element.                                                                                                            | Tied to the delete icon button, allowing the removal of the form element represented by `item`.                    |
-| handleRequired | Function   | Yes      | Function to toggle the "required" status of the form element.                                                                                   | Connected to the switch component to manage the required state of the form element represented by `item`.          |
-| handleElType   | Function   | Yes      | Function to change the type of the form element.                                                                                                | Linked to the Select dropdown, enabling changes to the form element type based on user selection.                   |
 | duplicateElement | Function | Yes      | Function to duplicate the form element.                                                                                                         | Tied to the duplicate icon button, allowing the duplication of the form element represented by `item`.             |
 | children       | Node       | No       | React children components that represent the specific form element to be rendered within the `Layout`.                                           | Directly rendered within the `Grid` component, providing the visual representation of the form element.            |
 
@@ -86,11 +90,6 @@ This method deletes the form element. It's invoked when the delete icon button i
 duplicateElement(id: string, type: string)
 This method duplicates the form element, creating a new one with the same type and properties. It is triggered when the duplicate icon button is clicked.
 
-## Documentation
-
-The documentation for the MD components can be found [here](https://www.creative-tim.com/learning-lab/react/overview/material-dashboard/?ref=readme-mdr).
-
-The documentation for our original components can be found below:
 
 ### Modals:
 
