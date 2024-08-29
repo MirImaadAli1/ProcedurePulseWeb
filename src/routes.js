@@ -117,7 +117,7 @@ const routes = [
     key: 'shared-audits',
     icon: <Icon fontSize="small">assignment</Icon>,
     route: '/sharedaudits',
-    component: <SharedAudit />,
+    component: <SharedAudit     />,
   },
   // {
   //   type: 'collapse',

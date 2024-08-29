@@ -13,9 +13,8 @@ import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
-import { db, storage, auth } from '../../Firebase'; // Import Firebase config
+import { db, storage, auth } from '../../Firebase';
 import { doc, getDoc, collection, addDoc } from "firebase/firestore";
-import { v4 as uuidv4 } from 'uuid';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 // Styled components for improved CSS
@@ -24,7 +23,7 @@ const QuestionBox = styled(MDBox)(({ theme }) => ({
     borderRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[1],
-    marginBottom: theme.spacing(4), // Space between each question
+    marginBottom: theme.spacing(4),
 }));
 
 const QuestionTitle = styled(MDTypography)(({ theme }) => ({
@@ -121,7 +120,7 @@ function RespondAudit() {
                 auditOwner,
                 responderId: userId,
                 respondedAt: new Date(),
-                answers: formattedAnswers, // Store answers as an array
+                answers: formattedAnswers,
             });
 
             alert("Responses submitted successfully!");
@@ -144,49 +143,43 @@ function RespondAudit() {
                                         <MDTypography variant="h3">{audit.title}</MDTypography>
                                         <MDTypography variant="h6" sx={{ mb: 2 }}>{audit.description}</MDTypography>
                                         {audit.questions.map((question, index) => (
-                                            <QuestionBox key={index}> {/* Styled box for each question */}
+                                            <QuestionBox key={index}>
                                                 <QuestionTitle variant="body1">
                                                     {question.questionNumber}: {question.value}
                                                 </QuestionTitle>
 
                                                 {/* Yes/No/N/A multiple-choice input */}
-                                                {question.yesNoChecked && (
-                                                    <AnswerGroup>
-                                                        <RadioGroup
-                                                            row
-                                                            name={`yesNo-${question.questionNumber}`}
-                                                            onChange={(e) => handleRadioChange(question.questionNumber, e.target.value)}
-                                                        >
-                                                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                                                            <FormControlLabel value="No" control={<Radio />} label="No" />
-                                                            <FormControlLabel value="N/A" control={<Radio />} label="N/A" />
-                                                        </RadioGroup>
-                                                    </AnswerGroup>
-                                                )}
+                                                <AnswerGroup>
+                                                    <RadioGroup
+                                                        row
+                                                        name={`yesNo-${question.questionNumber}`}
+                                                        onChange={(e) => handleRadioChange(question.questionNumber, e.target.value)}
+                                                    >
+                                                        <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                                        <FormControlLabel value="No" control={<Radio />} label="No" />
+                                                        <FormControlLabel value="N/A" control={<Radio />} label="N/A" />
+                                                    </RadioGroup>
+                                                </AnswerGroup>
 
                                                 {/* Text comments input */}
-                                                {question.commentsChecked && (
-                                                    <AnswerGroup>
-                                                        <TextField
-                                                            fullWidth
-                                                            label="Your Comments"
-                                                            variant="outlined"
-                                                            margin="normal"
-                                                            onChange={(e) => handleTextChange(question.questionNumber, e)}
-                                                        />
-                                                    </AnswerGroup>
-                                                )}
+                                                <AnswerGroup>
+                                                    <TextField
+                                                        fullWidth
+                                                        label="Your Comments"
+                                                        variant="outlined"
+                                                        margin="normal"
+                                                        onChange={(e) => handleTextChange(question.questionNumber, e)}
+                                                    />
+                                                </AnswerGroup>
 
                                                 {/* Image upload input */}
-                                                {question.imageChecked && (
-                                                    <AnswerGroup>
-                                                        <input
-                                                            accept="image/*"
-                                                            type="file"
-                                                            onChange={(e) => handleImageChange(question.questionNumber, e)}
-                                                        />
-                                                    </AnswerGroup>
-                                                )}
+                                                <AnswerGroup>
+                                                    <input
+                                                        accept="image/*"
+                                                        type="file"
+                                                        onChange={(e) => handleImageChange(question.questionNumber, e)}
+                                                    />
+                                                </AnswerGroup>
 
                                                 {index !== audit.questions.length - 1 && <Divider />}
                                             </QuestionBox>
