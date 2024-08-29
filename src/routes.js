@@ -51,6 +51,7 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import Icon from '@mui/material/Icon';
 import Audits from 'layouts/audits';
 import Audit_search from 'layouts/audit-search';
+import SharedAudit from 'layouts/sharedAudits';
 
 const routes = [
   {
@@ -71,20 +72,20 @@ const routes = [
   },
   {
     type: 'collapse',
-    name: 'Tables',
-    key: 'tables',
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: '/tables',
-    component: <Tables />,
+    name: 'Notifications',
+    key: 'notifications',
+    icon: <Icon fontSize="small">notifications</Icon>,
+    route: '/notifications',
+    component: <Notifications />,
   },
-  {
-    type: 'collapse',
-    name: 'Search Audits',
-    key: 'Search Audits',
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: '/SearchAudits',
-    component: <Audit_search />,
-  },
+  // {
+  //   type: 'collapse',
+  //   name: 'Tables',
+  //   key: 'tables',
+  //   icon: <Icon fontSize="small">table_view</Icon>,
+  //   route: '/tables',
+  //   component: <Tables />,
+  // },
   {
     type: 'collapse',
     name: 'Create Audit',
@@ -95,7 +96,16 @@ const routes = [
   },
   {
     type: 'collapse',
-    name: 'Audits',
+    name: 'Search Audits',
+    key: 'Search Audits',
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: '/SearchAudits',
+    component: <Audit_search />,
+  },
+
+  {
+    type: 'collapse',
+    name: 'Your Audits',
     key: 'audits',
     icon: <LibraryBooksIcon />,
     route: '/audits',
@@ -103,44 +113,44 @@ const routes = [
   },
   {
     type: 'collapse',
-    name: 'RTL',
-    key: 'rtl',
-    icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-    route: '/rtl',
-    component: <RTL />,
-  },
-  {
-    type: 'collapse',
-    name: 'Notifications',
-    key: 'notifications',
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: '/notifications',
-    component: <Notifications />,
-  },
-  {
-    type: 'collapse',
-    name: 'Profile',
-    key: 'profile',
-    icon: <Icon fontSize="small">person</Icon>,
-    route: '/profile',
-    component: <Profile />,
-  },
-  {
-    type: 'collapse',
-    name: 'Sign In',
-    key: 'sign-in',
-    icon: <Icon fontSize="small">login</Icon>,
-    route: '/authentication/sign-in',
-    component: <SignIn />,
-  },
-  {
-    type: 'collapse',
-    name: 'Sign Up',
-    key: 'sign-up',
+    name: 'Shared Audits',
+    key: 'shared-audits',
     icon: <Icon fontSize="small">assignment</Icon>,
-    route: '/authentication/sign-up',
-    component: <SignUp />,
+    route: '/sharedaudits',
+    component: <SharedAudit />,
   },
+  // {
+  //   type: 'collapse',
+  //   name: 'RTL',
+  //   key: 'rtl',
+  //   icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
+  //   route: '/rtl',
+  //   component: <RTL />,
+  // },
+  // {
+  //   type: 'collapse',
+  //   name: 'Profile',
+  //   key: 'profile',
+  //   icon: <Icon fontSize="small">person</Icon>,
+  //   route: '/profile',
+  //   component: <Profile />,
+  // },
+  // {
+  //   type: 'collapse',
+  //   name: 'Sign In',
+  //   key: 'sign-in',
+  //   icon: <Icon fontSize="small">login</Icon>,
+  //   route: '/authentication/sign-in',
+  //   component: <SignIn />,
+  // },
+  // {
+  //   type: 'collapse',
+  //   name: 'Sign Up',
+  //   key: 'sign-up',
+  //   icon: <Icon fontSize="small">assignment</Icon>,
+  //   route: '/authentication/sign-up',
+  //   component: <SignUp />,
+  // },
   {
     key: 'respond-audit',
     route: '/respond-audit/:auditId',
