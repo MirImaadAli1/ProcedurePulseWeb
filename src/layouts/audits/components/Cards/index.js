@@ -80,28 +80,22 @@ const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
   return (
     <TableContainer component={Paper}>
       <Table>
-        <TableHead>
+        {/* <TableHead>
           <TableRow>
             <TableCell>
               <MDTypography variant="h6" fontWeight="medium">Title</MDTypography>
-            </TableCell>
-            <TableCell>
-              <MDTypography variant="h6" fontWeight="medium">Description</MDTypography>
             </TableCell>
             <TableCell align="center">
               <MDTypography variant="h6" fontWeight="medium">Actions</MDTypography>
             </TableCell>
           </TableRow>
-        </TableHead>
+        </TableHead> */}
         <TableBody>
           {forms.map((form) => (
             <React.Fragment key={form.id}>
               <TableRow>
                 <TableCell>
                   <MDTypography variant="body1" fontWeight="regular">{form.title}</MDTypography>
-                </TableCell>
-                <TableCell>
-                  <MDTypography variant="body1" fontWeight="regular">{form.description}</MDTypography>
                 </TableCell>
                 <TableCell align="center">
                   <IconButton
@@ -125,9 +119,12 @@ const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell colSpan={3} style={{ paddingBottom: 0, paddingTop: 0 }}>
+                <TableCell colSpan={2} style={{ paddingBottom: 0, paddingTop: 0 }}>
                   <Collapse in={openRow === form.id} timeout="auto" unmountOnExit>
                     <Box sx={dropdownStyle}>
+                      <Typography sx={{ ...questionStyle, marginBottom: '0.5rem' }}>
+                        <strong>Description:</strong> {form.description}
+                      </Typography>
                       {form.questions && form.questions.length > 0 ? (
                         form.questions.map((question, index) => (
                           <Typography key={index} sx={questionStyle}>
