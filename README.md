@@ -54,19 +54,20 @@ During the development of this dashboard, we have used many existing resources f
 
 ##Test
 
-## Documentation
+# Documentation
 
 The documentation for the MD components can be found [here](https://www.creative-tim.com/learning-lab/react/overview/material-dashboard/?ref=readme-mdr).
 
 The documentation for our original components can be found below:
 
-### FormBuilder
+## FormBuilder
 
-#### Layout
-##### Overview
+### Layout
+
+#### Overview
 The Layout component is a reusable React component designed to provide a structured layout for form elements. It utilizes Material-UI components to create a visually consistent and user-friendly interface. The component supports dynamic form element handling, including deletion, duplication, type selection, and setting the "required" status. The Layout component is highly customizable, allowing developers to pass child components that represent specific form elements.
 
-##### Component Props
+#### Component Props
 
 | Prop Name        | Type       | Required | Description                                                                                                                                    | Relations/Connections                                                                                              |
 |------------------|------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
@@ -77,11 +78,11 @@ The Layout component is a reusable React component designed to provide a structu
 | children       | Node       | No       | React children components that represent the specific form element to be rendered within the `Layout`.                                           | Directly rendered within the `Grid` component, providing the visual representation of the form element.            |
 
 
-##### State
+#### State
 The Layout component does not manage its own state. Instead, it relies on the parent component to pass down the necessary data and handler functions via props.
-##### LifeCycle Methods
+#### LifeCycle Methods
 The Layout component is a functional component and does not utilize any lifecycle methods directly. However, it uses the Fragment component to wrap its content, ensuring that no unnecessary DOM elements are added.
-##### Methods
+#### Methods
 handleElType(id: string, value: string)
 This method is passed down as a prop and is used to handle changes in the form element's type. When a new type is selected from the dropdown, this function is called with the id of the element and the new value selected.
 handleRequired(id: string)
@@ -90,6 +91,35 @@ deleteEl(id: string)
 This method deletes the form element. It's invoked when the delete icon button is clicked.
 duplicateElement(id: string, type: string)
 This method duplicates the form element, creating a new one with the same type and properties. It is triggered when the duplicate icon button is clicked.
+
+## TextFieldInput
+
+### Overview
+The TextFieldInput component is a React component designed to serve as a customizable input field for audit questions. It includes options for additional input types such as Yes/No/N/A checkboxes, comments, and image uploads. The component is flexible, allowing users to toggle these additional options on or off. It utilizes Material-UI icons and Tailwind CSS classes for styling.
+
+### Component Props:
+Prop Name           	Type      	Required	Description                                                                                                               	Relations/Connections                                                                                             
+--------------------	------------	----------	----------------------------------------------------------------------------------------------------------------------------	---------------------------------------------------------------------------------------------------------------------
+item               	Object    	Yes      	An object representing the text field element. It contains `id`, `value`, `yesNoChecked`, `commentsChecked`, and `imageChecked` properties.	Connected to all functions handling value and checkbox changes (`handleValue`, `handleCheckboxChange`).             
+handleValue        	Function  	Yes      	Function to handle changes in the text field's value.                                                                     	Used in the input field for updating the value of the text field represented by `item`.                             
+handleCheckboxChange	Function  	Yes      	Function to handle the changes in the checkbox selections (Yes/No/N/A, Comments, Image).                                  	Tied to the checkbox inputs, enabling updates to the corresponding properties in `item`.                            
+deleteEl           	Function  	Yes      	Function to delete the text field element.                                                                                	Tied to the delete button, allowing the removal of the text field element represented by `item`.                   
+
+
+### State
+The TextFieldInput component manages its own state for the three checkboxes:
+
+yesNoChecked: Boolean state determining if the Yes/No/N/A checkbox is checked.
+commentsChecked: Boolean state determining if the Comments checkbox is checked.
+imageChecked: Boolean state determining if the Image checkbox is checked.
+These states are initialized from the item prop and updated locally as well as communicated to the parent component via handleCheckboxChange.
+
+### LifeCycle Methods
+useEffect: This hook is used to trigger the handleCheckboxChange function on the initial render to ensure the parent component has the correct checkbox state.
+
+### Methods
+handleCheckbox(key: string, value: boolean)
+This method updates the state of the corresponding checkbox (yesNoChecked, commentsChecked, or imageChecked). It also triggers the handleCheckboxChange function to update the parent component with the new state.
 
 
 ### Modals:
