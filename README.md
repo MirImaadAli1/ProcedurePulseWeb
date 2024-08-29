@@ -121,6 +121,21 @@ useEffect: This hook is used to trigger the handleCheckboxChange function on the
 handleCheckbox(key: string, value: boolean)
 This method updates the state of the corresponding checkbox (yesNoChecked, commentsChecked, or imageChecked). It also triggers the handleCheckboxChange function to update the parent component with the new state.
 
+## Header
+
+### Overview
+
+The Header component is a React component designed to serve as a dynamic and customizable header for an audit form. It includes inputs for a title and a description, which can be edited in place. The component also provides a visual enhancement with a hover effect, making the header more interactive and visually appealing. Material-UI's TextField is used for the input fields, and the component is styled using both Tailwind CSS and inline styles.
+
+### Component Props
+
+| Prop Name        | Type     | Required | Description                                                                                           | Relations/Connections                                                                                          |
+|------------------|----------|----------|-------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| `title`          | String   | Yes      | The title of the form or audit. It is displayed as a large, bold text and can be edited by the user.   | Used in the `TextField` component for setting the initial value and updating the title via `setTitle`.          |
+| `description`    | String   | Yes      | The description of the form or audit. It provides additional context and can also be edited.           | Used in the `TextField` component for setting the initial value and updating the description via `setDescription`. |
+| `setTitle`       | Function | Yes      | A function to update the title state in the parent component.                                          | Connected to the `onChange` event of the title `TextField` to handle updates to the title value.                |
+| `setDescription` | Function | Yes      | A function to update the description state in the parent component.                                    | Connected to the `onChange` event of the description `TextField` to handle updates to the description value.     |
+
 
 ## Modals:
 
