@@ -11,15 +11,15 @@ import { db, auth } from "../../Firebase";
 import { collection, getDocs, doc } from "firebase/firestore";
 import Loading from "components/States/loading";
 import EmptyState from "components/States/empty";
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
-function SharedAudit() {
+function YourResponses() {
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(true);
     const [noData, setNoData] = useState(false);
     const userMap = {};
-    const auditMap = {}; // Map to store auditId to audit title
-    const navigate = useNavigate(); // Initialize navigate hook
+    const auditMap = {};
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -43,16 +43,15 @@ function SharedAudit() {
                     userMap[userData.uid] = userData.name;
                 });
 
-                // Fetch shared audits
-                const sharedAuditsCollectionRef = collection(db, 'SharedAudits');
-                const sharedAuditsSnapshot = await getDocs(sharedAuditsCollectionRef);
+                // Fetch responses where the current user is the responder
+                const responsesCollectionRef = collection(db, 'Responses');
+                const responsesSnapshot = await getDocs(responsesCollectionRef);
 
-                // Process shared audits where the current user is the recipient
-                const sharedAudits = sharedAuditsSnapshot.docs
-                    .filter(doc => doc.data().sharedWith === currentUserId)
+                const userResponses = responsesSnapshot.docs
+                    .filter(doc => doc.data().responderId === currentUserId)
                     .map(doc => doc.data());
 
-                if (sharedAudits.length === 0) {
+                if (userResponses.length === 0) {
                     setNoData(true);
                 }
 
@@ -60,29 +59,31 @@ function SharedAudit() {
                 const auditsCollectionRef = collection(db, 'Audit');
                 const auditsSnapshot = await getDocs(auditsCollectionRef);
 
-                // Create a map of auditId to title
                 auditsSnapshot.docs.forEach(doc => {
                     const auditData = doc.data();
                     auditMap[doc.id] = auditData.title;
                 });
 
                 // Prepare table rows with processed data
-                const tableRows = sharedAudits.map((item) => ({
-                    sharedBy: (
-                        <MDBox display="flex" alignItems="center" lineHeight={1}>
-                            <MDTypography display="block" variant="button" fontWeight="medium">
-                                {userMap[item.sharedBy]} {/* This will now show the name of the person who shared the audit */}
-                            </MDTypography>
-                        </MDBox>
-                    ),
+                const tableRows = userResponses.map((item) => ({
                     title: (
-                        <MDTypography variant="caption" color="text" fontWeight="medium">
-                            {auditMap[item.auditId] || "Unknown Title"} {/* Use audit title from map */}
+                        <MDTypography 
+                            variant="caption" 
+                            color="text" 
+                            fontWeight="medium"
+                            style={{ wordWrap: 'break-word', whiteSpace: 'normal' }} // Ensure wrapping
+                        >
+                            {auditMap[item.auditId] || "Unknown Title"}
                         </MDTypography>
                     ),
-                    sharedAt: (
+                    creator: (
                         <MDTypography variant="caption" color="text" fontWeight="medium">
-                            {item.sharedAt.toDate().toLocaleDateString('en-US')}
+                            {userMap[item.auditOwner] || "Unknown Creator"}
+                        </MDTypography>
+                    ),
+                    respondedAt: (
+                        <MDTypography variant="caption" color="text" fontWeight="medium">
+                            {item.respondedAt.toDate().toLocaleDateString('en-US')}
                         </MDTypography>
                     ),
                     action: (
@@ -90,9 +91,9 @@ function SharedAudit() {
                             variant="contained"
                             style={{ color: 'white', backgroundColor: '#2563eb' }}
                             size="small"
-                            onClick={() => handleRespondClick(item.auditId)} // Attach click handler to button
+                            onClick={() => handleViewClick(item.auditId)} // Attach click handler to button
                         >
-                            Respond
+                            View / Edit
                         </Button>
                     ),
                     rawItem: item,
@@ -109,15 +110,15 @@ function SharedAudit() {
         fetchData();
     }, []);
 
-    const handleRespondClick = (auditId) => {
-        navigate(`/respond-audit/${auditId}`); // Navigate to RespondAudit with the auditId
+    const handleViewClick = (auditId) => {
+        navigate(`/view-audit/${auditId}`); // Navigate to ViewAudit with the auditId
     };
 
     const columns = [
-        { Header: 'shared by', accessor: 'sharedBy', width: '30%', align: 'left' },
-        { Header: 'title', accessor: 'title', align: 'left' },
-        { Header: 'shared on', accessor: 'sharedAt', align: 'center' },
-        { Header: 'action', accessor: 'action', align: 'center' },
+        { Header: 'Title', accessor: 'title', width: '30%', align: 'left' },
+        { Header: 'Creator', accessor: 'creator', align: 'left' },
+        { Header: 'Responded On', accessor: 'respondedAt', align: 'center' },
+        { Header: 'Action', accessor: 'action', align: 'center' },
     ];
 
     return (
@@ -145,13 +146,13 @@ function SharedAudit() {
                                     coloredShadow="info"
                                 >
                                     <MDTypography variant="h6" color="white">
-                                        Audits Shared With You
+                                        Your Responses
                                     </MDTypography>
                                 </MDBox>
 
                                 <MDBox pt={3}>
                                     <DataTable
-                                        table={{ columns, rows }} // Display all shared audits
+                                        table={{ columns, rows }} // Display all responses
                                         isSorted={false}
                                         entriesPerPage={false}
                                         showTotalEntries={false}
@@ -167,4 +168,4 @@ function SharedAudit() {
     );
 }
 
-export default SharedAudit;
+export default YourResponses;

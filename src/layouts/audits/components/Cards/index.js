@@ -95,7 +95,19 @@ const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
             <React.Fragment key={form.id}>
               <TableRow>
                 <TableCell>
-                  <MDTypography variant="body1" fontWeight="regular">{form.title}</MDTypography>
+                  <MDTypography
+                    variant="body1"
+                    fontWeight="regular"
+                    sx={{
+                      maxWidth: '500px', // Set a maximum width for the title
+                      wordWrap: 'break-word', // Ensure long words are broken into multiple lines
+                      overflow: 'hidden', // Hide any overflow text
+                      textOverflow: 'ellipsis', // Add ellipsis (...) if the text overflows
+                      whiteSpace: 'normal', // Allow text to wrap to a new line
+                    }}
+                  >
+                    {form.title}
+                  </MDTypography>
                 </TableCell>
                 <TableCell align="center">
                   <IconButton
@@ -167,7 +179,7 @@ const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
                           </Typography>
                         )}
                       </Box>
-                      <Box sx={{ flex: 1 , mt:3.5 }}>
+                      <Box sx={{ flex: 1, mt: 3.5 }}>
                         <Box>
                           <Pie
                             data={{

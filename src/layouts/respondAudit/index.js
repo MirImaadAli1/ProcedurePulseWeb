@@ -91,18 +91,19 @@ function RespondAudit() {
             try {
                 await uploadBytes(storageRef, file);
                 const downloadURL = await getDownloadURL(storageRef);
-                setAnswers({
-                    ...answers,
+                setAnswers((prevAnswers) => ({
+                    ...prevAnswers,
                     [questionNumber]: {
-                        ...answers[questionNumber],
+                        ...prevAnswers[questionNumber],
                         imageUrl: downloadURL,
                     },
-                });
+                }));
             } catch (error) {
                 console.error('Error uploading image:', error);
             }
         }
     };
+
 
     const handleSubmit = async () => {
         try {
@@ -184,13 +185,15 @@ function RespondAudit() {
                                                 {index !== audit.questions.length - 1 && <Divider />}
                                             </QuestionBox>
                                         ))}
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={handleSubmit}
-                                        >
-                                            Submit Responses
-                                        </Button>
+                                        <MDBox mt={4} display="flex" justifyContent="flex-end">
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={handleSubmit}
+                                            >
+                                                Submit Response
+                                            </Button>
+                                        </MDBox>
                                     </div>
                                 ) : (
                                     <MDTypography variant="body1">Loading audit...</MDTypography>

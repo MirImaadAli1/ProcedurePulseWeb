@@ -52,6 +52,7 @@ import Icon from '@mui/material/Icon';
 import Audits from 'layouts/audits';
 import Audit_search from 'layouts/audit-search';
 import SharedAudit from 'layouts/sharedAudits';
+import YourResponses from 'layouts/yourResponses';
 
 const routes = [
   {
@@ -110,6 +111,14 @@ const routes = [
     icon: <LibraryBooksIcon />,
     route: '/audits',
     component: <Audits />,
+  },
+  {
+    type: 'collapse',
+    name: 'Your Responses',
+    key: 'your-responses',
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: '/yourresponses',
+    component: <YourResponses  />,
   },
   {
     type: 'collapse',
