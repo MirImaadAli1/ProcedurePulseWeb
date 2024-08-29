@@ -70,8 +70,8 @@ The Layout component is a reusable React component designed to provide a structu
 | Prop Name        | Type       | Required | Description                                                                                                                                    | Relations/Connections                                                                                              |
 |------------------|------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
 | item           | Object     | Yes      | An object representing the form element. It contains `id`, `value`, `required`, and `type` properties.                                          | Connected to all form element handler functions (`handleValue`, `deleteEl`, `handleRequired`, `handleElType`).      |
-| handleValue    | Function   | Yes      | Function to handle changes in the form element's value.                                                                                         | Used in child components for updating the value of the specific form element represented by `item`.                |
-| deleteEl       | Function   | Yes      | Function to delete the form element.                                                                                                            | Tied to the delete icon button, allowing the removal of the form element represented by `item`.                    |
+| handleValue    | `func`   | Yes      | Function to handle changes in the form element's value.                                                                                         | Used in child components for updating the value of the specific form element represented by `item`.                |
+| deleteEl       | `func`   | Yes      | Function to delete the form element.                                                                                                            | Tied to the delete icon button, allowing the removal of the form element represented by `item`.                    |
 | duplicateElement | Function | Yes      | Function to duplicate the form element.                                                                                                         | Tied to the duplicate icon button, allowing the duplication of the form element represented by `item`.             |
 | children       | Node       | No       | React children components that represent the specific form element to be rendered within the `Layout`.                                           | Directly rendered within the `Grid` component, providing the visual representation of the form element.            |
 
@@ -85,9 +85,9 @@ The TextFieldInput component is a React component designed to serve as a customi
 | Prop Name             | Type       | Required | Description                                                                                                                | Relations/Connections                                                                                              |
 |-----------------------|------------|----------|----------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
 | `item`                | Object     | Yes      | An object representing the text field element. It contains `id`, `value`, `yesNoChecked`, `commentsChecked`, and `imageChecked` properties. | Connected to all functions handling value and checkbox changes (`handleValue`, `handleCheckboxChange`).              |
-| `handleValue`         | Function   | Yes      | Function to handle changes in the text field's value.                                                                      | Used in the input field for updating the value of the text field represented by `item`.                             |
-| `handleCheckboxChange`| Function   | Yes      | Function to handle the changes in the checkbox selections (Yes/No/N/A, Comments, Image).                                   | Tied to the checkbox inputs, enabling updates to the corresponding properties in `item`.                            |
-| `deleteEl`            | Function   | Yes      | Function to delete the text field element.                                                                                 | Tied to the delete button, allowing the removal of the text field element represented by `item`.                    |
+| `handleValue`         | `func`   | Yes      | Function to handle changes in the text field's value.                                                                      | Used in the input field for updating the value of the text field represented by `item`.                             |
+| `handleCheckboxChange`| `func`   | Yes      | Function to handle the changes in the checkbox selections (Yes/No/N/A, Comments, Image).                                   | Tied to the checkbox inputs, enabling updates to the corresponding properties in `item`.                            |
+| `deleteEl`            | `func`   | Yes      | Function to delete the text field element.                                                                                 | Tied to the delete button, allowing the removal of the text field element represented by `item`.                    |
 
 ### src/components/FormBuilder/Header.jsx
 
@@ -99,10 +99,10 @@ The Header component is a React component designed to serve as a dynamic and cus
 
 | Prop Name        | Type     | Required | Description                                                                                           | Relations/Connections                                                                                          |
 |------------------|----------|----------|-------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| `title`          | String   | Yes      | The title of the form or audit. It is displayed as a large, bold text and can be edited by the user.   | Used in the `TextField` component for setting the initial value and updating the title via `setTitle`.          |
-| `description`    | String   | Yes      | The description of the form or audit. It provides additional context and can also be edited.           | Used in the `TextField` component for setting the initial value and updating the description via `setDescription`. |
-| `setTitle`       | Function | Yes      | A function to update the title state in the parent component.                                          | Connected to the `onChange` event of the title `TextField` to handle updates to the title value.                |
-| `setDescription` | Function | Yes      | A function to update the description state in the parent component.                                    | Connected to the `onChange` event of the description `TextField` to handle updates to the description value.     |
+| `title`          | `string`   | Yes      | The title of the form or audit. It is displayed as a large, bold text and can be edited by the user.   | Used in the `TextField` component for setting the initial value and updating the title via `setTitle`.          |
+| `description`    | `string`   | Yes      | The description of the form or audit. It provides additional context and can also be edited.           | Used in the `TextField` component for setting the initial value and updating the description via `setDescription`. |
+| `setTitle`       | `func` | Yes      | A function to update the title state in the parent component.                                          | Connected to the `onChange` event of the title `TextField` to handle updates to the title value.                |
+| `setDescription` | `func` | Yes      | A function to update the description state in the parent component.                                    | Connected to the `onChange` event of the description `TextField` to handle updates to the description value.     |
 
 ### src/components/FormBuilder/index.jsx
 
@@ -144,11 +144,11 @@ The Bill component is a React component that displays billing information in a s
 
 | Prop Name | Type    | Required | Description                                                                     | Default Value | Relations/Connections |
 |-----------|---------|----------|---------------------------------------------------------------------------------|---------------|-----------------------|
-| `name`    | String  | Yes      | The name associated with the bill.                                               | N/A           | Used in `MDTypography` for displaying the name. |
-| `company` | String  | Yes      | The name of the company associated with the bill.                                | N/A           | Used in `MDTypography` for displaying the company name. |
-| `email`   | String  | Yes      | The email address associated with the bill.                                      | N/A           | Used in `MDTypography` for displaying the email address. |
-| `vat`     | String  | Yes      | The VAT number associated with the bill.                                         | N/A           | Used in `MDTypography` for displaying the VAT number. |
-| `noGutter`| Boolean | No       | Determines whether the component should have a bottom margin (`mb`).             | `false`       | Controls the `mb` prop for the component's margin. |
+| `name`    | `string`  | Yes      | The name associated with the bill.                                               | N/A           | Used in `MDTypography` for displaying the name. |
+| `company` | `string`  | Yes      | The name of the company associated with the bill.                                | N/A           | Used in `MDTypography` for displaying the company name. |
+| `email`   | `string`  | Yes      | The email address associated with the bill.                                      | N/A           | Used in `MDTypography` for displaying the email address. |
+| `vat`     | `string`  | Yes      | The VAT number associated with the bill.                                         | N/A           | Used in `MDTypography` for displaying the VAT number. |
+| `noGutter`| `bool` | No       | Determines whether the component should have a bottom margin (`mb`).             | `false`       | Controls the `mb` prop for the component's margin. |
 
 ### src/layouts/createAudit/components/BillingInformation/index.js
 
@@ -171,10 +171,10 @@ The Invoice component is a React component that displays invoice details in a li
 
 | Prop Name  | Type    | Required | Description                                                                     | Default Value | Relations/Connections |
 |------------|---------|----------|---------------------------------------------------------------------------------|---------------|-----------------------|
-| `date`     | String  | Yes      | The date of the invoice.                                                         | N/A           | Displayed using `MDTypography` for formatting the date text. |
-| `id`       | String  | Yes      | The unique identifier for the invoice.                                           | N/A           | Displayed using `MDTypography` for formatting the invoice ID. |
-| `price`    | String  | Yes      | The total amount for the invoice.                                                | N/A           | Displayed using `MDTypography` for formatting the price text. |
-| `noGutter` | Boolean | No       | Determines whether the component should have a bottom margin (`mb`).             | `false`       | Controls the `mb` prop for the component's margin. |
+| `date`     | `string`  | Yes      | The date of the invoice.                                                         | N/A           | Displayed using `MDTypography` for formatting the date text. |
+| `id`       | `string`  | Yes      | The unique identifier for the invoice.                                           | N/A           | Displayed using `MDTypography` for formatting the invoice ID. |
+| `price`    | `string`  | Yes      | The total amount for the invoice.                                                | N/A           | Displayed using `MDTypography` for formatting the price text. |
+| `noGutter` | `bool` | No       | Determines whether the component should have a bottom margin (`mb`).             | `false`       | Controls the `mb` prop for the component's margin. |
 
 ### src/layouts/createAudit/components/Invoices/index.js
 
@@ -200,7 +200,7 @@ However, it utilizes the following internal prop:
 
 | Prop Name | Type   | Required | Description                                                                 | Default Value | Relations/Connections |
 |-----------|--------|----------|-----------------------------------------------------------------------------|---------------|-----------------------|
-| `darkMode`| Boolean| Yes       | A flag indicating whether the dark mode is enabled, used for styling.        | N/A           | Controlled by `useMaterialUIController` context for adapting styles based on the theme. |
+| `darkMode`| `bool`| Yes       | A flag indicating whether the dark mode is enabled, used for styling.        | N/A           | Controlled by `useMaterialUIController` context for adapting styles based on the theme. |
 
 ### src/layouts/createAudit/components/Transaction/index.js
 
@@ -212,11 +212,11 @@ The Transaction component is a React component designed to display a single tran
 
 | Prop Name    | Type    | Required | Description                                                                     | Default Value | Relations/Connections |
 |--------------|---------|----------|---------------------------------------------------------------------------------|---------------|-----------------------|
-| `color`      | String  | Yes      | The color theme for the transaction's icon and value.                            | N/A           | Used in `MDButton` and `MDTypography` for styling. |
+| `color`      | `string`  | Yes      | The color theme for the transaction's icon and value.                            | N/A           | Used in `MDButton` and `MDTypography` for styling. |
 | `icon`       | Node    | Yes      | The icon representing the transaction, displayed inside a button.                | N/A           | Rendered inside `MDButton` using `Icon`. |
-| `name`       | String  | Yes      | The name or title of the transaction.                                            | N/A           | Displayed using `MDTypography` for formatting the name text. |
-| `description`| String  | Yes      | A brief description of the transaction.                                          | N/A           | Displayed using `MDTypography` for formatting the description text. |
-| `value`      | String  | Yes      | The value or amount associated with the transaction.                             | N/A           | Displayed using `MDTypography` for formatting the value text. |
+| `name`       | `string`  | Yes      | The name or title of the transaction.                                            | N/A           | Displayed using `MDTypography` for formatting the name text. |
+| `description`| `string`  | Yes      | A brief description of the transaction.                                          | N/A           | Displayed using `MDTypography` for formatting the description text. |
+| `value`      | `string`  | Yes      | The value or amount associated with the transaction.                             | N/A           | Displayed using `MDTypography` for formatting the value text. |
 
 ### src/layouts/createAudit/components/Transactions/index.js
 
