@@ -196,7 +196,7 @@ The PaymentMethod component is a React component that displays the user's paymen
 #### Component Props
 
 The PaymentMethod component does not accept any props. It is a self-contained component that manages its display logic internally.
-However, it utilizes the following internal prop
+However, it utilizes the following internal prop:
 
 | Prop Name | Type   | Required | Description                                                                 | Default Value | Relations/Connections |
 |-----------|--------|----------|-----------------------------------------------------------------------------|---------------|-----------------------|
