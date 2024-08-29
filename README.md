@@ -128,6 +128,102 @@ The FormBuilder component is a comprehensive React component designed for buildi
 | `handleClose` | `func`    | Yes          | Callback function to close the `SuccessModal`. It should update the state that controls the `open` prop. | Relates to the `open` prop. When invoked, it changes `open` to `false`, closing the modal. Also indirectly related to `ShareModal` because it closes the modal that triggers the share functionality. |
 | `auditId`     | `string`  | Yes          | The ID of the audit that was created, used to pass to the `ShareModal` for sharing. | Passed down to the `ShareModal` component. The `ShareModal` uses this ID for Firestore operations related to sharing the audit. |
 
+## CreateAudit
+
+### src/layouts/createAudit/components/Bill/index.js
+
+#### Overview
+
+The Bill component is a React component that displays billing information in a styled list item format. It is part of the Material Dashboard 2 React project and leverages Material-UI components along with custom components like MDBox, MDTypography, and MDButton. The component is designed to fit seamlessly into a dark or light theme, adapting its background color based on the theme mode. The Bill component presents key details such as the name, company, email, and VAT number, and includes action buttons for editing and deleting the bill.
+
+#### Component Props
+
+| Prop Name | Type    | Required | Description                                                                     | Default Value | Relations/Connections |
+|-----------|---------|----------|---------------------------------------------------------------------------------|---------------|-----------------------|
+| `name`    | String  | Yes      | The name associated with the bill.                                               | N/A           | Used in `MDTypography` for displaying the name. |
+| `company` | String  | Yes      | The name of the company associated with the bill.                                | N/A           | Used in `MDTypography` for displaying the company name. |
+| `email`   | String  | Yes      | The email address associated with the bill.                                      | N/A           | Used in `MDTypography` for displaying the email address. |
+| `vat`     | String  | Yes      | The VAT number associated with the bill.                                         | N/A           | Used in `MDTypography` for displaying the VAT number. |
+| `noGutter`| Boolean | No       | Determines whether the component should have a bottom margin (`mb`).             | `false`       | Controls the `mb` prop for the component's margin. |
+
+### src/layouts/createAudit/components/BillingInformation/index.js
+
+#### Overview
+
+The BillingInformation component is a React component that displays a list of billing entries within a styled card layout. It is part of the Material Dashboard 2 React project and utilizes Material-UI components for the card and custom components for layout and typography. The component lists multiple Bill components, each representing an individual billing record with details such as the name, company, email, and VAT number. The BillingInformation component is typically used on a billing page to present a summary of a user's billing details in an organized manner.
+
+#### Component Props
+
+The BillingInformation component does not accept any props. It is a self-contained component that manages its display logic internally.
+However, it utilizes the Bill component to display individual billing records
+
+### src/layouts/createAudit/components/Invoice/index.js
+
+#### Overview
+
+The Invoice component is a React component that displays invoice details in a list item format. It is part of the Material Dashboard 2 React project and uses Material-UI components for layout and icons. The component is designed to present key information about an invoice, such as the date, ID, and price, along with an option to download the invoice as a PDF. The Invoice component is typically used in billing or financial dashboards where users need a quick overview of their invoices.
+
+#### Component Props
+
+| Prop Name  | Type    | Required | Description                                                                     | Default Value | Relations/Connections |
+|------------|---------|----------|---------------------------------------------------------------------------------|---------------|-----------------------|
+| `date`     | String  | Yes      | The date of the invoice.                                                         | N/A           | Displayed using `MDTypography` for formatting the date text. |
+| `id`       | String  | Yes      | The unique identifier for the invoice.                                           | N/A           | Displayed using `MDTypography` for formatting the invoice ID. |
+| `price`    | String  | Yes      | The total amount for the invoice.                                                | N/A           | Displayed using `MDTypography` for formatting the price text. |
+| `noGutter` | Boolean | No       | Determines whether the component should have a bottom margin (`mb`).             | `false`       | Controls the `mb` prop for the component's margin. |
+
+### src/layouts/createAudit/components/Invoices/index.js
+
+#### Overview
+
+The Invoices component is a React component that displays a list of invoices within a styled card. It is part of the Material Dashboard 2 React project and uses Material-UI components for layout, typography, and buttons. The component lists multiple Invoice components, each representing an individual invoice with details such as the date, ID, and price. The Invoices component is typically used on a billing or financial dashboard to provide a summary of recent invoices, with an option to view all invoices through a button.
+
+#### Component Props
+
+The Invoices component does not accept any props. It is a self-contained component that manages its display logic internally.
+However, the Invoices component renders a collection of Invoice components
+
+### src/layouts/createAudit/components/PaymentMethod/index.js
+
+#### Ovewview 
+
+The PaymentMethod component is a React component that displays the user's payment methods in a card layout. It is part of the Material Dashboard 2 React project and uses Material-UI components for layout, typography, icons, and tooltips. The component presents payment cards, such as MasterCard and Visa, with masked card numbers and provides an option to add a new card or edit existing ones. The PaymentMethod component is typically used on a billing or account settings page where users can manage their payment options.
+
+#### Component Props
+
+The PaymentMethod component does not accept any props. It is a self-contained component that manages its display logic internally.
+However, it utilizes the following internal prop
+
+| Prop Name | Type   | Required | Description                                                                 | Default Value | Relations/Connections |
+|-----------|--------|----------|-----------------------------------------------------------------------------|---------------|-----------------------|
+| `darkMode`| Boolean| Yes       | A flag indicating whether the dark mode is enabled, used for styling.        | N/A           | Controlled by `useMaterialUIController` context for adapting styles based on the theme. |
+
+### src/layouts/createAudit/components/Transaction/index.js
+
+#### Overview
+
+The Transaction component is a React component designed to display a single transaction's details within a list item format. It is part of the Material Dashboard 2 React project and leverages Material-UI components for styling and icons. The component is highly customizable, allowing users to specify the color, icon, name, description, and value associated with a transaction. The Transaction component is typically used in financial or billing dashboards to represent individual transactions.
+
+#### Component Props
+
+| Prop Name    | Type    | Required | Description                                                                     | Default Value | Relations/Connections |
+|--------------|---------|----------|---------------------------------------------------------------------------------|---------------|-----------------------|
+| `color`      | String  | Yes      | The color theme for the transaction's icon and value.                            | N/A           | Used in `MDButton` and `MDTypography` for styling. |
+| `icon`       | Node    | Yes      | The icon representing the transaction, displayed inside a button.                | N/A           | Rendered inside `MDButton` using `Icon`. |
+| `name`       | String  | Yes      | The name or title of the transaction.                                            | N/A           | Displayed using `MDTypography` for formatting the name text. |
+| `description`| String  | Yes      | A brief description of the transaction.                                          | N/A           | Displayed using `MDTypography` for formatting the description text. |
+| `value`      | String  | Yes      | The value or amount associated with the transaction.                             | N/A           | Displayed using `MDTypography` for formatting the value text. |
+
+### src/layouts/createAudit/components/Transactions/index.js
+
+#### Overview
+
+The Transactions component is a React component that displays a list of recent transactions within a card layout. It is part of the Material Dashboard 2 React project and leverages Material-UI components for layout, typography, and icons. The component organizes transactions into sections based on time (e.g., "newest," "yesterday") and uses the Transaction component to display individual transaction details such as name, description, value, and associated icon. The Transactions component is typically used in financial dashboards to provide users with a summary of their recent financial activities.
+
+#### Component Props
+
+The Transactions component does not accept any props. It is a self-contained component that manages its display logic internally.
+However, it uses the props in src/layouts/createAudit/components/Transaction/index.js internally
 
 ## What's included
 
