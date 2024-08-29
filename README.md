@@ -136,6 +136,11 @@ The Header component is a React component designed to serve as a dynamic and cus
 | `setTitle`       | Function | Yes      | A function to update the title state in the parent component.                                          | Connected to the `onChange` event of the title `TextField` to handle updates to the title value.                |
 | `setDescription` | Function | Yes      | A function to update the description state in the parent component.                                    | Connected to the `onChange` event of the description `TextField` to handle updates to the description value.     |
 
+## Form Builder JS
+
+### Overview
+
+The FormBuilder component is a comprehensive React component designed for building customizable forms. It allows users to add, reorder, and configure various form elements dynamically. The component integrates Firebase for storing the form data and includes features such as validation, success notifications, and modal handling. It leverages Material-UI for styling and Firebase for data management, making it suitable for applications requiring user-generated forms or surveys.
 
 ## Modals:
 
