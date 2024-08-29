@@ -61,11 +61,7 @@ The documentation for our original components can be found below:
 ## - FormBuilder
 
 #### src/components/FormBuilder/elements/layout/index.jsx
-
-#### Overview
-The Layout component is a reusable React component designed to provide a structured layout for form elements. The component supports dynamic form element handling, including deletion, duplication, type selection, and setting the "required" status. The Layout component is highly customizable, allowing developers to pass child components that represent specific form elements.
-
-#### Component Props
+The `Layout` component is a reusable React component designed to provide a structured layout for form elements. The component supports dynamic form element handling, including deletion, duplication, type selection, and setting the "required" status. The Layout component is highly customizable, allowing developers to pass child components that represent specific form elements.
 
 | Prop Name        | Type       | Required | Description                                                                                                                                    | Relations/Connections                                                                                              |
 |------------------|------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
@@ -75,12 +71,8 @@ The Layout component is a reusable React component designed to provide a structu
 | duplicateElement | Function | Yes      | Function to duplicate the form element.                                                                                                         | Tied to the duplicate icon button, allowing the duplication of the form element represented by `item`.             |
 | children       | `node`       | No       | React children components that represent the specific form element to be rendered within the `Layout`.                                           | Directly rendered within the `Grid` component, providing the visual representation of the form element.            |
 
-###### src/components/FormBuilder/elements/TextField.jsx
-
-#### Overview
-The TextFieldInput component is a React component designed to serve as a customizable input field for audit questions. It includes options for additional input types such as Yes/No/N/A checkboxes, comments, and image uploads. The component is flexible, allowing users to toggle these additional options on or off. It utilizes Material-UI icons and Tailwind CSS classes for styling.
-
-#### Component Props:
+#### src/components/FormBuilder/elements/TextField.jsx
+The `TextFieldInput` component is a React component designed to serve as a customizable input field for audit questions. It includes options for additional input types such as Yes/No/N/A checkboxes, comments, and image uploads. The component is flexible, allowing users to toggle these additional options on or off. It utilizes Material-UI icons and Tailwind CSS classes for styling.
 
 | Prop Name             | Type       | Required | Description                                                                                                                | Relations/Connections                                                                                              |
 |-----------------------|------------|----------|----------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
@@ -89,11 +81,8 @@ The TextFieldInput component is a React component designed to serve as a customi
 | `handleCheckboxChange`| `func`   | Yes      | Function to handle the changes in the checkbox selections (Yes/No/N/A, Comments, Image).                                   | Tied to the checkbox inputs, enabling updates to the corresponding properties in `item`.                            |
 | `deleteEl`            | `func`   | Yes      | Function to delete the text field element.                                                                                 | Tied to the delete button, allowing the removal of the text field element represented by `item`.                    |
 
-###### src/components/FormBuilder/Header.jsx
-
-#### Overview
-
-The Header component is a React component designed to serve as a dynamic and customizable header for an audit form. It includes inputs for a title and a description, which can be edited in place. Material-UI's TextField is used for the input fields, and the component is styled using both Tailwind CSS and inline styles.
+#### src/components/FormBuilder/Header.jsx
+The `Header` component is a React component designed to serve as a dynamic and customizable header for an audit form. It includes inputs for a title and a description, which can be edited in place. Material-UI's TextField is used for the input fields, and the component is styled using both Tailwind CSS and inline styles.
 
 #### Component Props
 
@@ -116,7 +105,7 @@ FormBuilder is a self-contained component and does not accept any props. All sta
 
 ## - Modals:
 
-###### src/components/Modals/ShareModal.js
+#### src/components/Modals/ShareModal.js
 
 | **Prop Name** | **Type**  | **Required** | **Description** | **Relationships/Connections** |
 |---------------|-----------|--------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------|
@@ -124,7 +113,7 @@ FormBuilder is a self-contained component and does not accept any props. All sta
 | `handleClose` | `func`    | Yes          | Callback function to close the `ShareModal`. It updates the state in the parent component. | Connected to the `open` prop. Passed down from `SuccessModal`'s `handleShareClose` function. |
 | `auditId`     | `string`  | Yes          | The ID of the audit being shared. Used to track and store which audit is being shared with selected users. | Passed from `SuccessModal` as a prop. Used in Firestore operations to identify the audit being shared. |
 
-###### src/components/Modals/SuccessModal.js
+#### src/components/Modals/SuccessModal.js
 
 | **Prop Name** | **Type**  | **Required** | **Description** | **Relationships/Connections** |
 |---------------|-----------|--------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------|
@@ -134,7 +123,7 @@ FormBuilder is a self-contained component and does not accept any props. All sta
 
 ## - CreateAudit
 
-###### src/layouts/createAudit/index.js
+#### src/layouts/createAudit/index.js
 
 #### Overview
 
@@ -148,18 +137,18 @@ The CreateAudit component is a React component designed to facilitate the creati
 
 ## - States
 
-###### src/components/States/caughtUp.js
+#### src/components/States/caughtUp.js
 - CaughtUp Component: The `CaughtUp` component is a simple React functional component that displays a message indicating that the user is "all caught up." It uses Material-UI for layout and styling, and react-icons to display a green checkmark icon.
 
-###### src/components/States/empty.js
+#### src/components/States/empty.js
 - EmptyState Component: The `EmptyState` component provides a visual placeholder for empty states in the UI. 
 
-###### src/components/States/loading.js
+#### src/components/States/loading.js
 Loading Component: The `Loading` component is a React functional component that displays a loading indicator with an hourglass icon and a "loading" message.
 
 ## - Respond Audit
 
-###### src/layouts/respondAudit/index.js
+#### src/layouts/respondAudit/index.js
 The `RespondAudit` component allows users to respond to an audit by answering a set of questions, submitting comments, and uploading images. It interacts with Firebase Firestore to fetch the audit data, store user responses, and manage any associated files.
 
 | **Prop Name**       | **Type**  | **Required** | **Description**                                                                 | **Relationships/Connections**                                      |
@@ -173,7 +162,7 @@ The `RespondAudit` component allows users to respond to an audit by answering a 
 
 ## - Shared Audits
 
-###### src/layouts/sharedAudits/index.js
+#### src/layouts/sharedAudits/index.js
 The `SharedAudit` component displays a list of audits shared with the currently authenticated user. It leverages Firebase Firestore to retrieve both audit and user data, mapping shared audits to the appropriate user names and audit titles. The data is presented in a table format using Material-UI components, with a "Respond" button available for each audit, allowing the user to navigate to a response page specific to that audit.
 
 | **Prop Name**        | **Type**  | **Required** | **Description**                                                                 | **Relationships/Connections**                                              |
@@ -192,7 +181,7 @@ The `SharedAudit` component displays a list of audits shared with the currently 
 
 ## - Audit Search
 
-###### src/layouts/audit-search/index.js
+#### src/layouts/audit-search/index.js
 The `AuditSearch` component provides a user interface for searching and viewing audits in a table format. It fetches audit data from Firestore, excluding the current user's own audits, and uses Fuse.js for fuzzy searching of audit titles. The component includes a search bar for filtering audits by title and displays results in a table with options to respond to each audit.
 
 | **Prop Name**        | **Type**    | **Required** | **Description**                                                                                     | **Relationships/Connections**                                                                                           |
@@ -208,7 +197,7 @@ The `AuditSearch` component provides a user interface for searching and viewing 
 
 ## - Notifications
 
-###### src/layouts/notifications/index.js
+#### src/layouts/notifications/index.js
 The `Notifications` component fetches and displays a list of audit-related notifications for the currently logged-in user. It retrieves data from Firebase Firestore, including details about the audit and the sender, and presents this information in a list. Each notification includes a clickable area that navigates the user to a response page for the audit.
 
 | **Prop Name**     | **Type**    | **Required** | **Description**                                                                                  | **Relationships/Connections**                                                                                                                                           |
@@ -217,8 +206,6 @@ The `Notifications` component fetches and displays a list of audit-related notif
 | `loading`         | `bool`      | No           | Indicates whether the component is in a loading state.                                           | Managed internally, used to conditionally render a loading spinner or the notifications.                                                                                 |
 | `navigate`        | `function`  | Yes          | React Router hook used to navigate to different routes.                                          | Used in `handleNotificationClick` to navigate to the RespondAudit page for the clicked audit notification.                                                               |
 | `handleNotificationClick` | `function`  | Yes          | Handles the click event for each notification, navigating to the audit response page. | Triggered when a notification is clicked, leveraging `navigate` to route the user to the corresponding audit response page.                                               |
-
-
 
 ## What's included
 
