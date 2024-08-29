@@ -164,7 +164,7 @@ const EditFormModal = ({ open, onClose, formData, onSave }) => {
             onClick={addQuestion}
             variant="contained"
             sx={{
-              backgroundColor: '0da2ff', // Blue background
+              backgroundColor: '0da2ff ', // Blue background
               color: 'lightgray', // Light gray text color
               '&:hover': {
                 backgroundColor: 'darkblue', // Darker blue on hover

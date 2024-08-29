@@ -23,9 +23,6 @@ const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
             <TableCell>
               <MDTypography variant="h6" fontWeight="medium">Title</MDTypography>
             </TableCell>
-            <TableCell>
-              <MDTypography variant="h6" fontWeight="medium">Description</MDTypography>
-            </TableCell>
             <TableCell align="center">
               <MDTypography variant="h6" fontWeight="medium">Actions</MDTypography>
             </TableCell>
@@ -35,61 +32,31 @@ const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
           {forms.map((form) => (
             <React.Fragment key={form.id}>
               <TableRow>
-                <TableCell colSpan={3} style={{ paddingBottom: 0, paddingTop: 0 }}>
-                  <Collapse in={openRow === form.id} timeout="auto" unmountOnExit>
-                    <Box sx={dropdownStyle}>
-                      <Typography sx={titleStyle}>
-                        <strong>Title:</strong> {form.title}
-                      </Typography>
-                      <Typography sx={descriptionStyle}>
-                        <strong>Description:</strong> {form.description}
-                      </Typography>
-                      {form.questions && form.questions.length > 0 ? (
-                        form.questions.map((question, index) => (
-                          <Typography key={index} sx={questionStyle}>
-                            <strong>Question {index + 1}: </strong>
-                            {question.value}
-                          </Typography>
-                        ))
-                      ) : (
-                        <Typography sx={{ fontStyle: 'italic', color: '#555' }}>
-                          No questions available
-                        </Typography>
-                      )}
-                    </Box>
-                  </Collapse>
-                </TableCell>
-              </TableRow>
-              <TableRow>
                 <TableCell>
-                  {/* Title label and form title */}
                   <MDTypography variant="body1" fontWeight="regular">{form.title}</MDTypography>
                 </TableCell>
-                <TableCell align="center" colSpan={2}>
-                  {/* Actions label and action buttons */}
-                  <Typography variant="body1" sx={{ marginBottom: '0.5rem', textAlign: 'center' }}>
-                    <strong>Actions:</strong>
-                  </Typography>
-                  <Box display="flex" justifyContent="center">
-                    <IconButton 
-                      onClick={() => handleToggle(form.id)}
-                      aria-label={openRow === form.id ? 'Collapse row' : 'Expand row'}
-                    >
-                      <AddCircleOutlineOutlined />
-                    </IconButton>
-                    <IconButton onClick={() => handleEdit(form)} aria-label="Edit form">
-                      <EditOutlined />
-                    </IconButton>
-                    <IconButton onClick={() => handleDelete(form.id)} aria-label="Delete form">
-                      <DeleteOutlined />
-                    </IconButton>
-                  </Box>
+                <TableCell align="center">
+                  <IconButton 
+                    onClick={() => handleToggle(form.id)}
+                    aria-label={openRow === form.id ? 'Collapse row' : 'Expand row'}
+                  >
+                    <AddCircleOutlineOutlined />
+                  </IconButton>
+                  <IconButton onClick={() => handleEdit(form)} aria-label="Edit form">
+                    <EditOutlined />
+                  </IconButton>
+                  <IconButton onClick={() => handleDelete(form.id)} aria-label="Delete form">
+                    <DeleteOutlined />
+                  </IconButton>
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell colSpan={3} style={{ paddingBottom: 0, paddingTop: 0 }}>
+                <TableCell colSpan={2} style={{ paddingBottom: 0, paddingTop: 0 }}>
                   <Collapse in={openRow === form.id} timeout="auto" unmountOnExit>
                     <Box sx={dropdownStyle}>
+                      <Typography sx={{ ...questionStyle, marginBottom: '0.5rem' }}>
+                        <strong>Description:</strong> {form.description}
+                      </Typography>
                       {form.questions && form.questions.length > 0 ? (
                         form.questions.map((question, index) => (
                           <Typography key={index} sx={questionStyle}>
@@ -119,18 +86,6 @@ const dropdownStyle = {
   marginTop: '0.5rem',
   paddingLeft: '1rem',
   borderLeft: '2px solid #328CED',
-};
-
-const titleStyle = {
-  marginBottom: '0.5rem',
-  fontSize: '1rem',
-  color: '#333',
-};
-
-const descriptionStyle = {
-  marginBottom: '0.5rem',
-  fontSize: '1rem',
-  color: '#333',
 };
 
 const questionStyle = {
