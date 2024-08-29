@@ -8,8 +8,6 @@ import {
   TextField,
   Box,
   IconButton,
-  FormControlLabel,
-  Checkbox,
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { DeleteOutline } from '@mui/icons-material';
@@ -27,9 +25,10 @@ const EditFormModal = ({ open, onClose, formData, onSave }) => {
       setDescription(formData.description || '');
       const initializedQuestions = (formData.questions || []).map((question) => ({
         ...question,
-        commentsChecked: question.commentsChecked ?? false,
-        imageChecked: question.imageChecked ?? false,
-        yesNoChecked: question.yesNoChecked ?? false,
+        // Remove checkbox-related initialization
+        // commentsChecked: question.commentsChecked ?? false,
+        // imageChecked: question.imageChecked ?? false,
+        // yesNoChecked: question.yesNoChecked ?? false,
       }));
       setQuestions(initializedQuestions);
     }
@@ -68,11 +67,12 @@ const EditFormModal = ({ open, onClose, formData, onSave }) => {
 
   const addQuestion = async () => {
     const newQuestion = {
-      commentsChecked: true,
-      imageChecked: true,
-      questionNumber: questions.length + 1,
+      // Remove checkbox-related properties
+      // commentsChecked: true,
+      // imageChecked: true,
+      // questionNumber: questions.length + 1,
       value: '',
-      yesNoChecked: true,
+      // yesNoChecked: true,
     };
     const updatedQuestions = [...questions, newQuestion];
     setQuestions(updatedQuestions);
@@ -126,7 +126,8 @@ const EditFormModal = ({ open, onClose, formData, onSave }) => {
               onChange={(e) => handleQuestionChange(index, 'value', e.target.value)}
               margin="normal"
             />
-            <FormControlLabel
+            {/* Remove checkbox-related UI elements */}
+            {/* <FormControlLabel
               control={
                 <Checkbox
                   checked={question.commentsChecked}
@@ -152,14 +153,24 @@ const EditFormModal = ({ open, onClose, formData, onSave }) => {
                 />
               }
               label="Yes/No"
-            />
+            /> */}
             <IconButton onClick={() => deleteQuestion(index)} aria-label="Delete question">
               <DeleteOutline />
             </IconButton>
           </Box>
         ))}
         <Box mt={2}>
-          <Button onClick={addQuestion} variant="outlined">
+          <Button
+            onClick={addQuestion}
+            variant="contained"
+            sx={{
+              backgroundColor: '0da2ff', // Blue background
+              color: 'lightgray', // Light gray text color
+              '&:hover': {
+                backgroundColor: 'darkblue', // Darker blue on hover
+              }
+            }}
+          >
             Add Question
           </Button>
         </Box>
@@ -183,11 +194,12 @@ EditFormModal.propTypes = {
     description: PropTypes.string,
     questions: PropTypes.arrayOf(
       PropTypes.shape({
-        commentsChecked: PropTypes.bool,
-        imageChecked: PropTypes.bool,
-        questionNumber: PropTypes.number,
+        // Remove checkbox-related properties
+        // commentsChecked: PropTypes.bool,
+        // imageChecked: PropTypes.bool,
+        // questionNumber: PropTypes.number,
         value: PropTypes.string,
-        yesNoChecked: PropTypes.bool,
+        // yesNoChecked: PropTypes.bool,
       })
     ),
   }).isRequired,
