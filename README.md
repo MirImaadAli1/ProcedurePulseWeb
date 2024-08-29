@@ -60,7 +60,7 @@ The documentation for our original components can be found below:
 
 ## FormBuilder
 
-### Layout
+### src/components/FormBuilder/elements/layout
 
 #### Overview
 The Layout component is a reusable React component designed to provide a structured layout for form elements. It utilizes Material-UI components to create a visually consistent and user-friendly interface. The component supports dynamic form element handling, including deletion, duplication, type selection, and setting the "required" status. The Layout component is highly customizable, allowing developers to pass child components that represent specific form elements.
