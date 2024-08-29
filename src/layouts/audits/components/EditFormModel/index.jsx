@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { DeleteOutline } from '@mui/icons-material';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../../Firebase'; // Adjust the path to your Firebase config
 
 const EditFormModal = ({ open, onClose, formData, onSave }) => {
@@ -25,26 +25,36 @@ const EditFormModal = ({ open, onClose, formData, onSave }) => {
     if (formData) {
       setTitle(formData.title || '');
       setDescription(formData.description || '');
-      setQuestions(formData.questions || []);
+      const initializedQuestions = (formData.questions || []).map((question) => ({
+        ...question,
+        commentsChecked: question.commentsChecked ?? false,
+        imageChecked: question.imageChecked ?? false,
+        yesNoChecked: question.yesNoChecked ?? false,
+      }));
+      setQuestions(initializedQuestions);
     }
   }, [formData]);
 
   const handleSave = async () => {
-    const updatedQuestions = questions.map((question) => ({
-      commentsChecked: question.commentsChecked ?? false,
-      imageChecked: question.imageChecked ?? false,
-      questionNumber: question.questionNumber ?? 0,
-      value: question.value ?? '',
-      yesNoChecked: question.yesNoChecked ?? false,
-    }));
-
     try {
-      await updateDoc(doc(db, 'Audit', formData.id), {
-        title,
-        description,
-        questions: updatedQuestions,
-      });
-      onSave({ ...formData, title, description, questions: updatedQuestions });
+      const docRef = doc(db, 'Audit', formData.id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const existingData = docSnap.data();
+        const updatedQuestions = questions.map((question, index) => ({
+          ...existingData.questions[index],
+          ...question,
+        }));
+
+        await updateDoc(docRef, {
+          title,
+          description,
+          questions: updatedQuestions,
+        });
+
+        onSave({ ...formData, title, description, questions: updatedQuestions });
+      }
     } catch (error) {
       console.error('Error updating document: ', error);
     }
@@ -58,16 +68,15 @@ const EditFormModal = ({ open, onClose, formData, onSave }) => {
 
   const addQuestion = async () => {
     const newQuestion = {
-      commentsChecked: false,
-      imageChecked: false,
+      commentsChecked: true,
+      imageChecked: true,
       questionNumber: questions.length + 1,
       value: '',
-      yesNoChecked: false,
+      yesNoChecked: true,
     };
     const updatedQuestions = [...questions, newQuestion];
     setQuestions(updatedQuestions);
-    
-    // Add new question to Firestore
+
     try {
       await updateDoc(doc(db, 'Audit', formData.id), {
         questions: updatedQuestions,
@@ -81,7 +90,6 @@ const EditFormModal = ({ open, onClose, formData, onSave }) => {
     const updatedQuestions = questions.filter((_, i) => i !== index);
     setQuestions(updatedQuestions);
 
-    // Delete question from Firestore
     try {
       await updateDoc(doc(db, 'Audit', formData.id), {
         questions: updatedQuestions,
@@ -121,7 +129,7 @@ const EditFormModal = ({ open, onClose, formData, onSave }) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={question.commentsChecked ?? false}
+                  checked={question.commentsChecked}
                   onChange={(e) => handleQuestionChange(index, 'commentsChecked', e.target.checked)}
                 />
               }
@@ -130,7 +138,7 @@ const EditFormModal = ({ open, onClose, formData, onSave }) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={question.imageChecked ?? false}
+                  checked={question.imageChecked}
                   onChange={(e) => handleQuestionChange(index, 'imageChecked', e.target.checked)}
                 />
               }
@@ -139,7 +147,7 @@ const EditFormModal = ({ open, onClose, formData, onSave }) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={question.yesNoChecked ?? false}
+                  checked={question.yesNoChecked}
                   onChange={(e) => handleQuestionChange(index, 'yesNoChecked', e.target.checked)}
                 />
               }
