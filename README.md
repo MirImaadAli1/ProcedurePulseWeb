@@ -229,6 +229,20 @@ The Transactions component is a React component that displays a list of recent t
 The Transactions component does not accept any props. It is a self-contained component that manages its display logic internally.
 However, it uses the props in src/layouts/createAudit/components/Transaction/index.js internally
 
+### src/layouts/createAudit/index.js
+
+#### Overview
+
+The CreateAudit component is a React component designed to facilitate the creation of audit forms within a dashboard layout. It integrates the FormBuilder component, allowing users to dynamically build and manage audit forms. The component leverages several dashboard utilities for consistent UI structure. This component is ideal for applications that require the creation and management of audits within a well-structured and user-friendly environment.
+
+#### Component Props
+
+| Prop Name | Type   | Required | Description                                                   | Relations/Connections |
+|-----------|--------|----------|---------------------------------------------------------------|-----------------------|
+| `columns` | Array  | Yes      | The columns configuration for the data tables displayed.      | Retrieved from `authorsTableData` and `projectsTableData`. |
+| `rows`    | Array  | Yes      | The rows data for the tables displayed within the component.  | Retrieved from `authorsTableData` and `projectsTableData`. |
+
+
 ## What's included
 
 Within the download you'll find the following directories and files:
