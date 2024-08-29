@@ -98,12 +98,14 @@ This method duplicates the form element, creating a new one with the same type a
 The TextFieldInput component is a React component designed to serve as a customizable input field for audit questions. It includes options for additional input types such as Yes/No/N/A checkboxes, comments, and image uploads. The component is flexible, allowing users to toggle these additional options on or off. It utilizes Material-UI icons and Tailwind CSS classes for styling.
 
 ### Component Props:
-Prop Name           	Type      	Required	Description                                                                	Relations/Connections
---------------------------------------------------------------------------------------------------------------
-item                	Object    	Yes     	An object representing the text field element.	Connected to all functions handling value and checkbox changes (`handleValue`, `handleCheckboxChange`).
-handleValue         	Function  	Yes     	Function to handle changes in the text field's value.	Used in the input field for updating the value of the text field represented by `item`.
-handleCheckboxChange	Function  	Yes     	Function to handle the changes in the checkbox selections (Yes/No/N/A, Comments, Image).	Tied to the checkbox inputs, enabling updates to the corresponding properties in `item`.
-deleteEl            	Function  	Yes     	Function to delete the text field element.	Tied to the delete button, allowing the removal of the text field element represented by `item`.
+
+| Prop Name             | Type       | Required | Description                                                                                                                | Relations/Connections                                                                                              |
+|-----------------------|------------|----------|----------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| `item`                | Object     | Yes      | An object representing the text field element. It contains `id`, `value`, `yesNoChecked`, `commentsChecked`, and `imageChecked` properties. | Connected to all functions handling value and checkbox changes (`handleValue`, `handleCheckboxChange`).              |
+| `handleValue`         | Function   | Yes      | Function to handle changes in the text field's value.                                                                      | Used in the input field for updating the value of the text field represented by `item`.                             |
+| `handleCheckboxChange`| Function   | Yes      | Function to handle the changes in the checkbox selections (Yes/No/N/A, Comments, Image).                                   | Tied to the checkbox inputs, enabling updates to the corresponding properties in `item`.                            |
+| `deleteEl`            | Function   | Yes      | Function to delete the text field element.                                                                                 | Tied to the delete button, allowing the removal of the text field element represented by `item`.                    |
+
 
 
 ### State
