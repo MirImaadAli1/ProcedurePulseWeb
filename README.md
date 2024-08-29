@@ -93,7 +93,7 @@ The TextFieldInput component is a React component designed to serve as a customi
 
 #### Overview
 
-The Header component is a React component designed to serve as a dynamic and customizable header for an audit form. It includes inputs for a title and a description, which can be edited in place. The component also provides a visual enhancement with a hover effect, making the header more interactive and visually appealing. Material-UI's TextField is used for the input fields, and the component is styled using both Tailwind CSS and inline styles.
+The Header component is a React component designed to serve as a dynamic and customizable header for an audit form. It includes inputs for a title and a description, which can be edited in place. Material-UI's TextField is used for the input fields, and the component is styled using both Tailwind CSS and inline styles.
 
 #### Component Props
 
