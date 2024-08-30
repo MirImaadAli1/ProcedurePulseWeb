@@ -8,18 +8,17 @@ import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import DataTable from 'examples/Tables/DataTable';
 import { db, auth } from "../../Firebase";
-import { collection, getDocs, doc } from "firebase/firestore";
+import { collection, getDocs } from 'firebase/firestore';
 import Loading from "components/States/loading";
 import EmptyState from "components/States/empty";
-import { useNavigate } from 'react-router-dom';
+import ResponseModal from './components/ResponseModal';
 
 function YourResponses() {
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(true);
     const [noData, setNoData] = useState(false);
-    const userMap = {};
-    const auditMap = {};
-    const navigate = useNavigate();
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedResponse, setSelectedResponse] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -33,17 +32,15 @@ function YourResponses() {
 
                 const currentUserId = currentUser.uid;
 
-                // Fetch users collection to map userId to names
                 const usersCollectionRef = collection(db, 'Users');
                 const usersSnapshot = await getDocs(usersCollectionRef);
 
-                // Create a user map of userId -> name
+                const userMap = {};
                 usersSnapshot.docs.forEach(doc => {
                     const userData = doc.data();
                     userMap[userData.uid] = userData.name;
                 });
 
-                // Fetch responses where the current user is the responder
                 const responsesCollectionRef = collection(db, 'Responses');
                 const responsesSnapshot = await getDocs(responsesCollectionRef);
 
@@ -55,23 +52,22 @@ function YourResponses() {
                     setNoData(true);
                 }
 
-                // Fetch audits collection to get titles
                 const auditsCollectionRef = collection(db, 'Audit');
                 const auditsSnapshot = await getDocs(auditsCollectionRef);
 
+                const auditMap = {};
                 auditsSnapshot.docs.forEach(doc => {
                     const auditData = doc.data();
                     auditMap[doc.id] = auditData.title;
                 });
 
-                // Prepare table rows with processed data
                 const tableRows = userResponses.map((item) => ({
                     title: (
                         <MDTypography 
                             variant="caption" 
                             color="text" 
                             fontWeight="medium"
-                            style={{ wordWrap: 'break-word', whiteSpace: 'normal' }} // Ensure wrapping
+                            style={{ wordWrap: 'break-word', whiteSpace: 'normal' }}
                         >
                             {auditMap[item.auditId] || "Unknown Title"}
                         </MDTypography>
@@ -91,7 +87,7 @@ function YourResponses() {
                             variant="contained"
                             style={{ color: 'white', backgroundColor: '#2563eb' }}
                             size="small"
-                            onClick={() => handleViewClick(item.auditId)} // Attach click handler to button
+                            onClick={() => handleViewClick(item)}
                         >
                             View / Edit
                         </Button>
@@ -110,8 +106,20 @@ function YourResponses() {
         fetchData();
     }, []);
 
-    const handleViewClick = (auditId) => {
-        navigate(`/view-audit/${auditId}`); // Navigate to ViewAudit with the auditId
+    const handleViewClick = (response) => {
+        setSelectedResponse(response);
+        setModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        setSelectedResponse(null);
+    };
+
+    const handleSave = (updatedData) => {
+        // Handle save logic if needed
+        console.log('Updated data:', updatedData);
+        handleCloseModal();
     };
 
     const columns = [
@@ -152,7 +160,7 @@ function YourResponses() {
 
                                 <MDBox pt={3}>
                                     <DataTable
-                                        table={{ columns, rows }} // Display all responses
+                                        table={{ columns, rows }}
                                         isSorted={false}
                                         entriesPerPage={false}
                                         showTotalEntries={false}
@@ -164,6 +172,13 @@ function YourResponses() {
                     </Grid>
                 )}
             </MDBox>
+
+            <ResponseModal
+                open={modalOpen}
+                onClose={handleCloseModal}
+                formData={selectedResponse}
+                onSave={handleSave}
+            />
         </DashboardLayout>
     );
 }
