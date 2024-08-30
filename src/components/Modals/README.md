@@ -1,4 +1,4 @@
-## - Modals:
+## Modals:
 ------------------------------------
 * #### /src/components/Modals/ShareModal.js
 ShareModal is a React component designed for sharing content or resources with other users. It provides input fields for specifying recipient details, typically using email addresses or usernames. The component also includes options for selecting the content to be shared and a button to execute the sharing action.
