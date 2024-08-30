@@ -23,7 +23,7 @@ const QuestionBox = styled(MDBox)(({ theme }) => ({
     padding: theme.spacing(3),
     borderRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.background.paper,
-    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+    boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.2)', // Custom shadow on all sides
     marginBottom: theme.spacing(4),
 }));
 
@@ -209,15 +209,15 @@ function RespondAudit() {
                                             </QuestionBox>
                                         ))}
                                         <MDBox mt={4} display="flex" justifyContent="flex-end">
-                                                <button className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-md whitespace-nowrap mr-2"
-                                                    onClick={handleSubmit}
-                                                    style={{
-                                                        padding: '6px 16px',
-                                                        fontSize: '0.875rem',
-                                                        minHeight: '36px',
-                                                    }}>
-                                                    Submit Response
-                                                </button>
+                                            <button className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-md whitespace-nowrap mr-2"
+                                                onClick={handleSubmit}
+                                                style={{
+                                                    padding: '6px 16px',
+                                                    fontSize: '0.875rem',
+                                                    minHeight: '36px',
+                                                }}>
+                                                Submit Response
+                                            </button>
                                         </MDBox>
                                     </div>
                                 ) : (

@@ -78,9 +78,11 @@ function AuditSearch() {
             </MDBox>
           ),
           title: (
-            <MDTypography variant="caption" color="text" fontWeight="medium">
-              {item.title}
-            </MDTypography>
+            <div className="w-72 break-words">
+              <MDTypography variant="caption" color="text" fontWeight="medium">
+                {item.title}
+              </MDTypography>
+            </div>
           ),
           createdAt: (
             <MDTypography variant="caption" color="text" fontWeight="medium">
