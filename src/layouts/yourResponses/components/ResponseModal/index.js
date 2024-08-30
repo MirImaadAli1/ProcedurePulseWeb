@@ -135,7 +135,8 @@ const ResponseModal = ({ open, onClose, formData, onSave }) => {
                         ))}
                         <Button
                             variant="contained"
-                            color="primary"
+                            style={{ color: 'white', backgroundColor: '#2563eb' }}
+                            size="small"
                             onClick={handleSave}
                             sx={{ marginTop: 2 }}
                         >

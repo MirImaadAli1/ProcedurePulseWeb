@@ -7,7 +7,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 import { TextFieldInput } from './elements';
 import { collection, doc, setDoc } from 'firebase/firestore';
-import { Button, Alert } from '@mui/material'; 
+import { Button, Alert } from '@mui/material';
 import Header from './Header';
 import { db, auth } from '../../Firebase';
 import SuccessModal from 'components/Modals/SuccessModal';
@@ -36,7 +36,7 @@ const FormBuilder = () => {
       const creationDate = new Date();
       const auditCollectionRef = collection(db, 'Audit');
       const docRef = doc(auditCollectionRef, auditId);
-      
+
       await setDoc(docRef, {
         userId: user.uid,
         title,
@@ -65,13 +65,13 @@ const FormBuilder = () => {
 
   const addElement = () => {
     setData(prevState => [
-      ...prevState, 
-      { 
-        id: uuid(), 
-        value: '', 
-        yesNoChecked: true, 
-        commentsChecked: true, 
-        imageChecked: true 
+      ...prevState,
+      {
+        id: uuid(),
+        value: '',
+        yesNoChecked: true,
+        commentsChecked: true,
+        imageChecked: true
       }
     ]);
   };
@@ -142,7 +142,7 @@ const FormBuilder = () => {
               <AddCircleOutlineOutlinedIcon color="primary" />
             </IconButton>
           </Tooltip>
-          <Button
+          {/* <Button
             variant="contained"
             color="primary"
             onClick={handleSubmit}
@@ -150,7 +150,19 @@ const FormBuilder = () => {
             fullWidth
           >
             Save Form
-          </Button>
+          </Button> */}
+          <button className="bg-blue-600 text-white font-semibold rounded-md whitespace-nowrap mr-2"
+            onClick={(handleSubmit)}
+            style={{
+              width: '100%', // Makes the button full width like `fullWidth` in Material-UI
+              padding: '6px 16px', // Matches Material-UI's default padding for contained buttons
+              fontSize: '0.875rem', // Default font-size for Material-UI buttons (14px)
+              minHeight: '36px', // Default minimum height for Material-UI buttons
+              marginTop: '1rem', // To match the `marginTop` of 1rem in your second button
+            }}>
+            Save Audit
+          </button>
+
         </Grid>
       </Grid>
       <SuccessModal
