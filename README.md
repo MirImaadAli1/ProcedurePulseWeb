@@ -103,24 +103,6 @@ The FormBuilder component is a powerful React tool for creating dynamic, customi
 
 FormBuilder is a self-contained component and does not accept any props. All state and functionality are managed within the component itself.
 
-## - Modals:
-
-#### src/components/Modals/ShareModal.js
-
-| **Prop Name** | **Type**  | **Required** | **Description** | **Relationships/Connections** |
-|---------------|-----------|--------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------|
-| `open`        | `bool`    | Yes          | Controls whether the `ShareModal` is open (`true`) or closed (`false`).         | Managed by `SuccessModal`'s state (`shareOpen`). Passed down as a prop from `SuccessModal`. |
-| `handleClose` | `func`    | Yes          | Callback function to close the `ShareModal`. It updates the state in the parent component. | Connected to the `open` prop. Passed down from `SuccessModal`'s `handleShareClose` function. |
-| `auditId`     | `string`  | Yes          | The ID of the audit being shared. Used to track and store which audit is being shared with selected users. | Passed from `SuccessModal` as a prop. Used in Firestore operations to identify the audit being shared. |
-
-#### src/components/Modals/SuccessModal.js
-
-| **Prop Name** | **Type**  | **Required** | **Description** | **Relationships/Connections** |
-|---------------|-----------|--------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------|
-| `open`        | `bool`    | Yes          | Controls whether the `SuccessModal` is open (`true`) or closed (`false`).       | Typically managed by the parent component’s state. Controls the visibility of the `SuccessModal`. |
-| `handleClose` | `func`    | Yes          | Callback function to close the `SuccessModal`. It should update the state that controls the `open` prop. | Relates to the `open` prop. When invoked, it changes `open` to `false`, closing the modal. Also indirectly related to `ShareModal` because it closes the modal that triggers the share functionality. |
-| `auditId`     | `string`  | Yes          | The ID of the audit that was created, used to pass to the `ShareModal` for sharing. | Passed down to the `ShareModal` component. The `ShareModal` uses this ID for Firestore operations related to sharing the audit. |
-
 ## - CreateAudit
 
 #### src/layouts/createAudit/index.js
@@ -134,17 +116,6 @@ The CreateAudit component is a React component designed to facilitate the creati
 |-----------|--------|----------|---------------------------------------------------------------|-----------------------|
 | `columns` | `array`  | Yes      | The columns configuration for the data tables displayed.      | Retrieved from `authorsTableData` and `projectsTableData`. |
 | `rows`    | `array` | Yes      | The rows data for the tables displayed within the component.  | Retrieved from `authorsTableData` and `projectsTableData`. |
-
-## - States
-
-#### src/components/States/caughtUp.js
-- CaughtUp Component: The `CaughtUp` component is a simple React functional component that displays a message indicating that the user is "all caught up." It uses Material-UI for layout and styling, and react-icons to display a green checkmark icon.
-
-#### src/components/States/empty.js
-- EmptyState Component: The `EmptyState` component provides a visual placeholder for empty states in the UI. 
-
-#### src/components/States/loading.js
-Loading Component: The `Loading` component is a React functional component that displays a loading indicator with an hourglass icon and a "loading" message.
 
 ## - Respond Audit
 
