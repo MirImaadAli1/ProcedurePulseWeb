@@ -142,25 +142,30 @@ function RespondAudit() {
                                 {audit ? (
                                     <div>
                                         <MDTypography variant="h3">{audit.title}</MDTypography>
-                                        <MDTypography variant="h6" sx={{ mb: 2 }}>{audit.description}</MDTypography>
+                                        <MDTypography fontWeight="light" sx={{ mb: 2 }}>{audit.description}</MDTypography>
                                         {audit.questions.map((question, index) => (
                                             <QuestionBox key={index}>
-                                                <QuestionTitle variant="body1">
-                                                    {question.questionNumber}: {question.value}
+                                                <QuestionTitle>
+                                                    <MDTypography fontWeight="regular">
+                                                        {question.questionNumber}: {question.value}
+                                                    </MDTypography>
                                                 </QuestionTitle>
 
                                                 {/* Yes/No/N/A multiple-choice input */}
-                                                <AnswerGroup>
-                                                    <RadioGroup
-                                                        row
-                                                        name={`yesNo-${question.questionNumber}`}
-                                                        onChange={(e) => handleRadioChange(question.questionNumber, e.target.value)}
-                                                    >
-                                                        <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                                                        <FormControlLabel value="No" control={<Radio />} label="No" />
-                                                        <FormControlLabel value="N/A" control={<Radio />} label="N/A" />
-                                                    </RadioGroup>
-                                                </AnswerGroup>
+                                                <MDTypography fontWeight="regular">
+                                                    <AnswerGroup>
+
+                                                        <RadioGroup
+                                                            row
+                                                            name={`yesNo-${question.questionNumber}`}
+                                                            onChange={(e) => handleRadioChange(question.questionNumber, e.target.value)}
+                                                        >
+                                                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                                                            <FormControlLabel value="N/A" control={<Radio />} label="N/A" />
+                                                        </RadioGroup>
+                                                    </AnswerGroup>
+                                                </MDTypography>
 
                                                 {/* Text comments input */}
                                                 <AnswerGroup>
@@ -186,13 +191,15 @@ function RespondAudit() {
                                             </QuestionBox>
                                         ))}
                                         <MDBox mt={4} display="flex" justifyContent="flex-end">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                onClick={handleSubmit}
-                                            >
+                                            <button className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-md whitespace-nowrap mr-2"
+                                                onClick={(handleSubmit)}
+                                                style={{
+                                                    padding: '6px 16px', // This is the default padding for Material-UI's contained buttons
+                                                    fontSize: '0.875rem', // Default font-size for Material-UI buttons (14px)
+                                                    minHeight: '36px', // Default minimum height for Material-UI buttons
+                                                }}>
                                                 Submit Response
-                                            </Button>
+                                            </button>
                                         </MDBox>
                                     </div>
                                 ) : (
