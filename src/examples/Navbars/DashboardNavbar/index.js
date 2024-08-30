@@ -18,6 +18,7 @@ import {
   navbarIconButton,
   navbarMobileMenu,
 } from 'examples/Navbars/DashboardNavbar/styles';
+import { useNavigate } from 'react-router-dom';
 import {
   useMaterialUIController,
   setTransparentNavbar,
@@ -26,6 +27,7 @@ import {
 } from 'context';
 import Breadcrumbs from 'examples/Breadcrumbs';
 import { formatDistanceToNow } from 'date-fns';
+import Loading from 'components/States/loading';
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
@@ -34,6 +36,9 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const [openMenu, setOpenMenu] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [viewedNotificationIds, setViewedNotificationIds] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
+  const [error, setError] = useState(null); // Add error state
+  const navigate = useNavigate(); // Initialize the navigate function
   const route = useLocation().pathname.split('/').slice(1);
 
   const markNotificationsAsSeen = async (notificationIds) => {
@@ -78,7 +83,10 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      if (!auth.currentUser) return;
+      if (!auth.currentUser) {
+        setLoading(false);
+        return;
+      }
 
       const userId = auth.currentUser.uid;
 
@@ -112,8 +120,12 @@ function DashboardNavbar({ absolute, light, isMini }) {
         }));
 
         setNotifications(notificationsData);
+        setError(null); // Clear any previous errors
       } catch (error) {
         console.error('Error fetching notifications:', error);
+        setError('Error fetching notifications');
+      } finally {
+        setLoading(false); // Set loading to false when done
       }
     };
 
@@ -121,6 +133,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
       fetchNotifications();
     }
   }, [openMenu]);
+
+
 
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
@@ -143,6 +157,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
     }
   };
 
+  // Handler for clicking a notification
+  const handleNotificationClick = (auditId) => {
+    navigate(`/respond-audit/${auditId}`); // Navigate to RespondAudit with the auditId
+  };
+
   const renderMenu = () => (
     <Menu
       anchorEl={openMenu}
@@ -155,9 +174,33 @@ function DashboardNavbar({ absolute, light, isMini }) {
       onClose={handleCloseMenu}
       sx={{ mt: 2 }}
     >
-      {notifications.length > 0 ? (
+      {loading ? (
+        <Loading />
+      ) : error ? (
+        <MDBox p={2} display="flex" flexDirection="column">
+          <MDTypography variant="body2" color="error">
+            {error}
+          </MDTypography>
+        </MDBox>
+      ) : notifications.length > 0 ? (
         notifications.map((notification, index) => (
-          <MDBox key={index} p={2} display="flex" flexDirection="column" onClick={() => handleNotificationView(notification.id)}>
+          <MDBox 
+            key={index} 
+            p={2} 
+            display="flex" 
+            flexDirection="column" 
+            sx={{
+              border: '1px solid', 
+              borderColor: 'grey.400', // You can adjust the color as needed
+              borderRadius: '10px',
+              marginBottom: '8px', // Space between notifications
+              cursor: 'pointer' // Change cursor to pointer on hover
+            }}
+            onClick={() => {
+              handleNotificationView(notification.id);
+              handleNotificationClick(notification.auditId); // Navigate to RespondAudit
+            }}
+          >
             <MDTypography variant="body2" color="textPrimary">
               {notification.senderName} shared audit "{notification.auditTitle}" with you
             </MDTypography>
@@ -220,27 +263,29 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 variant="contained"
                 onClick={handleOpenMenu}
               >
-                <Icon sx={iconsStyle}>notifications</Icon>
+                <Icon sx={iconsStyle} fontSize="medium">
+                  notifications
+                </Icon>
               </IconButton>
-              {renderMenu()}
             </MDBox>
           </MDBox>
         )}
       </Toolbar>
+      {renderMenu()}
     </AppBar>
   );
 }
-
-DashboardNavbar.defaultProps = {
-  absolute: false,
-  light: false,
-  isMini: false,
-};
 
 DashboardNavbar.propTypes = {
   absolute: PropTypes.bool,
   light: PropTypes.bool,
   isMini: PropTypes.bool,
+};
+
+DashboardNavbar.defaultProps = {
+  absolute: false,
+  light: false,
+  isMini: false,
 };
 
 export default DashboardNavbar;

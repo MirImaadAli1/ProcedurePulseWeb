@@ -162,7 +162,17 @@ const routes = [
     key: 'landing-page',
     route: '/',
     component: <LandingPage />,
-  }
+  },
+  {
+    key: "sign-in",
+    route: "/authentication/sign-in",
+    component: <SignIn />,
+  },
+  {
+    key: "sign-up",
+    route: "/authentication/sign-up",
+    component: <SignUp />,
+  },
 ];
 
 export default routes;
