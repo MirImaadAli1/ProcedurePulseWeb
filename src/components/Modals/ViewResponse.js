@@ -126,7 +126,7 @@ const ViewResponseModal = ({ open, onClose, response }) => {
                                                                 display: 'block',
                                                                 marginRight: 'auto',
                                                                 objectFit: 'contain', // Ensure the image fits within the bounds
-                                                                borderRadius: '10px',  // Optional: add some rounding to the corners
+                                                                borderRadius: '10   px',  // Optional: add some rounding to the corners
                                                             }}
                                                         />
                                                     </div>
