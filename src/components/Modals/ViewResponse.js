@@ -117,7 +117,17 @@ const ViewResponseModal = ({ open, onClose, response }) => {
                                                         <img
                                                             src={answer.imageUrl}
                                                             alt={`Answer ${index}`}
-                                                            style={{ maxWidth: '100%', marginTop: '8px' }}
+                                                            style={{
+                                                                maxWidth: '400px',  // Set maximum width
+                                                                maxHeight: '400px', // Set maximum height
+                                                                width: 'auto',      // Maintain aspect ratio
+                                                                height: 'auto',
+                                                                marginTop: '8px',
+                                                                display: 'block',
+                                                                marginRight: 'auto',
+                                                                objectFit: 'contain', // Ensure the image fits within the bounds
+                                                                borderRadius: '10px',  // Optional: add some rounding to the corners
+                                                            }}
                                                         />
                                                     </div>
                                                 ) : (
@@ -128,6 +138,7 @@ const ViewResponseModal = ({ open, onClose, response }) => {
                                             'Not answered'
                                         )}
                                     </Typography>
+
                                 </Box>
                             );
                         })}

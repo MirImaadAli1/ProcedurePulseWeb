@@ -55,11 +55,14 @@ const FormBuilder = () => {
       setDescription('');
       setData([]);
       setCreatedAuditId(auditId);
-      setOpenModal(true);
-      setShowAlert(false);
+      
     } catch (e) {
       console.error('Error adding document: ', e);
       setShowAlert(true);
+    }finally{
+      setOpenModal(true);
+      setShowAlert(false);
+
     }
   };
 
