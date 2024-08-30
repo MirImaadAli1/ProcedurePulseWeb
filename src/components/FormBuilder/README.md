@@ -1,9 +1,6 @@
-## - FormBuilder
+## FormBuilder
 
-* ### Elements directory
-  * ### Layout directory
-
-  * #### src/components/FormBuilder/elements/layout/index.jsx
+* #### src/components/FormBuilder/elements/layout/index.jsx
 The `Layout` component is a reusable React component designed to provide a structured layout for form elements. The component supports dynamic form element handling, including deletion, duplication, type selection, and setting the "required" status. The Layout component is highly customizable, allowing developers to pass child components that represent specific form elements.
 
 | Prop Name        | Type       | Required | Description                                                                                                                                    | Relations/Connections                                                                                              |
@@ -26,7 +23,6 @@ The `TextFieldInput` component is a React component designed to serve as a custo
 
 * #### src/components/FormBuilder/Header.jsx
 The `Header` component is a React component designed to serve as a dynamic and customizable header for an audit form. It includes inputs for a title and a description, which can be edited in place. Material-UI's TextField is used for the input fields, and the component is styled using both Tailwind CSS and inline styles.
-
 
 #### Component Props
 
