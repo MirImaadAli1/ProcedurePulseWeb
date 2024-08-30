@@ -344,4 +344,4 @@ function Configurator() {
   );
 }
 
-export default Configurator;
+// export default Configurator;
