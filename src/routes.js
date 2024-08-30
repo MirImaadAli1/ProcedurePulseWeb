@@ -57,14 +57,6 @@ import YourResponses from 'layouts/yourResponses';
 const routes = [
   {
     type: 'collapse',
-    name: 'Landing-Page',
-    key: 'landing-page',
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: '/',
-    component: <LandingPage />,
-  },
-  {
-    type: 'collapse',
     name: 'Dashboard',
     key: 'dashboard',
     icon: <Icon fontSize="small">dashboard</Icon>,
@@ -118,7 +110,7 @@ const routes = [
     key: 'your-responses',
     icon: <Icon fontSize="small">assignment</Icon>,
     route: '/yourresponses',
-    component: <YourResponses  />,
+    component: <YourResponses />,
   },
   {
     type: 'collapse',
@@ -126,7 +118,7 @@ const routes = [
     key: 'shared-audits',
     icon: <Icon fontSize="small">assignment</Icon>,
     route: '/sharedaudits',
-    component: <SharedAudit     />,
+    component: <SharedAudit />,
   },
   // {
   //   type: 'collapse',
@@ -166,6 +158,11 @@ const routes = [
     component: <RespondAudit />,
     // No `type`, `name`, or `icon` so it's not displayed in the sidebar
   },
+  {
+    key: 'landing-page',
+    route: '/',
+    component: <LandingPage />,
+  }
 ];
 
 export default routes;

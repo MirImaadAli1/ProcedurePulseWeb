@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import MDBox from 'components/MDBox';
@@ -8,20 +9,26 @@ import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import DataTable from 'examples/Tables/DataTable';
 import { db } from "../../Firebase";
 import { collection, getDocs } from "firebase/firestore";
-import { getAuth } from "firebase/auth"; // Import for Firebase Auth
+import { getAuth } from "firebase/auth";
 import TextField from '@mui/material/TextField';
 import Fuse from 'fuse.js';
 import { Button } from '@mui/material';
+import EmptyState from "components/States/empty";
+import Loading from "components/States/loading";
 
 function AuditSearch() {
   const [rows, setRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredRows, setFilteredRows] = useState([]);
   const [fuse, setFuse] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const userMap = {};
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
+
       try {
         const auth = getAuth();
         const currentUser = auth.currentUser;
@@ -54,19 +61,19 @@ function AuditSearch() {
             return {
               id: doc.id,
               title: auditData.title,
-              creator: userMap[auditData.userId], // Replace userId with name if available
-              userId: auditData.userId, // Keep the userId for filtering
+              creator: userMap[auditData.userId],
+              userId: auditData.userId,
               createdAt: auditData.createdAt?.toDate() || new Date(),
             };
           })
-          .filter(audit => audit.userId !== currentUserId); // Exclude current user's audits
+          .filter(audit => audit.userId !== currentUserId);
 
         // Prepare table rows with processed data
         const tableRows = dataArray.map((item) => ({
           author: (
             <MDBox display="flex" alignItems="center" lineHeight={1}>
               <MDTypography display="block" variant="button" fontWeight="medium">
-                {item.creator} {/* This will now show the user's name */}
+                {item.creator}
               </MDTypography>
             </MDBox>
           ),
@@ -85,24 +92,25 @@ function AuditSearch() {
               variant="contained"
               style={{ color: 'white', backgroundColor: '#2563eb' }}
               size="small"
+              onClick={() => handleRespondClick(item.id)}
             >
               Respond
             </Button>
           ),
-          rawItem: item, // Store raw item for matching with Fuse.js results
+          rawItem: item,
         }));
 
         setRows(tableRows);
 
-        // Initialize Fuse.js for fuzzy search
         const fuseInstance = new Fuse(dataArray, {
-          keys: ['title'], // Search by title
-          threshold: 0.3,  // Sensitivity
+          keys: ['title'],
+          threshold: 0.3,
         });
         setFuse(fuseInstance);
       } catch (error) {
         console.error("Error fetching Firestore data:", error);
       }
+      setIsLoading(false);
     };
 
     fetchData();
@@ -113,19 +121,22 @@ function AuditSearch() {
     const searchValue = e.target.value;
     setSearchTerm(searchValue);
 
-    // If the search bar is empty, clear the filtered results
     if (!searchValue) {
-      setFilteredRows([]); // Clear the table when search bar is empty
+      setFilteredRows([]);
     } else if (fuse) {
       const fuzzyResults = fuse.search(searchValue);
       const filtered = fuzzyResults.map(result => {
         const matchedItem = result.item;
-        return rows.find(row => row.rawItem.id === matchedItem.id); // Match by unique ID
-      }).filter(Boolean); // Filter out undefined values
+        return rows.find(row => row.rawItem.id === matchedItem.id);
+      }).filter(Boolean);
 
       setFilteredRows(filtered);
     }
   };
+
+  const handleRespondClick = (auditId) => {
+    navigate(`/respond-audit/${auditId}`);
+  }
 
   const columns = [
     { Header: 'creator', accessor: 'author', width: '30%', align: 'left' },
@@ -137,48 +148,66 @@ function AuditSearch() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox pt={6} pb={3}>
-        <Grid container spacing={6}>
-          <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-              >
-                <MDTypography variant="h6" color="white">
-                  Search Audits
-                </MDTypography>
-              </MDBox>
+      {/* Show the Loading component when data is loading */}
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <MDBox pt={6} pb={3}>
+          <Grid container spacing={6}>
+            <Grid item xs={12}>
+              <Card>
+                <MDBox
+                  mx={2}
+                  mt={-3}
+                  py={3}
+                  px={2}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                >
+                  <MDTypography variant="h6" color="white">
+                    Search Audits
+                  </MDTypography>
+                </MDBox>
 
-              <MDBox pt={3} px={2}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  label="Search by audit title"
-                  value={searchTerm}
-                  onChange={handleSearch}
-                />
-              </MDBox>
+                <MDBox pt={3} px={2}>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    label="Search by audit title"
+                    value={searchTerm}
+                    onChange={handleSearch}
+                  />
+                </MDBox>
 
-              <MDBox pt={3}>
-                <DataTable
-                  table={{ columns, rows: searchTerm ? filteredRows : [] }} // Conditionally show rows
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
-              </MDBox>
-            </Card>
+                <MDBox pt={3}>
+                  {searchTerm === "" && !isLoading && (
+                    <div className="flex justify-center mb-3">
+                      <MDTypography variant="h6" color="text">
+                        Try searching for an audit!
+                      </MDTypography>
+                    </div>
+                  )}
+                  {searchTerm !== "" && filteredRows.length === 0 && !isLoading && (
+                    <EmptyState />
+                  )}
+                  {filteredRows.length > 0 && (
+                    <DataTable
+                      table={{ columns, rows: filteredRows }}
+                      isSorted={false}
+                      entriesPerPage={false}
+                      showTotalEntries={false}
+                      noEndBorder
+                    />
+                  )}
+                </MDBox>
+              </Card>
+            </Grid>
           </Grid>
-        </Grid>
-      </MDBox>
+        </MDBox>
+      )
+      }
     </DashboardLayout>
   );
 }

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // Authentication layout components
 import BasicLayout from 'layouts/authentication/components/BasicLayout';
@@ -6,6 +6,10 @@ import './landing-page-style.css';
 import svgImage from './../../assets/images/bg-landing-page-layered-waves-haikei.svg'
 
 function LandingPage() {
+  const navigate = useNavigate();
+  const handleGetStartedClick = () => {
+    navigate('/sign-up');
+  }
   return (
     <>
       {/* Inline styles */}
@@ -23,6 +27,17 @@ function LandingPage() {
               height: 20vh; /* Reduce height on smaller screens */
             }
           }
+
+          /* Custom responsive typography for title */
+          @media (max-width: 768px) {
+            .title {
+              font-size: 2rem; /* Smaller font size for mobile devices */
+            }
+            .subtitle {
+              font-size: 1rem; /* Smaller font size for mobile devices */
+            }
+          }
+
         `}
       </style>
 
@@ -46,7 +61,7 @@ function LandingPage() {
                 </div>
 
                 {/* Sign Up Button */}
-                <button className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-md whitespace-nowrap mr-2 z-10">
+                <button className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-md whitespace-nowrap mr-2 z-10" onClick={handleGetStartedClick}>
                   Get Started!
                 </button>
                 <br></br>
