@@ -157,10 +157,18 @@ function DashboardNavbar({ absolute, light, isMini }) {
     }
   };
 
-  // Handler for clicking a notification
-  const handleNotificationClick = (auditId) => {
-    navigate(`/respond-audit/${auditId}`); // Navigate to RespondAudit with the auditId
+  const handleNotificationClick = async (notificationId, auditId) => {
+    try {
+      // Mark this notification as seen
+      await markNotificationsAsSeen([notificationId]); 
+  
+      // Navigate to RespondAudit with the auditId
+      navigate(`/respond-audit/${auditId}`); 
+    } catch (error) {
+      console.error('Error handling notification click:', error);
+    }
   };
+  
 
   const renderMenu = () => (
     <Menu
@@ -174,9 +182,9 @@ function DashboardNavbar({ absolute, light, isMini }) {
       onClose={handleCloseMenu}
       sx={{ mt: 2 }}
     >
-      {loading ? (
+      {loading ? ( // Show Loading component if loading
         <Loading />
-      ) : error ? (
+      ) : error ? ( // Show error message if there's an error
         <MDBox p={2} display="flex" flexDirection="column">
           <MDTypography variant="body2" color="error">
             {error}
@@ -184,22 +192,20 @@ function DashboardNavbar({ absolute, light, isMini }) {
         </MDBox>
       ) : notifications.length > 0 ? (
         notifications.map((notification, index) => (
-          <MDBox 
-            key={index} 
-            p={2} 
-            display="flex" 
-            flexDirection="column" 
-            sx={{
-              border: '1px solid', 
-              borderColor: 'grey.400', // You can adjust the color as needed
-              borderRadius: '10px',
-              marginBottom: '8px', // Space between notifications
-              cursor: 'pointer' // Change cursor to pointer on hover
-            }}
+          <MDBox
+            key={index}
+            p={2}
+            display="flex"
+            flexDirection="column"
+            border="1px solid"
+            borderRadius="10px"
+            borderColor="grey.300" // Adjust color as needed
+            mb={2} // Add margin-bottom for spacing between notifications
             onClick={() => {
               handleNotificationView(notification.id);
-              handleNotificationClick(notification.auditId); // Navigate to RespondAudit
+              handleNotificationClick(notification.id, notification.auditId); // Navigate to RespondAudit
             }}
+
           >
             <MDTypography variant="body2" color="textPrimary">
               {notification.senderName} shared audit "{notification.auditTitle}" with you

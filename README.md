@@ -58,67 +58,6 @@ The documentation for the MD components can be found [here](https://www.creative
 
 The documentation for our original components can be found below:
 
-## - Respond Audit
-
-#### src/layouts/respondAudit/index.js
-The `RespondAudit` component allows users to respond to an audit by answering a set of questions, submitting comments, and uploading images. It interacts with Firebase Firestore to fetch the audit data, store user responses, and manage any associated files.
-
-| **Prop Name**       | **Type**  | **Required** | **Description**                                                                 | **Relationships/Connections**                                      |
-|---------------------|-----------|--------------|---------------------------------------------------------------------------------|--------------------------------------------------------------------|
-| `auditId`           | `string`  | Yes          | The ID of the audit to which the user is responding. This ID is used to fetch the audit data from Firestore and associate the responses with the correct audit. | Passed from the route parameters via `useParams`. Used in Firestore operations to identify and fetch the audit. |
-| `setAuditOwner`     | `func`    | No           | Function to set the `auditOwner` state, which tracks the user ID of the audit's creator. | Connected to the `auditId` to fetch the relevant user ID from Firestore. |
-| `handleTextChange`  | `func`    | Yes          | Function to handle changes in text input fields, updating the `answers` state.  | Connected to text fields within each question component. Updates the `answers` state. |
-| `handleRadioChange` | `func`    | Yes          | Function to handle changes in radio buttons, updating the `answers` state.      | Connected to radio button inputs within each question component. Updates the `answers` state. |
-| `handleImageChange` | `func`    | Yes          | Function to handle image uploads and update the `answers` state with the image URL. | Connected to image input fields within each question component. Utilizes Firebase Storage to upload images and retrieve URLs. |
-| `handleSubmit`      | `func`    | Yes          | Function to submit all responses, saving them to Firestore under the `Responses` collection. | Executes the Firestore operations to store responses associated with the `auditId` and `auditOwner`. |
-
-## - Shared Audits
-
-#### src/layouts/sharedAudits/index.js
-The `SharedAudit` component displays a list of audits shared with the currently authenticated user. It leverages Firebase Firestore to retrieve both audit and user data, mapping shared audits to the appropriate user names and audit titles. The data is presented in a table format using Material-UI components, with a "Respond" button available for each audit, allowing the user to navigate to a response page specific to that audit.
-
-| **Prop Name**        | **Type**  | **Required** | **Description**                                                                 | **Relationships/Connections**                                              |
-|----------------------|-----------|--------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------|
-| `auditId`            | `string`  | Yes          | The ID of the audit that is being shared. Used to retrieve and display audit details. | Retrieved from Firestore in the `fetchData` function, used to link the audit to the response. |
-| `setRows`            | `func`    | No           | Function to set the state of `rows`, which contains data for the `DataTable`.   | Populated within the `useEffect` hook after fetching data from Firestore.   |
-| `handleRespondClick` | `func`    | Yes          | Function to handle clicks on the "Respond" button, navigating the user to the `RespondAudit` page. | Connected to the `Button` component for each audit. Uses the `useNavigate` hook to redirect. |
-| `userMap`            | `object`  | No           | An object mapping user IDs to names, used to display the name of the user who shared each audit. | Populated by fetching user data from Firestore in the `fetchData` function. |
-| `auditMap`           | `object`  | No           | An object mapping audit IDs to their titles, used to display the title of each shared audit. | Populated by fetching audit data from Firestore in the `fetchData` function. |
-| `loading`            | `bool`    | No           | A boolean state that determines if the data is still loading. Displays a loading spinner if true. | Managed within the `useEffect` hook. Controls the display of `Loading` or `EmptyState` components. |
-| `noData`             | `bool`    | No           | A boolean state that indicates if there are no shared audits to display.       | Managed within the `useEffect` hook. Controls the display of `EmptyState` component. |
-| `columns`            | `array`   | Yes          | Array defining the columns of the `DataTable`, including headers and accessors. | Passed as a prop to the `DataTable` component to structure the table layout. |
-| `rows`               | `array`   | Yes          | Array containing the data to be displayed in the `DataTable`.                   | Set in the `fetchData` function after processing Firestore data.            |
-| `fetchData`          | `func`    | No           | Function triggered in the `useEffect` hook on component mount to fetch user and audit data from Firestore. | Populates `rows`, `userMap`, and `auditMap`. Connects data to `DataTable`. |
-| `handleRespondClick` | `func`    | Yes          | Handles the "Respond" button click, navigating the user to `RespondAudit` page. | Uses `useNavigate` to redirect, using the `auditId` to link to the correct audit. |
-
-## - Audit Search
-
-#### src/layouts/audit-search/index.js
-The `AuditSearch` component provides a user interface for searching and viewing audits in a table format. It fetches audit data from Firestore, excluding the current user's own audits, and uses Fuse.js for fuzzy searching of audit titles. The component includes a search bar for filtering audits by title and displays results in a table with options to respond to each audit.
-
-| **Prop Name**        | **Type**    | **Required** | **Description**                                                                                     | **Relationships/Connections**                                                                                           |
-|----------------------|-------------|--------------|-----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| `rows`               | `array`     | No           | Array of audit objects formatted for display in the table.                                          | Populated with audit data from Firestore. Includes creator, title, creation date, and action button.                  |
-| `searchTerm`         | `string`    | No           | Current value of the search input field.                                                             | Used to filter audit rows based on title via Fuse.js search results.                                                     |
-| `filteredRows`       | `array`     | No           | Array of audit rows filtered by the search term.                                                     | Updated based on the results of the fuzzy search performed by Fuse.js.                                                  |
-| `fuse`               | `object`    | No           | Instance of Fuse.js used for fuzzy searching of audit titles.                                        | Initialized with audit data for performing search operations.                                                            |
-| `userMap`            | `object`    | No           | Mapping of user IDs to user names, used to display creator names in the table.                        | Populated with user data from the 'Users' collection in Firestore.                                                        |
-| `handleSearch`       | `function`  | Yes          | Handles input changes in the search field and updates filtered results based on the search term.      | Updates `searchTerm` and filters `rows` based on the search term using Fuse.js.                                         |
-| `fetchData`          | `function`  | Yes          | Fetches audit data and user information from Firestore and initializes Fuse.js for search functionality. | Populates `rows`, `userMap`, and `fuse` with data fetched from Firestore.                                                |
-| `columns`            | `array`     | No           | Defines the columns for the DataTable component.                                                     | Includes columns for creator, title, created date, and action button.                                                   |
-
-## - Notifications
-
-#### src/layouts/notifications/index.js
-The `Notifications` component fetches and displays a list of audit-related notifications for the currently logged-in user. It retrieves data from Firebase Firestore, including details about the audit and the sender, and presents this information in a list. Each notification includes a clickable area that navigates the user to a response page for the audit.
-
-| **Prop Name**     | **Type**    | **Required** | **Description**                                                                                  | **Relationships/Connections**                                                                                                                                           |
-|-------------------|-------------|--------------|--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `notifications`   | `array`     | No           | Array holding the notifications fetched from Firestore.                                          | Populated by fetching data from the 'Notifications' collection in Firestore. Includes sender’s name, audit title, and shared timestamp, sorted by `sharedAt` in descending order. |
-| `loading`         | `bool`      | No           | Indicates whether the component is in a loading state.                                           | Managed internally, used to conditionally render a loading spinner or the notifications.                                                                                 |
-| `navigate`        | `function`  | Yes          | React Router hook used to navigate to different routes.                                          | Used in `handleNotificationClick` to navigate to the RespondAudit page for the clicked audit notification.                                                               |
-| `handleNotificationClick` | `function`  | Yes          | Handles the click event for each notification, navigating to the audit response page. | Triggered when a notification is clicked, leveraging `navigate` to route the user to the corresponding audit response page.                                               |
-
 ## What's included
 
 Within the download you'll find the following directories and files:

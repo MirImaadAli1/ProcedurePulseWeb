@@ -14,10 +14,11 @@ import MDTypography from 'components/MDTypography';
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import { db, storage, auth } from '../../Firebase';
-import { doc, getDoc, collection, addDoc } from "firebase/firestore";
+import { doc, getDoc, collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import ResponseSuccess from 'components/Modals/ResponseSucess';
+import ResponseEditModal from 'components/Modals/ResponseEditForm';
 
-// Styled components for improved CSS
 const QuestionBox = styled(MDBox)(({ theme }) => ({
     padding: theme.spacing(3),
     borderRadius: theme.shape.borderRadius,
@@ -39,7 +40,10 @@ function RespondAudit() {
     const { auditId } = useParams();
     const [audit, setAudit] = useState(null);
     const [answers, setAnswers] = useState({});
+    const [successModalOpen, setSuccessModalOpen] = useState(false);
+    const [editModalOpen, setEditModalOpen] = useState(false); // State for edit modal
     const [auditOwner, setAuditOwner] = useState('');
+    const [hasResponded, setHasResponded] = useState(false); // State to check if the user has responded
 
     useEffect(() => {
         const fetchAudit = async () => {
@@ -51,6 +55,22 @@ function RespondAudit() {
                     const auditData = auditSnap.data();
                     setAudit(auditData);
                     setAuditOwner(auditData.userId);
+
+                    // Check if the user has already responded
+                    const userId = auth.currentUser?.uid;
+                    if (userId) {
+                        const responseQuery = query(
+                            collection(db, "Responses"),
+                            where("auditId", "==", auditId),
+                            where("responderId", "==", userId)
+                        );
+                        const responseSnap = await getDocs(responseQuery);
+
+                        if (!responseSnap.empty) {
+                            setHasResponded(true); // User has already responded
+                            setEditModalOpen(true); // Open edit modal
+                        }
+                    }
                 } else {
                     console.log("No such audit exists!");
                 }
@@ -104,7 +124,6 @@ function RespondAudit() {
         }
     };
 
-
     const handleSubmit = async () => {
         try {
             const userId = auth.currentUser?.uid;
@@ -124,7 +143,7 @@ function RespondAudit() {
                 answers: formattedAnswers,
             });
 
-            alert("Responses submitted successfully!");
+            setSuccessModalOpen(true); // Open the success modal
         } catch (error) {
             console.error("Error submitting responses:", error);
             alert("Failed to submit responses.");
@@ -154,7 +173,6 @@ function RespondAudit() {
                                                 {/* Yes/No/N/A multiple-choice input */}
                                                 <MDTypography fontWeight="regular">
                                                     <AnswerGroup>
-
                                                         <RadioGroup
                                                             row
                                                             name={`yesNo-${question.questionNumber}`}
@@ -192,11 +210,11 @@ function RespondAudit() {
                                         ))}
                                         <MDBox mt={4} display="flex" justifyContent="flex-end">
                                             <button className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-md whitespace-nowrap mr-2"
-                                                onClick={(handleSubmit)}
+                                                onClick={handleSubmit}
                                                 style={{
-                                                    padding: '6px 16px', // This is the default padding for Material-UI's contained buttons
-                                                    fontSize: '0.875rem', // Default font-size for Material-UI buttons (14px)
-                                                    minHeight: '36px', // Default minimum height for Material-UI buttons
+                                                    padding: '6px 16px',
+                                                    fontSize: '0.875rem',
+                                                    minHeight: '36px',
                                                 }}>
                                                 Submit Response
                                             </button>
@@ -209,6 +227,12 @@ function RespondAudit() {
                         </Card>
                     </Grid>
                 </Grid>
+                {/* <ResponseSuccess open={successModalOpen} handleClose={() => setSuccessModalOpen(false)} /> */}
+                {/* <ResponseEditModal
+                    open={editModalOpen}
+                    handleClose={() => setEditModalOpen(false)}
+                    
+                /> */}
             </MDBox>
         </DashboardLayout>
     );

@@ -1,0 +1,16 @@
+## Audit Search
+
+#### src/layouts/audit-search/index.js
+The `AuditSearch` component provides a user interface for searching and viewing audits in a table format. It fetches audit data from Firestore, excluding the current user's own audits, and uses Fuse.js for fuzzy searching of audit titles. The component includes a search bar for filtering audits by title and displays results in a table with options to respond to each audit.
+
+#### Component Props
+| **Prop Name**        | **Type**    | **Required** | **Description**                                                                                     | **Relationships/Connections**                                                                                           |
+|----------------------|-------------|--------------|-----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| `rows`               | `array`     | No           | Array of audit objects formatted for display in the table.                                          | Populated with audit data from Firestore. Includes creator, title, creation date, and action button.                  |
+| `searchTerm`         | `string`    | No           | Current value of the search input field.                                                             | Used to filter audit rows based on title via Fuse.js search results.                                                     |
+| `filteredRows`       | `array`     | No           | Array of audit rows filtered by the search term.                                                     | Updated based on the results of the fuzzy search performed by Fuse.js.                                                  |
+| `fuse`               | `object`    | No           | Instance of Fuse.js used for fuzzy searching of audit titles.                                        | Initialized with audit data for performing search operations.                                                            |
+| `userMap`            | `object`    | No           | Mapping of user IDs to user names, used to display creator names in the table.                        | Populated with user data from the 'Users' collection in Firestore.                                                        |
+| `handleSearch`       | `function`  | Yes          | Handles input changes in the search field and updates filtered results based on the search term.      | Updates `searchTerm` and filters `rows` based on the search term using Fuse.js.                                         |
+| `fetchData`          | `function`  | Yes          | Fetches audit data and user information from Firestore and initializes Fuse.js for search functionality. | Populates `rows`, `userMap`, and `fuse` with data fetched from Firestore.                                                |
+| `columns`            | `array`     | No           | Defines the columns for the DataTable component.                                                     | Includes columns for creator, title, created date, and action button.                                                   |
