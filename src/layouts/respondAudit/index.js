@@ -22,7 +22,7 @@ const QuestionBox = styled(MDBox)(({ theme }) => ({
     padding: theme.spacing(3),
     borderRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[1],
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Custom shadow on all sides
     marginBottom: theme.spacing(4),
 }));
 
