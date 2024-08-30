@@ -1,6 +1,6 @@
 ## Notifications
 
-#### src/layouts/notifications/index.js
+#### /src/layouts/notifications/index.js
 The `Notifications` component fetches and displays a list of audit-related notifications for the currently logged-in user. It retrieves data from Firebase Firestore, including details about the audit and the sender, and presents this information in a list. Each notification includes a clickable area that navigates the user to a response page for the audit.
 
 #### Component Props
