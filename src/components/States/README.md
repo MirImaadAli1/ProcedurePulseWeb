@@ -1,4 +1,4 @@
-### States
+## States:
 ---------------
 - #### /src/components/States/caughtUp.js
 The `CaughtUp` component is a simple React functional component that displays a message indicating that the user is "all caught up." It uses Material-UI for layout and styling, and react-icons to display a green checkmark icon.
