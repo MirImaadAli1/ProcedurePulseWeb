@@ -6,7 +6,7 @@ import svgImage from './../../assets/images/bg-landing-page-layered-waves-haikei
 function LandingPage() {
   const navigate = useNavigate();
   const handleGetStartedClick = () => {
-    navigate('/sign-up');
+    navigate('/authentication/sign-up');
   };
 
   return (
