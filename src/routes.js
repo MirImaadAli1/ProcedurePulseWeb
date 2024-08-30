@@ -111,7 +111,7 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: '/yourresponses',
     component: <YourResponses />,
-  },
+  },  
   {
     type: 'collapse',
     name: 'Shared Audits',
