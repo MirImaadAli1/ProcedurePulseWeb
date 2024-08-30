@@ -83,17 +83,23 @@ const ResponseModal = ({ open, onClose, formData, onSave }) => {
             onClose={onClose}
             aria-labelledby="response-modal-title"
             aria-describedby="response-modal-description"
+            closeAfterTransition
         >
             <Box sx={{
-                width: 400,
-                padding: 2,
-                backgroundColor: 'white', // Setting background color to white
-                borderRadius: 1,
-                boxShadow: 3,
-                margin: 'auto',
-                marginTop: '10%',
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 500,
+                maxWidth: '90%', // Ensure it doesn't exceed viewport width
+                bgcolor: 'background.paper', // Solid background color
+                borderRadius: 2,
+                boxShadow: 24,
+                p: 4,
+                outline: 'none', // Remove focus outline
+                overflow: 'hidden', // Hide overflow
             }}>
-                <Typography id="response-modal-title" variant="h6" component="h2">
+                <Typography id="response-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
                     Audit Name: {auditData ? auditData.title : 'Loading...'}
                 </Typography>
                 {loading ? (
@@ -108,28 +114,36 @@ const ResponseModal = ({ open, onClose, formData, onSave }) => {
                                 <TextField
                                     fullWidth
                                     variant="outlined"
+                                    multiline
+                                    minRows={1} // Adjust as needed
+                                    maxRows={3} // Adjust as needed
                                     value={comments}
                                     onChange={(e) => handleChange(questionNumber, 'comments', e.target.value)}
                                     placeholder="Enter your comments"
                                     label="Comments"
-                                />
-                                <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    value={imageUrl}
-                                    onChange={(e) => handleChange(questionNumber, 'imageUrl', e.target.value)}
-                                    placeholder="Enter image URL"
-                                    label="Image URL"
                                     sx={{ marginTop: 1 }}
                                 />
                                 <TextField
                                     fullWidth
                                     variant="outlined"
+                                    multiline
+                                    value={imageUrl}
+                                    minRows={1} // Adjust as needed
+                                    maxRows={3} // Adjust as needed
+                                    onChange={(e) => handleChange(questionNumber, 'imageUrl', e.target.value)}
+                                    placeholder="Enter image URL"
+                                    label="Image URL"
+                                    sx={{ marginTop: 2 }}
+                                />
+                                <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    multiline
                                     value={yesNoNa}
                                     onChange={(e) => handleChange(questionNumber, 'yesNoNa', e.target.value)}
                                     placeholder="Yes/No/NA"
                                     label="Yes/No/NA"
-                                    sx={{ marginTop: 1 }}
+                                    sx={{ marginTop: 2 }}
                                 />
                             </Box>
                         ))}
