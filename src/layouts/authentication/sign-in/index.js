@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import bgImage from 'assets/images/greybg.jpg';
+import { useNavigate, Link, Route } from 'react-router-dom';
+// import bgImage from 'assets/images/greybg.jpg';
 import Card from '@mui/material/Card';
 import Switch from '@mui/material/Switch';
 import MDBox from 'components/MDBox';
@@ -9,10 +9,14 @@ import MDInput from 'components/MDInput';
 import MDButton from 'components/MDButton';
 import BasicLayout from 'layouts/authentication/components/BasicLayout';
 import { auth } from '../../../Firebase.js';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { useMaterialUIController } from 'context';
 import AuthSuccess from '../authSuccess.js';
 import AuthFailure from '../authFailure.js';
+import svgImage from '../../../assets/images/blob-scene-haikei.svg';
+import zIndex from '@mui/material/styles/zIndex.js';
+// import bgImage from '../../../assets/images/greybg2.jpg';
+// import Cover from 'layouts/authentication/reset-password/cover';
 
 function Basic() {
   const [email, setEmail] = useState('');
@@ -39,10 +43,13 @@ function Basic() {
       });
   };
 
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
+  
+  const handleResetPassword = () => {
+    navigate('/reset-password');
+  };
 
   return (
-    <BasicLayout image={bgImage}>
+    <BasicLayout image={svgImage}>
       <Card
         sx={{
           borderRadius: '16px',
@@ -54,7 +61,6 @@ function Basic() {
           bgColor={darkMode ? 'dark' : 'white'}
           borderRadius="lg"
           coloredShadow="dark"
-          mt={-1}
           p={1}
           pt={2}
           mb={1}
@@ -65,6 +71,7 @@ function Basic() {
             borderBottomLeftRadius: '0px',
             borderBottomRightRadius: '0px',
             marginBottom: '0px',
+            overflow: 'hidden',
           }}
         >
           <MDTypography variant="h4" fontWeight="medium" color="dark" mt={1}>
@@ -99,16 +106,15 @@ function Basic() {
                 }}
               />
             </MDBox>
-            <MDBox display="flex" alignItems="center" ml={-1} pt={1} pb={-1}>
-              <Switch checked={rememberMe} onChange={handleSetRememberMe} />
+            <MDBox display="flex" alignItems="center" ml={0.5} pt={1} pb={-1}>
               <MDTypography
                 variant="button"
                 fontWeight="regular"
                 color="dark"
-                onClick={handleSetRememberMe}
+                onClick={handleResetPassword}
                 sx={{ cursor: 'pointer', userSelect: 'none', ml: -1 }}
               >
-                &nbsp;&nbsp;Remember me
+                &nbsp;&nbsp;Reset Password
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
