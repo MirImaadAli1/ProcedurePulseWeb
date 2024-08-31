@@ -40,15 +40,8 @@ import React, { lazy, Suspense } from 'react';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 // @mui icons
 import Icon from '@mui/material/Icon';
-<<<<<<< HEAD
-=======
-import Audits from 'layouts/audits';
-import Audit_search from 'layouts/audit-search';
-import SharedAudit from 'layouts/sharedAudits';
-import YourResponses from 'layouts/yourResponses';
 import Cover from 'layouts/authentication/reset-password/cover';
 
->>>>>>> 06662a5a7bb7490ba114ca19256a1f4e2d0511ff
 import withAuth from 'components/PrivateRoute';
 // Lazy load components
 const Dashboard = lazy(() => import('layouts/dashboard'));
