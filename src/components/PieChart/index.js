@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db, auth } from '../../Firebase';
+import { db, auth } from '../../Firebase'; // Ensure this path is correct
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 
@@ -9,61 +9,61 @@ function PieChartComponent() {
     const [pieChartData, setPieChartData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [noData, setNoData] = useState(false);
-
+    const currentUser = auth.currentUser;
+  
     useEffect(() => {
-        const fetchData = async () => {
+        if (!currentUser) {
+            console.error("User not authenticated.");
+            setLoading(false);
+            return;
+        }
+
+        const currentUserId = currentUser.uid;
+
+        // Fetch audits shared with the user
+        const fetchSharedAudits = async () => {
             try {
-                const currentUser = auth.currentUser;
-
-                if (!currentUser) {
-                    console.error("User not authenticated.");
-                    return;
-                }
-
-                const currentUserId = currentUser.uid;
-
-                // Fetch user's audits
-                const auditsCollectionRef = collection(db, 'Audit');
-                const auditsQuery = query(auditsCollectionRef, where('userId', '==', currentUserId));
-                const auditsSnapshot = await getDocs(auditsQuery);
-                const auditIds = auditsSnapshot.docs.map(doc => doc.id);
-
-                // Fetch responses for these audits
-                let responsesCount = 0;
-                let totalAudits = auditIds.length;
-
-                for (const auditId of auditIds) {
-                    const responsesCollectionRef = collection(db, 'Responses');
-                    const responsesQuery = query(responsesCollectionRef, where('auditId', '==', auditId));
-                    const responsesSnapshot = await getDocs(responsesQuery);
-                    responsesCount += responsesSnapshot.size;
-                }
-
-                // Fetch shared audits
                 const sharedAuditsCollectionRef = collection(db, 'SharedAudits');
                 const sharedAuditsQuery = query(sharedAuditsCollectionRef, where('sharedWith', '==', currentUserId));
                 const sharedAuditsSnapshot = await getDocs(sharedAuditsQuery);
+
                 const sharedAudits = sharedAuditsSnapshot.docs.map(doc => doc.data());
-                const respondedCount = sharedAudits.filter(audit => auditIds.includes(audit.auditId)).length;
+                const sharedAuditIds = sharedAudits.map(audit => audit.auditId);
+
+                if (sharedAudits.length === 0) {
+                    setNoData(true);
+                    setLoading(false);
+                    return;
+                }
+
+                // Fetch responses to these audits by the current user
+                const responsesCollectionRef = collection(db, 'Responses');
+                const responsesQueries = sharedAuditIds.map(auditId => 
+                    query(responsesCollectionRef, where('auditId', '==', auditId), where('responderId', '==', currentUserId))
+                );
+
+                const responsesSnapshots = await Promise.all(responsesQueries.map(q => getDocs(q)));
+                const respondedCount = responsesSnapshots.reduce((total, snapshot) => total + snapshot.size, 0);
                 const notRespondedCount = sharedAudits.length - respondedCount;
 
                 setPieChartData([
                     { name: 'Responded', value: respondedCount },
                     { name: 'Not Responded', value: notRespondedCount },
                 ]);
-
                 setLoading(false);
+
             } catch (error) {
                 console.error("Error fetching Firestore data:", error);
+                setNoData(true);
                 setLoading(false);
             }
         };
 
-        fetchData();
-    }, []);
+        fetchSharedAudits();
+    }, [currentUser]);
 
-    if (loading) return <div>Loading...</div>;
-    if (noData) return <div>No data available</div>;
+    if (loading) return <MDBox py={3} display="flex" justifyContent="center"><div>Loading...</div></MDBox>;
+    if (noData) return <MDBox py={3} display="flex" justifyContent="center"><div>No data available</div></MDBox>;
 
     return (
         <MDBox>
@@ -94,7 +94,7 @@ function PieChartComponent() {
                         label
                     >
                         {pieChartData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#8884d8' : '#82ca9d'} />
+                            <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#2b79e3' : '#ff008b'} />
                         ))}
                     </Pie>
                     <Tooltip />
