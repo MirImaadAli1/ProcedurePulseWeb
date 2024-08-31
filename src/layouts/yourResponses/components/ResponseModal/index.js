@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Box, Typography, TextField, Button, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
+
 import { collection, query, where, getDocs, getDoc, doc } from 'firebase/firestore';
 import { db, storage } from '../../../../Firebase'; // Adjust import based on your project structure
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'; // For image upload

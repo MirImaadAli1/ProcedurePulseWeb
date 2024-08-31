@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Modal, Typography, Button, TextField, List, ListItem, ListItemText, Alert, Chip } from '@mui/material';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Alert from '@mui/material/Alert';
+import Chip from '@mui/material/Chip';
 import PropTypes from 'prop-types';
 import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { db, auth } from '../../Firebase.js'; // Adjust path if necessary

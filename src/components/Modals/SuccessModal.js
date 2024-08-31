@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Modal, Typography, Button, IconButton } from '@mui/material';
+import Modal from '@mui/material/Modal';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
 import { Close } from '@mui/icons-material';
 import PropTypes from 'prop-types';

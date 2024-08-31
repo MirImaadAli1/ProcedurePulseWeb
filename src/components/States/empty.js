@@ -1,5 +1,7 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+
 import { ReactComponent as RobotEmpty } from '../../assets/images/robot-svgrepo-com.svg'; // Ensure the path is correct
 
 const EmptyState = () => {

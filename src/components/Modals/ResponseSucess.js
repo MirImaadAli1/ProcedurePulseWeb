@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
-import { Modal, Typography, IconButton } from '@mui/material';
+import Modal from '@mui/material/Modal';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
 import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
 import { Close } from '@mui/icons-material';
 import PropTypes from 'prop-types';

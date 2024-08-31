@@ -1,7 +1,6 @@
 import React from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import IconButton from '@mui/material/IconButton';
 import { FaTimesCircle } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 import MDTypography from 'components/MDTypography';

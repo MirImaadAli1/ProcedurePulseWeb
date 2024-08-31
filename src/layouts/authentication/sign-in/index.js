@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate, Link, Route } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 // import bgImage from 'assets/images/greybg.jpg';
 import Card from '@mui/material/Card';
-import Switch from '@mui/material/Switch';
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 import MDInput from 'components/MDInput';
