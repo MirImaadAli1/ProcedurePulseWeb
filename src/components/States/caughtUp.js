@@ -1,6 +1,7 @@
 import React from 'react';
 import { MdCheckCircle } from 'react-icons/md';
-import { Box, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 const CaughtUp = () => {
   return (

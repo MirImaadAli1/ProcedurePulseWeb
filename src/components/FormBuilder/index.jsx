@@ -6,7 +6,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 import { collection, doc, setDoc } from 'firebase/firestore';
-import { Alert } from '@mui/material';
+import Alert from '@mui/material/Alert'; // Specific import for MUI Alert
 import { db, auth } from '../../Firebase';
 import SuccessModal from 'components/Modals/SuccessModal';
 import Header from './Header';

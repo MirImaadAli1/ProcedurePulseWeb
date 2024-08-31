@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import MDBox from 'components/MDBox';
-import { Button } from "@mui/material";
+import Button from '@mui/material/Button';
 import MDTypography from 'components/MDTypography';
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
