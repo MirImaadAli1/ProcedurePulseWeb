@@ -43,7 +43,8 @@ const styles = {
         marginLeft: '20px',
         maxWidth: '350px',
         padding: '10px',
-        borderRadius: '8px',
+    borderRadius: '8px',
+        backgroundColor: '#403e3e',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     },
     scrollableList: {
