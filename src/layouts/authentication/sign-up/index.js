@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-import bgImage from 'assets/images/greybg.jpg';
+import svgImage from '../../../assets/images/blob-scene-haikei-2.svg';
 import { Link } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import Switch from '@mui/material/Switch';
@@ -60,7 +60,7 @@ function Basic() {
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
   return (
-    <BasicLayout image={bgImage}>
+    <BasicLayout image={svgImage}>
       <Card
         sx={{
           borderRadius: '16px',

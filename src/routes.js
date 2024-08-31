@@ -53,6 +53,8 @@ import Audits from 'layouts/audits';
 import Audit_search from 'layouts/audit-search';
 import SharedAudit from 'layouts/sharedAudits';
 import YourResponses from 'layouts/yourResponses';
+import Cover from 'layouts/authentication/reset-password/cover';
+
 
 const routes = [
   {
@@ -172,6 +174,12 @@ const routes = [
     key: "sign-up",
     route: "/authentication/sign-up",
     component: <SignUp />,
+  },
+  {
+    key: 'reset-password',
+    route: '/reset-password',
+    component: <Cover />,
+    // No `type`, `name`, or `icon` means it's hidden from the sidebar
   },
 ];
 
