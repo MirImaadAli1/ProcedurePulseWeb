@@ -1,48 +1,86 @@
-## FormBuilder
+## Authentication
 
-* #### src/components/FormBuilder/elements/layout/index.jsx
-The `Layout` component is a reusable React component designed to provide a structured layout for form elements. The component supports dynamic form element handling, including deletion, duplication, type selection, and setting the "required" status. The Layout component is highly customizable, allowing developers to pass child components that represent specific form elements.
+* #### src/layouts/authentication/authFailure.js
+The `AuthFailure` component is a React component designed to display an error message in a modal dialog when an authentication operation fails. It provides a visual indication of the failure with a red error icon, offerong users an option to close the modal and try the operation again.
 
-| Prop Name        | Type       | Required | Description                                                                                                                                    | Relations/Connections                                                                                              |
-|------------------|------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| item           |  `object`     | Yes      | An object representing the form element. It contains `id`, `value`, `required`, and `type` properties.                                          | Connected to all form element handler functions (`handleValue`, `deleteEl`, `handleRequired`, `handleElType`).      |
-| handleValue    | `func`   | Yes      | Function to handle changes in the form element's value.                                                                                         | Used in child components for updating the value of the specific form element represented by `item`.                |
-| deleteEl       | `func`   | Yes      | Function to delete the form element.                                                                                                            | Tied to the delete icon button, allowing the removal of the form element represented by `item`.                    |
-| duplicateElement | Function | Yes      | Function to duplicate the form element.                                                                                                         | Tied to the duplicate icon button, allowing the duplication of the form element represented by `item`.             |
-| children       | `node`       | No       | React children components that represent the specific form element to be rendered within the `Layout`.                                           | Directly rendered within the `Grid` component, providing the visual representation of the form element.            |
+| Prop Name    | Type     | Required | Description                                                                      |
+|--------------|----------|----------|----------------------------------------------------------------------------------|
+| `open`       | `boolean`  | Yes      | Controls the visibility of the modal.                                            |
+| `onClose`    | `func` | Yes      | Function to close the modal.                                                     |
+| `errorMessage` | `string` | No       | The error message to display inside the modal.                                   |
 
 
 
-* #### src/components/FormBuilder/elements/TextField.jsx
-The `TextFieldInput` component is a React component designed to serve as a customizable input field for audit questions. It includes options for additional input types such as Yes/No/N/A checkboxes, comments, and image uploads. The component is flexible, allowing users to toggle these additional options on or off. It utilizes Material-UI icons and Tailwind CSS classes for styling.
+* #### src/layouts/authentication/authSuccess.js
+The `AuthSuccess` component is a React component designed to display a success message in a modal dialog after an operation is successfully completed. It provides visual confirmation with a green checkmark icon and includes a button to proceed to a specified path. Ito utilizes React Router's useNavigate for handling navigation upon user confirmation.
 
-| Prop Name             | Type       | Required | Description                                                                                                                | Relations/Connections                                                                                              |
-|-----------------------|------------|----------|----------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| `item`                | `object`     | Yes      | An object representing the text field element. It contains `id`, `value`, `yesNoChecked`, `commentsChecked`, and `imageChecked` properties. | Connected to all functions handling value and checkbox changes (`handleValue`, `handleCheckboxChange`).              |
-| `handleValue`         | `func`   | Yes      | Function to handle changes in the text field's value.                                                                      | Used in the input field for updating the value of the text field represented by `item`.                             |
-| `handleCheckboxChange`| `func`   | Yes      | Function to handle the changes in the checkbox selections (Yes/No/N/A, Comments, Image).                                   | Tied to the checkbox inputs, enabling updates to the corresponding properties in `item`.                            |
-| `deleteEl`            | `func`   | Yes      | Function to delete the text field element.                                                                                 | Tied to the delete button, allowing the removal of the text field element represented by `item`.                    |
+| Prop Name    | Type     | Required | Description                                                                      |
+|--------------|----------|----------|----------------------------------------------------------------------------------|
+| `open`       | `boolean`  | Yes      | Controls the visibility of the modal.                                            |
+| `onClose`    | `func` | Yes      | Function to close the modal.                                                     |
+| `redirectPath` | `string` | Yes      | The path to navigate to after the user clicks the "Proceed" button.              |
 
 
-* #### src/components/FormBuilder/Header.jsx
-The `Header` component is a React component designed to serve as a dynamic and customizable header for an audit form. It includes inputs for a title and a description, which can be edited in place. Material-UI's TextField is used for the input fields, and the component is styled using both Tailwind CSS and inline styles.
+
+* #### src/layouts/authentication/sign-in/index.js
+This `Basic` component is a React component designed for user authentication, specifically for signing in. It provides a user interface for inputting an email and password, with options to remember the user. Upon successful sign-in, it displays a success modal and redirects the user to the dashboard. If the sign-in fails, an error modal is displayed with the relevant error message. The component leverages Firebase for authentication.
 
 #### Component Props
 
-| Prop Name        | Type     | Required | Description                                                                                           | Relations/Connections                                                                                          |
-|------------------|----------|----------|-------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| `title`          | `string`   | Yes      | The title of the form or audit. It is displayed as a large, bold text and can be edited by the user.   | Used in the `TextField` component for setting the initial value and updating the title via `setTitle`.          |
-| `description`    | `string`   | Yes      | The description of the form or audit. It provides additional context and can also be edited.           | Used in the `TextField` component for setting the initial value and updating the description via `setDescription`. |
-| `setTitle`       | `func` | Yes      | A function to update the title state in the parent component.                                          | Connected to the `onChange` event of the title `TextField` to handle updates to the title value.                |
-| `setDescription` | `func` | Yes      | A function to update the description state in the parent component.                                    | Connected to the `onChange` event of the description `TextField` to handle updates to the description value.     |
+This `Basic` component does not accept external props. It manages its state and behavior internally.
 
-
-* #### src/components/FormBuilder/index.jsx
+* #### src/layouts/authentication/sign-up/index.js
 
 #### Overview
 
-The `FormBuilder` component is a powerful React tool for creating dynamic, customizable forms. It allows users to add, reorder, and configure form elements on the fly, with real-time data storage handled by Firebase.
+The `Basic` component is a React component designed for user registration (sign-up). It provides a user-friendly interface for inputting a username, email, and password. Upon successful sign-up, the user is redirected to the sign-in page, and their details are saved in Firebase Firestore. If the sign-up process fails, an error message is displayed in a modal. The component utilizes Firebase for user authentication and Firestore for storing user details.
 
 #### Component Props
 
-`FormBuilder` is a self-contained component and does not accept any props. All state and functionality are managed within the component itself.
+This `Basic` component does not accept external props. It manages its state and behavior internally.
+
+* #### src/layouts/authentication/reset-password/cover/index.js
+
+The Cover component is a React component designed for a password reset page. It provides a user interface for users to input their email address and request a password reset. 
+
+#### Component Props
+
+This `Cover` component does not accept external props. It manages its state and behavior internally.
+
+* #### src/layouts/authentication/components/BasicLayout/index.js
+
+The `BasicLayout` component is a React layout component designed to provide a consistent and visually appealing background for authentication pages or other full-page layouts. It features a customizable background image with optional dark mode support. The layout centers its children within the viewport, making it ideal for forms, cards, or other central content.
+
+#### Component Props
+
+| Prop Name  | Type     | Required | Description                                                                      |
+|------------|----------|----------|----------------------------------------------------------------------------------|
+| `image`    | `string`   | Yes      | The URL of the background image to be displayed.                                 |
+| `children` | `node`     | Yes      | The content to be displayed within the centered grid, such as forms or cards.    |
+
+* #### src/layouts/authentication/components/CoverLayout/index.js
+
+The `CoverLayout` component is a React layout component designed to provide a visually appealing cover section for authentication pages or other important content. The layout centers its children within a specific portion of the viewport, making it ideal for forms or other central content.
+
+#### Component Props
+
+| Prop Name    | Type     | Required | Description                                                                      |
+|--------------|----------|----------|----------------------------------------------------------------------------------|
+| `coverHeight`| `string`   | No       | The height of the cover section. Defaults to '35vh'.                              |
+| `image`      | `string`   | Yes      | The URL of the background image to be displayed.                                 |
+| `children`   | `node`     | Yes      | The content to be displayed within the centered grid, such as forms or cards.    |
+
+* #### src/layouts/authentication/components/Footer/index.js
+
+The `Footer` component is a React component designed to provide a footer section at the bottom of the page. It features customizable text and links, with an option to adjust the color scheme based on a light or dark mode setting. The footer is designed to be responsive, adjusting its layout for different screen sizes.
+
+#### Component Props
+
+| Prop Name  | Type     | Required | Description                                                                      |
+|------------|----------|----------|----------------------------------------------------------------------------------|
+| `light`    | `boolean`  | No       | Determines the color scheme of the footer. If true, the footer uses a light color scheme. Defaults to false. |
+
+
+
+
+
