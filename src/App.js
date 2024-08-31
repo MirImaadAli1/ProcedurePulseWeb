@@ -1,8 +1,7 @@
-import { useState, useEffect, useMemo } from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useState, useMemo, useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import Icon from '@mui/material/Icon';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 
@@ -13,12 +12,11 @@ import themeRTL from 'assets/theme/theme-rtl';
 import themeDark from 'assets/theme-dark';
 import themeDarkRTL from 'assets/theme-dark/theme-rtl';
 import rtlPlugin from 'stylis-plugin-rtl';
-import PrivateRoute from 'components/PrivateRoute'; // Import the PrivateRoute component
+import ProtectedRoute from 'components/PrivateRoute';
 
 // Images
 import brandWhite from 'assets/images/logo-ct.png';
 import brandDark from 'assets/images/logo-ct-dark.png';
-
 
 import routes from 'routes';
 import { useMaterialUIController, setMiniSidenav } from 'context';
@@ -38,7 +36,6 @@ export default function App() {
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
-  const { pathname } = useLocation();
 
   useMemo(() => {
     const cacheRtl = createCache({
@@ -72,28 +69,33 @@ export default function App() {
   useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
-  }, [pathname]);
+  }, []);
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
       if (route.collapse) {
         return getRoutes(route.collapse);
       }
-
+  
       if (route.route) {
-        const RouteComponent = route.private ? PrivateRoute : Route; // Use PrivateRoute if route is private
         return (
-          <RouteComponent
+          <Route
             path={route.route}
-            element={route.component}
+            element={
+              route.private ? (
+                <ProtectedRoute>{route.component}</ProtectedRoute>
+              ) : (
+                route.component
+              )
+            }
             key={route.key}
           />
         );
       }
-
+  
       return null;
     });
-
+  
   return direction === 'rtl' ? (
     <CacheProvider value={rtlCache}>
       <AuthProvider>

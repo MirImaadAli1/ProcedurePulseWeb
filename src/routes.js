@@ -53,15 +53,20 @@ import Audits from 'layouts/audits';
 import Audit_search from 'layouts/audit-search';
 import SharedAudit from 'layouts/sharedAudits';
 import YourResponses from 'layouts/yourResponses';
+import withAuth from 'components/PrivateRoute';
+
+const ProtectedDashboard = withAuth(Dashboard);
 
 const routes = [
+  
   {
     type: 'collapse',
     name: 'Dashboard',
     key: 'dashboard',
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: '/dashboard',
-    component: <Dashboard />,
+    component: <ProtectedDashboard/>,
+
   },
   {
     type: 'collapse',
@@ -85,7 +90,7 @@ const routes = [
     key: 'createaudit',
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: '/createaudit',
-    component: <CreateAudit />
+    component: <CreateAudit />,
   },
   {
     type: 'collapse',

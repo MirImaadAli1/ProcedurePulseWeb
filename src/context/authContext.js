@@ -1,38 +1,36 @@
-import React, { useContext, useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { auth } from '../Firebase'; // Adjust the import based on your firebase setup
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import PropTypes from 'prop-types'; // Import prop-types
+import { auth } from '../Firebase'; // Make sure this is correctly imported
 
-const AuthContext = React.createContext();
+const AuthContext = createContext();
 
 export function useAuth() {
   return useContext(AuthContext);
 }
 
-export function AuthProvider({ children }) {
+export function AuthProvider({ children }) { // Destructure children from props
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Listen for authentication changes
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user);
       setLoading(false);
     });
 
-    return unsubscribe; // Cleanup subscription on unmount
+    return unsubscribe;
   }, []);
 
-  const value = {
-    currentUser,
-  };
+  const value = { currentUser };
 
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}
     </AuthContext.Provider>
-  );    
+  );
 }
 
+// Add prop-types validation
 AuthProvider.propTypes = {
-  children: PropTypes.node.isRequired, // Ensure 'children' is a valid React node
+  children: PropTypes.node.isRequired,
 };
