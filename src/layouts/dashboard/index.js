@@ -5,6 +5,7 @@ import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import ComplexStatisticsCard from 'examples/Cards/StatisticsCards/ComplexStatisticsCard';
 import PieChartComponent from 'components/PieChart'; // Import the PieChartComponent
+import AuditsList from 'components/UnrespondedAuditsList'; // Import the AuditsList component
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../Firebase';
 import Projects from 'layouts/dashboard/components/Projects';
@@ -14,6 +15,9 @@ import CircularProgress from '@mui/material/CircularProgress'; // Import Circula
 function Dashboard() {
     const [totalAudits, setTotalAudits] = useState(0);
     const [totalResponses, setTotalResponses] = useState(0);
+    const [respondedAudits, setRespondedAudits] = useState([]);
+    const [unrespondedAudits, setUnrespondedAudits] = useState([]);
+    const [respondedAuditCount, setRespondedAuditCount] = useState(0); // New state for responded audit count
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -31,15 +35,28 @@ function Dashboard() {
                     // Fetch total number of responses for the user's audits
                     const auditIds = auditsSnapshot.docs.map(doc => doc.id);
                     let responsesCount = 0;
+                    let responded = [];
+                    let unresponded = [];
+                    let respondedCount = 0; // Variable to count responded audits
 
                     for (const auditId of auditIds) {
                         const responsesCollectionRef = collection(db, 'Responses');
                         const responsesQuery = query(responsesCollectionRef, where('auditId', '==', auditId));
                         const responsesSnapshot = await getDocs(responsesQuery);
                         responsesCount += responsesSnapshot.size;
+                        const auditDoc = auditsSnapshot.docs.find(doc => doc.id === auditId);
+                        if (responsesSnapshot.size > 0) {
+                            responded.push(auditDoc.data().title);
+                            respondedCount++; // Increment responded count
+                        } else {
+                            unresponded.push(auditDoc.data().title);
+                        }
                     }
 
                     setTotalResponses(responsesCount);
+                    setRespondedAudits(responded);
+                    setUnrespondedAudits(unresponded);
+                    setRespondedAuditCount(respondedCount); // Update responded audit count
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -91,12 +108,12 @@ function Dashboard() {
                                 <ComplexStatisticsCard
                                     color="primary"
                                     icon="person_add"
-                                    title="Followers"
-                                    count="+91"
+                                    title="Responded Audits"
+                                    count={respondedAuditCount} // Use the respondedAuditCount state here
                                     percentage={{
                                         color: 'success',
                                         amount: '',
-                                        label: 'Just updated',
+                                        label: 'No. of audits you have responded to',
                                     }}
                                 />
                             </MDBox>
@@ -104,12 +121,15 @@ function Dashboard() {
                     </Grid>
                     <MDBox mt={4.5}>
                         <Grid container spacing={3}>
-                            <Grid item xs={12} md={6} lg={4}>
+                            <Grid item xs={12} md={6} lg={6}>
                                 <PieChartComponent />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={6}>
+                                <AuditsList respondedAudits={respondedAudits} unrespondedAudits={unrespondedAudits} />
                             </Grid>
                         </Grid>
                     </MDBox>
-                    <MDBox mt={4.5}>
+                    {/* <MDBox mt={4.5}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={6} lg={8}>
                                 <Projects />
@@ -118,7 +138,7 @@ function Dashboard() {
                                 <OrdersOverview />
                             </Grid>
                         </Grid>
-                    </MDBox>
+                    </MDBox> */}
                 </MDBox>
             )}
         </DashboardLayout>
