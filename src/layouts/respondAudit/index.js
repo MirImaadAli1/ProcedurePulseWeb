@@ -227,12 +227,12 @@ function RespondAudit() {
                         </Card>
                     </Grid>
                 </Grid>
-                {/* <ResponseSuccess open={successModalOpen} handleClose={() => setSuccessModalOpen(false)} /> */}
-                {/* <ResponseEditModal
+                <ResponseSuccess open={successModalOpen} handleClose={() => setSuccessModalOpen(false)} />
+                <ResponseEditModal
                     open={editModalOpen}
                     handleClose={() => setEditModalOpen(false)}
-                    
-                /> */}
+
+                />
             </MDBox>
         </DashboardLayout>
     );
