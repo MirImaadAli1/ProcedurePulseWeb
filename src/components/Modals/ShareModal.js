@@ -170,8 +170,19 @@ const ShareModal = ({ open, handleClose, auditId }) => {
           </Alert>
         )}
         <Box sx={{ display: 'flex', justifyContent: 'space-around', mt: 3 }}>
-          <Button variant="contained" onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" color="primary" onClick={handleShare} disabled={shareArrayList.length === 0}>
+          <Button
+            variant="contained"
+            onClick={handleClose}
+            style={{
+              color: '#000000',
+              borderRadius: '10px',
+              backgroundColor: '#f0f0f0',
+              padding: '10px 20px',
+              '&:hover': {
+                backgroundColor: '#e0e0e0'
+              }
+            }}>Cancel</Button>
+          <Button variant="contained" color="primary" onClick={handleShare} disabled={shareArrayList.length === 0} style={{ color: 'white', backgroundColor: '#2563eb', borderRadius: '10px', padding: '10px 20px' }}>
             Share
           </Button>
         </Box>

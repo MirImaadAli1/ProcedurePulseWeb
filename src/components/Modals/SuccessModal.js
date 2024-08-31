@@ -30,7 +30,7 @@ const blackBarStyle = {
 
 const buttonStyle = {
   borderRadius: '10px',
-  padding:'10px'
+  padding: '10px'
 };
 
 const SuccessModal = ({ open, handleClose, auditId }) => {
@@ -75,13 +75,13 @@ const SuccessModal = ({ open, handleClose, auditId }) => {
           </Typography>
 
           {/* Black bar underneath the title with rounded ends */}
-          <div style={blackBarStyle}></div>
+          {/* <div style={blackBarStyle}></div> */}
 
           <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '24px' }}>
             <Button
               variant="contained"
               color="primary"
-              style={buttonStyle}
+              style={{ color: '#000000', borderRadius: '10px', backgroundColor: '#f0f0f0', padding: '10px 20px' }}
             >
               View Audit
             </Button>
@@ -89,7 +89,7 @@ const SuccessModal = ({ open, handleClose, auditId }) => {
               variant="contained"
               color="primary"
               onClick={handleShareOpen}
-              style={buttonStyle}
+              style={{ color: 'white', backgroundColor: '#2563eb', borderRadius: '10px', padding: '10px 20px' }}
             >
               Share Audit
             </Button>
