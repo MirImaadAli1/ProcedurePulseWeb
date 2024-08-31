@@ -1,76 +1,64 @@
-// Importing necessary React and Firebase functionalities
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-
-import bgImage from 'assets/images/greybg.jpg'; // Background image
-
-// Importing components from react-router-dom for navigation
+import bgImage from 'assets/images/greybg.jpg';
 import { Link } from 'react-router-dom';
-
-// Importing Material UI components for UI design
 import Card from '@mui/material/Card';
 import Switch from '@mui/material/Switch';
-import Grid from '@mui/material/Grid';
-import MuiLink from '@mui/material/Link';
-
-// Importing icons from Material UI
-import FacebookIcon from '@mui/icons-material/Facebook';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import GoogleIcon from '@mui/icons-material/Google';
-
-// Importing custom Material Dashboard components
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 import MDInput from 'components/MDInput';
 import MDButton from 'components/MDButton';
-
-// Importing layout component for authentication pages
 import BasicLayout from 'layouts/authentication/components/BasicLayout';
-import { auth, db } from '../../../Firebase.js'; // Importing Firebase authentication and Firestore
-import { createUserWithEmailAndPassword } from 'firebase/auth';  // Firebase method for creating a new user
-import { setDoc, doc } from 'firebase/firestore'; // Firebase Firestore methods for setting document
+import { auth, db } from '../../../Firebase.js';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
+import { useMaterialUIController } from 'context';
+import AuthSuccess from '../authSuccess.js';
+import AuthFailure from '../authFailure.js';
 
-import { useMaterialUIController } from 'context'; // Custom hook for accessing Material UI Controller context
 
-// Main functional component for the Sign-Up page
 function Basic() {
-  // Setting up state variables for username, email, password, and remember me functionality
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [failureModalOpen, setFailureModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const navigate = useNavigate(); // Initialize useNavigate for programmatic navigation
-  const [controller] = useMaterialUIController(); // Destructure the controller object from context
-  const { darkMode } = controller; // Extract darkMode state from the controller
+  const navigate = useNavigate();
+  const [controller] = useMaterialUIController();
+  const { darkMode } = controller;
 
-  // Function to handle user sign-up
-  const SignUp = (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-    createUserWithEmailAndPassword(auth, email, password) // Firebase method to create a new user with email and password
-      .then(async (userCredential) => {
+  const SignUp = async (e) => {
+    e.preventDefault();
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
         const user = userCredential.user;
-        console.log(userCredential); // Log user credentials on successful sign-up
 
-        // Store user details in Firestore
-        await setDoc(doc(db, 'Users', user.uid), {
+        setDoc(doc(db, "Users", user.uid), {
           uid: user.uid,
           name: username,
           email: user.email,
-        });
+        })
 
-        navigate('/dashboard'); // Navigate to the dashboard page upon successful sign-up
+        // Show success modal
+        setSuccessModalOpen(true);
+
       })
       .catch((error) => {
-        console.log(error); // Log any errors encountered during sign-up
+        // Handle sign-up errors
+        setErrorMessage(`Error creating user: ${error.message}`);
+        setFailureModalOpen(true);
+        console.log(error.message);
       });
   };
 
-  // Function to toggle the remember me state
+
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
-  // Rendering the sign-up form layout
   return (
     <BasicLayout image={bgImage}>
       <Card
@@ -79,7 +67,6 @@ function Basic() {
           overflow: 'hidden',
         }}
       >
-        {/* Header section with title */}
         <MDBox
           variant="gradient"
           bgColor={darkMode ? 'dark' : 'white'}
@@ -103,10 +90,8 @@ function Basic() {
           </MDTypography>
         </MDBox>
 
-        {/* Form section for input fields and buttons */}
         <MDBox pt={4} pb={3} px={3} bgColor={darkMode ? 'dark' : 'white'} variant="gradient">
           <MDBox component="form" role="form">
-            {/* Username input field */}
             <MDBox mb={2}>
               <MDInput
                 type="text"
@@ -116,11 +101,10 @@ function Basic() {
                 onChange={(e) => setUsername(e.target.value)}
                 variant="outlined"
                 InputProps={{
-                  style: { color: 'dark' }, // Input text color based on theme
+                  style: { color: 'dark' },
                 }}
               />
             </MDBox>
-            {/* Email input field */}
             <MDBox mb={2}>
               <MDInput
                 type="email"
@@ -130,11 +114,10 @@ function Basic() {
                 onChange={(e) => setEmail(e.target.value)}
                 variant="outlined"
                 InputProps={{
-                  style: { color: 'dark' }, // Input text color based on theme
+                  style: { color: 'dark' },
                 }}
               />
             </MDBox>
-            {/* Password input field */}
             <MDBox mb={2}>
               <MDInput
                 type="password"
@@ -144,11 +127,10 @@ function Basic() {
                 onChange={(e) => setPassword(e.target.value)}
                 variant="outlined"
                 InputProps={{
-                  style: { color: 'dark' }, // Input text color based on theme
+                  style: { color: 'dark' },
                 }}
               />
             </MDBox>
-            {/* Remember me switch */}
             <MDBox display="flex" alignItems="center" ml={-1} pt={1} pb={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
               <MDTypography
@@ -161,13 +143,11 @@ function Basic() {
                 &nbsp;&nbsp;Remember me
               </MDTypography>
             </MDBox>
-            {/* Sign up button */}
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth onClick={SignUp}>
                 sign up
               </MDButton>
             </MDBox>
-            {/* Link to sign-in page for existing users */}
             <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="dark" fontWeight="regular">
                 Already have an account?{' '}
@@ -186,6 +166,10 @@ function Basic() {
           </MDBox>
         </MDBox>
       </Card>
+
+      {/* Modals */}
+      <AuthSuccess open={successModalOpen} onClose={() => setSuccessModalOpen(false)} redirectPath="/authentication/sign-in" />
+      <AuthFailure open={failureModalOpen} onClose={() => setFailureModalOpen(false)} errorMessage={errorMessage} />
     </BasicLayout>
   );
 }

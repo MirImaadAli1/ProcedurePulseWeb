@@ -1,57 +1,27 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
-
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import bgImage from 'assets/images/greybg.jpg';
-
-// react-router-dom components
-import { Link } from 'react-router-dom';
-
-// @mui material components
 import Card from '@mui/material/Card';
 import Switch from '@mui/material/Switch';
-import Grid from '@mui/material/Grid';
-import MuiLink from '@mui/material/Link';
-
-// @mui icons
-import FacebookIcon from '@mui/icons-material/Facebook';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import GoogleIcon from '@mui/icons-material/Google';
-
-// Material Dashboard 2 React components
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 import MDInput from 'components/MDInput';
 import MDButton from 'components/MDButton';
-
-// Authentication layout components
 import BasicLayout from 'layouts/authentication/components/BasicLayout';
 import { auth } from '../../../Firebase.js';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { SetMeal } from '@mui/icons-material';
-
 import { useMaterialUIController } from 'context';
+import AuthSuccess from '../authSuccess.js';
+import AuthFailure from '../authFailure.js';
 
 function Basic() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [failureModalOpen, setFailureModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -60,10 +30,12 @@ function Basic() {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log(userCredential);
-        navigate('/dashboard');
+        setSuccessModalOpen(true);
       })
       .catch((error) => {
         console.log(error);
+        setErrorMessage(error.message);
+        setFailureModalOpen(true);
       });
   };
 
@@ -110,7 +82,7 @@ function Basic() {
                 onChange={(e) => setEmail(e.target.value)}
                 variant="outlined"
                 InputProps={{
-                  style: { color: 'dark' }, // Input text color to white
+                  style: { color: 'dark' },
                 }}
               />
             </MDBox>
@@ -123,7 +95,7 @@ function Basic() {
                 onChange={(e) => setPassword(e.target.value)}
                 variant="outlined"
                 InputProps={{
-                  style: { color: 'dark' }, // Input text color to white
+                  style: { color: 'dark' },
                 }}
               />
             </MDBox>
@@ -162,6 +134,16 @@ function Basic() {
           </MDBox>
         </MDBox>
       </Card>
+      <AuthSuccess 
+        open={successModalOpen} 
+        onClose={() => setSuccessModalOpen(false)} 
+        redirectPath="/dashboard" 
+      />
+      <AuthFailure 
+        open={failureModalOpen} 
+        onClose={() => setFailureModalOpen(false)} 
+        errorMessage={errorMessage} 
+      />
     </BasicLayout>
   );
 }
