@@ -20,13 +20,13 @@ const TextFieldInput = ({ item, handleValue, deleteEl }) => {
           className="w-full border border-gray-300 rounded-md py-2 px-4 mb-4 text-lg font-bold"
         />
       </div>
-      <div className="p-4">
+      <div className="p-3 flex justify-start items-center">
         <button
           onClick={() => deleteEl(item.id)}
-          className="text-red-600 hover:text-red-800 transition-colors duration-300"
+          className="text-red-600 hover:text-red-800 transition-colors duration-300 flex items-center"
           aria-label="delete-element"
         >
-          <DeleteOutlineOutlinedIcon />
+          <DeleteOutlineOutlinedIcon className="mr-1" /> Delete Question
         </button>
       </div>
     </div>

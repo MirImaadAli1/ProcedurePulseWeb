@@ -12,9 +12,8 @@ const Header = ({ title, description, setTitle, setDescription }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`transition-transform duration-300 ${
-          isHovered ? 'transform scale-105 shadow-2xl' : ''
-        }`}
+        className={`transition-transform duration-300 ${isHovered ? 'transform scale-105 shadow-2xl' : ''
+          }`}
       >
         {/* Color Bar */}
         <div
@@ -37,7 +36,7 @@ const Header = ({ title, description, setTitle, setDescription }) => {
               variant="standard"
               InputProps={{
                 disableUnderline: true,
-                style: { fontSize: '42px', fontWeight: 'bold' },
+                style: { fontSize: '34px', fontWeight: 'bold' },
               }}
             />
           </div>
@@ -55,7 +54,7 @@ const Header = ({ title, description, setTitle, setDescription }) => {
               variant="outlined"
               InputProps={{
                 disableUnderline: true,
-                style: { fontSize: '30px', color: '#6B7280', marginTop: '15px' },
+                style: { fontSize: '20px', color: '#6B7280', marginTop: '15px' },
               }}
             />
           </div>
