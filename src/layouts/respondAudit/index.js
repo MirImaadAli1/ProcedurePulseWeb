@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -16,8 +15,10 @@ import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import { db, storage, auth } from '../../Firebase';
 import { doc, getDoc, collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import ResponseSuccess from 'components/Modals/ResponseSucess';
-import ResponseEditModal from 'components/Modals/ResponseEditForm';
+
+// Lazy load modals
+const ResponseSuccess = lazy(() => import('components/Modals/ResponseSucess'));
+const ResponseEditModal = lazy(() => import('components/Modals/ResponseEditForm'));
 
 const QuestionBox = styled(MDBox)(({ theme }) => ({
     padding: theme.spacing(3),
@@ -227,12 +228,13 @@ function RespondAudit() {
                         </Card>
                     </Grid>
                 </Grid>
-                <ResponseSuccess open={successModalOpen} handleClose={() => setSuccessModalOpen(false)} />
-                <ResponseEditModal
-                    open={editModalOpen}
-                    handleClose={() => setEditModalOpen(false)}
-
-                />
+                <Suspense fallback={<div>Loading...</div>}>
+                    <ResponseSuccess open={successModalOpen} handleClose={() => setSuccessModalOpen(false)} />
+                    <ResponseEditModal
+                        open={editModalOpen}
+                        handleClose={() => setEditModalOpen(false)}
+                    />
+                </Suspense>
             </MDBox>
         </DashboardLayout>
     );

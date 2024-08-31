@@ -1,16 +1,16 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, Suspense } from 'react';
 import uuid from 'react-uuid';
 import Nestable from 'react-nestable';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
-import { TextFieldInput } from './elements';
 import { collection, doc, setDoc } from 'firebase/firestore';
-import { Button, Alert } from '@mui/material';
-import Header from './Header';
+import { Alert } from '@mui/material';
 import { db, auth } from '../../Firebase';
 import SuccessModal from 'components/Modals/SuccessModal';
+import Header from './Header';
+const TextFieldInput = React.lazy(() => import('./elements/TextField'));
 
 const FormBuilder = () => {
   const [title, setTitle] = useState('');
@@ -55,11 +55,11 @@ const FormBuilder = () => {
       setDescription('');
       setData([]);
       setCreatedAuditId(auditId);
-      
+
     } catch (e) {
       console.error('Error adding document: ', e);
       setShowAlert(true);
-    }finally{
+    } finally {
       setOpenModal(true);
       setShowAlert(false);
 
@@ -104,12 +104,14 @@ const FormBuilder = () => {
   };
 
   const renderElements = ({ item }) => (
-    <TextFieldInput
-      item={item}
-      handleValue={handleValue}
-      handleCheckboxChange={handleCheckboxChange}
-      deleteEl={deleteEl}
-    />
+    <Suspense fallback={<div>Loading Question...</div>}>
+      <TextFieldInput
+        item={item}
+        handleValue={handleValue}
+        handleCheckboxChange={handleCheckboxChange}
+        deleteEl={deleteEl}
+      />
+    </Suspense>
   );
 
   const handleCloseModal = () => {
@@ -125,12 +127,14 @@ const FormBuilder = () => {
               Please fill in the title and description.
             </Alert>
           )}
+
           <Header
             title={title}
             setTitle={setTitle}
             description={description}
             setDescription={setDescription}
           />
+
           <Nestable
             items={data}
             renderItem={renderElements}
@@ -145,15 +149,6 @@ const FormBuilder = () => {
               <AddCircleOutlineOutlinedIcon color="primary" />
             </IconButton>
           </Tooltip>
-          {/* <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-            style={{ marginTop: '1rem' }}
-            fullWidth
-          >
-            Save Form
-          </Button> */}
           <button className="bg-blue-600 text-white font-semibold rounded-md whitespace-nowrap mr-2"
             onClick={(handleSubmit)}
             style={{

@@ -1,22 +1,16 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { CacheProvider } from '@emotion/react';
-import createCache from '@emotion/cache';
 
 import Sidenav from 'examples/Sidenav';
-import Configurator from 'examples/Configurator';
 import theme from 'assets/theme';
-import themeRTL from 'assets/theme/theme-rtl';
-import themeDark from 'assets/theme-dark';
-import themeDarkRTL from 'assets/theme-dark/theme-rtl';
-import rtlPlugin from 'stylis-plugin-rtl';
+// Removed themeDark import
 import ProtectedRoute from 'components/PrivateRoute';
 
 // Images
 import brandWhite from 'assets/images/logo-ct.png';
-import brandDark from 'assets/images/logo-ct-dark.png';
+// import brandDark from 'assets/images/logo-ct-dark.png';
 
 import routes from 'routes';
 import { useMaterialUIController, setMiniSidenav } from 'context';
@@ -32,19 +26,9 @@ export default function App() {
     sidenavColor,
     transparentSidenav,
     whiteSidenav,
-    darkMode,
-  } = controller;
+    // Removed darkMode
+  } = controller; 
   const [onMouseEnter, setOnMouseEnter] = useState(false);
-  const [rtlCache, setRtlCache] = useState(null);
-
-  useMemo(() => {
-    const cacheRtl = createCache({
-      key: 'rtl',
-      stylisPlugins: [rtlPlugin],
-    });
-
-    setRtlCache(cacheRtl);
-  }, []);
 
   const handleOnMouseEnter = () => {
     if (miniSidenav && !onMouseEnter) {
@@ -60,7 +44,7 @@ export default function App() {
     }
   };
 
-  const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
+
 
   useEffect(() => {
     document.body.setAttribute('dir', direction);
@@ -76,57 +60,36 @@ export default function App() {
       if (route.collapse) {
         return getRoutes(route.collapse);
       }
-  
+
       if (route.route) {
         return (
           <Route
             path={route.route}
             element={
-              route.private ? (
-                <ProtectedRoute>{route.component}</ProtectedRoute>
-              ) : (
-                route.component
-              )
+              <Suspense fallback={<div>Loading...</div>}>
+                {route.private ? (
+                  <ProtectedRoute>{route.component}</ProtectedRoute>
+                ) : (
+                  route.component
+                )}
+              </Suspense>
             }
             key={route.key}
           />
         );
       }
-  
+
       return null;
     });
-  
-  return direction === 'rtl' ? (
-    <CacheProvider value={rtlCache}>
-      <AuthProvider>
-        <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
-          <CssBaseline />
-          {layout === 'dashboard' && (
-            <Sidenav
-              color={sidenavColor}
-              brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-              brandName="ProcedurePulse"
-              routes={routes}
-              onMouseEnter={handleOnMouseEnter}
-              onMouseLeave={handleOnMouseLeave}
-            />
-          )}
-          {layout === 'vr'}
-          <Routes>
-            {getRoutes(routes)}
-            <Route path="*" element={<Navigate to="/landing-page" />} />
-          </Routes>
-        </ThemeProvider>
-      </AuthProvider>
-    </CacheProvider>
-  ) : (
+
+  return (
     <AuthProvider>
-      <ThemeProvider theme={darkMode ? themeDark : theme}>
+      <ThemeProvider theme={theme}>
         <CssBaseline />
         {layout === 'dashboard' && (
           <Sidenav
             color={sidenavColor}
-            brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+            brand={(transparentSidenav && !darkMode) || brandWhite}
             brandName="ProcedurePulse"
             routes={routes}
             onMouseEnter={handleOnMouseEnter}

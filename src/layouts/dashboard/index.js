@@ -3,13 +3,11 @@ import React, { useEffect, useState } from 'react';
 import MDBox from 'components/MDBox';
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
-import ComplexStatisticsCard from 'examples/Cards/StatisticsCards/ComplexStatisticsCard';
+import ComplexStatisticsCard from 'examples/Cards/StatisticsCards/ComplexStatisticCard';
 import PieChartComponent from 'components/PieChart'; // Import the PieChartComponent
 import AuditsList from 'components/UnrespondedAuditsList'; // Import the AuditsList component
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../Firebase';
-import Projects from 'layouts/dashboard/components/Projects';
-import OrdersOverview from 'layouts/dashboard/components/OrdersOverview';
 import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress
 
 function Dashboard() {

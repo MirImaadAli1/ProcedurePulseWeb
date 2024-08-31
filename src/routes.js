@@ -34,39 +34,47 @@ Coded by www.creative-tim.com
   10. The `title` key is only for the item with the type of `title` and its used for the title text on the Sidenav.
   10. The `component` key is used to store the component of its route.
 */
-
+import React, { lazy, Suspense } from 'react';
 // Material Dashboard 2 React layouts
-import Dashboard from 'layouts/dashboard';
-import Tables from 'layouts/tables';
-import CreateAudit from 'layouts/createAudit';
-import RTL from 'layouts/rtl';
-import Notifications from 'layouts/notifications';
-import Profile from 'layouts/profile';
-import SignIn from 'layouts/authentication/sign-in';
-import RespondAudit from 'layouts/respondAudit';
-import SignUp from 'layouts/authentication/sign-up';
-import LandingPage from 'layouts/landing-page';
+
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 // @mui icons
 import Icon from '@mui/material/Icon';
-import Audits from 'layouts/audits';
-import Audit_search from 'layouts/audit-search';
-import SharedAudit from 'layouts/sharedAudits';
-import YourResponses from 'layouts/yourResponses';
 import withAuth from 'components/PrivateRoute';
+// Lazy load components
+const Dashboard = lazy(() => import('layouts/dashboard'));
+const CreateAudit = lazy(() => import('layouts/createAudit'));
+const Notifications = lazy(() => import('layouts/notifications'));
+const SignIn = lazy(() => import('layouts/authentication/sign-in'));
+const SignUp = lazy(() => import('layouts/authentication/sign-up'));
+const LandingPage = lazy(() => import('layouts/landing-page'));
+const Audits = lazy(() => import('layouts/audits'));
+const Audit_search = lazy(() => import('layouts/audit-search'));
+const SharedAudit = lazy(() => import('layouts/sharedAudits'));
+const YourResponses = lazy(() => import('layouts/yourResponses'));
+const RespondAudit = lazy(() => import('layouts/respondAudit'));
 
 const ProtectedDashboard = withAuth(Dashboard);
+const ProtectedCreateAudit = withAuth(CreateAudit);
+const ProtectedNotifications = withAuth(Notifications);
+const ProtectedAudits = withAuth(Audits);
+const ProtectedAuditSearch = withAuth(Audit_search);
+const ProtectedSharedAudit = withAuth(SharedAudit);
+const ProtectedYourResponses = withAuth(YourResponses);
+const ProtectedRespondAudit = withAuth(RespondAudit);
 
 const routes = [
-  
   {
     type: 'collapse',
     name: 'Dashboard',
     key: 'dashboard',
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: '/dashboard',
-    component: <ProtectedDashboard/>,
-
+    component: (
+      <Suspense fallback={<div>Loading Dashboard...</div>}>
+        <ProtectedDashboard />
+      </Suspense>
+    ),
   },
   {
     type: 'collapse',
@@ -74,23 +82,23 @@ const routes = [
     key: 'notifications',
     icon: <Icon fontSize="small">notifications</Icon>,
     route: '/notifications',
-    component: <Notifications />,
+    component: (
+      <Suspense fallback={<div>Loading Notifications...</div>}>
+        <ProtectedNotifications />
+      </Suspense>
+    ),
   },
-  // {
-  //   type: 'collapse',
-  //   name: 'Tables',
-  //   key: 'tables',
-  //   icon: <Icon fontSize="small">table_view</Icon>,
-  //   route: '/tables',
-  //   component: <Tables />,
-  // },
   {
     type: 'collapse',
     name: 'Create Audit',
     key: 'createaudit',
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: '/createaudit',
-    component: <CreateAudit />,
+    component: (
+      <Suspense fallback={<div>Loading Create Audit...</div>}>
+        <ProtectedCreateAudit />
+      </Suspense>
+    ),
   },
   {
     type: 'collapse',
@@ -98,16 +106,23 @@ const routes = [
     key: 'Search Audits',
     icon: <Icon fontSize="small">table_view</Icon>,
     route: '/SearchAudits',
-    component: <Audit_search />,
+    component: (
+      <Suspense fallback={<div>Loading Search Audits...</div>}>
+        <ProtectedAuditSearch />
+      </Suspense>
+    ),
   },
-
   {
     type: 'collapse',
     name: 'Your Audits',
     key: 'audits',
-    icon: <LibraryBooksIcon />,
+    icon: <Icon fontSize="small">library_books</Icon>,
     route: '/audits',
-    component: <Audits />,
+    component: (
+      <Suspense fallback={<div>Loading Your Audits...</div>}>
+        <ProtectedAudits />
+      </Suspense>
+    ),
   },
   {
     type: 'collapse',
@@ -115,68 +130,59 @@ const routes = [
     key: 'your-responses',
     icon: <Icon fontSize="small">assignment</Icon>,
     route: '/yourresponses',
-    component: <YourResponses />,
-  },  
+    component: (
+      <Suspense fallback={<div>Loading Your Responses...</div>}>
+        <ProtectedYourResponses />
+      </Suspense>
+    ),
+  },
   {
     type: 'collapse',
     name: 'Shared Audits',
     key: 'shared-audits',
     icon: <Icon fontSize="small">assignment</Icon>,
     route: '/sharedaudits',
-    component: <SharedAudit />,
+    component: (
+      <Suspense fallback={<div>Loading Shared Audits...</div>}>
+        <ProtectedSharedAudit />
+      </Suspense>
+    ),
   },
-  // {
-  //   type: 'collapse',
-  //   name: 'RTL',
-  //   key: 'rtl',
-  //   icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-  //   route: '/rtl',
-  //   component: <RTL />,
-  // },
-  // {
-  //   type: 'collapse',
-  //   name: 'Profile',
-  //   key: 'profile',
-  //   icon: <Icon fontSize="small">person</Icon>,
-  //   route: '/profile',
-  //   component: <Profile />,
-  // },
-  // {
-  //   type: 'collapse',
-  //   name: 'Sign In',
-  //   key: 'sign-in',
-  //   icon: <Icon fontSize="small">login</Icon>,
-  //   route: '/authentication/sign-in',
-  //   component: <SignIn />,
-  // },
-  // {
-  //   type: 'collapse',
-  //   name: 'Sign Up',
-  //   key: 'sign-up',
-  //   icon: <Icon fontSize="small">assignment</Icon>,
-  //   route: '/authentication/sign-up',
-  //   component: <SignUp />,
-  // },
   {
     key: 'respond-audit',
     route: '/respond-audit/:auditId',
-    component: <RespondAudit />,
-    // No `type`, `name`, or `icon` so it's not displayed in the sidebar
+    component: (
+      <Suspense fallback={<div>Loading Respond Audit...</div>}>
+        <ProtectedRespondAudit />
+      </Suspense>
+    ),
   },
   {
     key: 'landing-page',
     route: '/',
-    component: <LandingPage />,
+    component: (
+      <Suspense fallback={<div>Loading Landing Page...</div>}>
+        <LandingPage />
+      </Suspense>
+    ),
   },
   {
     key: "sign-in",
     route: "/authentication/sign-in",
-    component: <SignIn />,
+    component: (
+      <Suspense fallback={<div>Loading Sign In...</div>}>
+        <SignIn />
+      </Suspense>
+    ),
   },
   {
     key: "sign-up",
     route: "/authentication/sign-up",
-    component: <SignUp />,
+    component: (
+      <Suspense fallback={<div>Loading Sign Up...</div>}>
+        <SignUp />
+      </Suspense>
+    ),
   },
 ];
 

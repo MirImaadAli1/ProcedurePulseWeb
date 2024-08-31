@@ -13,40 +13,23 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-// @mui material components
-import Grid from '@mui/material/Grid';
-
-// Material Dashboard 2 React components
-
-import { Fragment } from 'react';
 // Material Dashboard 2 React examples
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
-import FormBuilder from 'components/FormBuilder';
+// Lazy load the FormBuilder component
+import React, { Suspense } from 'react';
 import 'react-nestable/dist/styles/index.css';
 
-import Card from '@mui/material/Card';
-
-// Material Dashboard 2 React components
-import MDBox from 'components/MDBox';
-import MDTypography from 'components/MDTypography';
-
-// Material Dashboard 2 React example components
-import Footer from 'examples/Footer';
-import DataTable from 'examples/Tables/DataTable';
-
-// Data
-import authorsTableData from 'layouts/tables/data/authorsTableData';
-import projectsTableData from 'layouts/tables/data/projectsTableData';
+// Lazy load the FormBuilder component
+const FormBuilder = React.lazy(() => import('components/FormBuilder'));
 
 function CreateAudit() {
-  const { columns, rows } = authorsTableData();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
-
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <FormBuilder />
+      <Suspense fallback={<div>Loading..</div>}>
+        <FormBuilder />
+      </Suspense>
     </DashboardLayout>
   );
 }

@@ -1,20 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
-import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import MDBox from 'components/MDBox';
-import MDTypography from 'components/MDTypography';
-import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
-import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
-import DataTable from 'examples/Tables/DataTable';
-import { db } from "../../Firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import TextField from '@mui/material/TextField';
 import Fuse from 'fuse.js';
-import { Button } from '@mui/material';
-import EmptyState from "components/States/empty";
-import Loading from "components/States/loading";
+
+import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
+import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
+
+// Lazy load the components that are likely to be important
+const Grid = lazy(() => import('@mui/material/Grid'));
+const Card = lazy(() => import('@mui/material/Card'));
+const TextField = lazy(() => import('@mui/material/TextField'));
+const Button = lazy(() => import('@mui/material/Button'));
+const MDBox = lazy(() => import('components/MDBox'));
+const MDTypography = lazy(() => import('components/MDTypography'));
+const DataTable = lazy(() => import('examples/Tables/DataTable'));
+const EmptyState = lazy(() => import("components/States/empty"));
+const Loading = lazy(() => import("components/States/loading"));
+
+import { db } from "../../Firebase";
 
 function AuditSearch() {
   const [rows, setRows] = useState([]);
@@ -152,64 +156,67 @@ function AuditSearch() {
       <DashboardNavbar />
       {/* Show the Loading component when data is loading */}
       {isLoading ? (
-        <Loading />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Loading />
+        </Suspense>
       ) : (
         <MDBox pt={6} pb={3}>
-          <Grid container spacing={6}>
-            <Grid item xs={12}>
-              <Card>
-                <MDBox
-                  mx={2}
-                  mt={-3}
-                  py={3}
-                  px={2}
-                  variant="gradient"
-                  bgColor="info"
-                  borderRadius="lg"
-                  coloredShadow="info"
-                >
-                  <MDTypography variant="h6" color="white">
-                    Search Audits
-                  </MDTypography>
-                </MDBox>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Grid container spacing={6}>
+              <Grid item xs={12}>
+                <Card>
+                  <MDBox
+                    mx={2}
+                    mt={-3}
+                    py={3}
+                    px={2}
+                    variant="gradient"
+                    bgColor="info"
+                    borderRadius="lg"
+                    coloredShadow="info"
+                  >
+                    <MDTypography variant="h6" color="white">
+                      Search Audits
+                    </MDTypography>
+                  </MDBox>
 
-                <MDBox pt={3} px={2}>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    label="Search by audit title"
-                    value={searchTerm}
-                    onChange={handleSearch}
-                  />
-                </MDBox>
-
-                <MDBox pt={3}>
-                  {searchTerm === "" && !isLoading && (
-                    <div className="flex justify-center mb-3">
-                      <MDTypography variant="h6" color="text">
-                        Try searching for an audit!
-                      </MDTypography>
-                    </div>
-                  )}
-                  {searchTerm !== "" && filteredRows.length === 0 && !isLoading && (
-                    <EmptyState />
-                  )}
-                  {filteredRows.length > 0 && (
-                    <DataTable
-                      table={{ columns, rows: filteredRows }}
-                      isSorted={false}
-                      entriesPerPage={false}
-                      showTotalEntries={false}
-                      noEndBorder
+                  <MDBox pt={3} px={2}>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      label="Search by audit title"
+                      value={searchTerm}
+                      onChange={handleSearch}
                     />
-                  )}
-                </MDBox>
-              </Card>
+                  </MDBox>
+
+                  <MDBox pt={3}>
+                    {searchTerm === "" && !isLoading && (
+                      <div className="flex justify-center mb-3">
+                        <MDTypography variant="h6" color="text">
+                          Try searching for an audit!
+                        </MDTypography>
+                      </div>
+                    )}
+                    {searchTerm !== "" && filteredRows.length === 0 && !isLoading && (
+                      <EmptyState />
+                    )}
+                    {filteredRows.length > 0 && (
+                      <DataTable
+                        table={{ columns, rows: filteredRows }}
+                        isSorted={false}
+                        entriesPerPage={false}
+                        showTotalEntries={false}
+                        noEndBorder
+                      />
+                    )}
+                  </MDBox>
+                </Card>
+              </Grid>
             </Grid>
-          </Grid>
+          </Suspense>
         </MDBox>
-      )
-      }
+      )}
     </DashboardLayout>
   );
 }

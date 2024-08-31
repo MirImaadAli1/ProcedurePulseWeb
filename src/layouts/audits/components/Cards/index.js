@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import PropTypes from 'prop-types';
 import {
   Table, TableBody, TableCell, TableContainer, TableRow,
@@ -6,11 +6,14 @@ import {
 } from '@mui/material';
 import { AddCircleOutlineOutlined, EditOutlined, DeleteOutlined, ExpandMoreOutlined } from '@mui/icons-material';
 import MDTypography from 'components/MDTypography';
-import { Pie } from 'react-chartjs-2';
+
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../../../Firebase'; // Adjust the import path as needed
 import '../../../../chartSetup'; // Import chart setup file
-import ViewResponseModal from 'components/Modals/ViewResponse'; // Import the modal
+
+
+const ViewResponseModal = lazy(() => import('components/Modals/ViewResponse')); // Lazy load the modal
+const Pie = lazy(() => import('react-chartjs-2').then(module => ({ default: module.Pie }))); // Lazy load Pie chart
 
 const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
   const [openRow, setOpenRow] = useState(null);
@@ -312,18 +315,20 @@ const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
                             </Box>
                             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                               <Box sx={{ position: 'relative', width: '150px', height: '150px' }}>
-                                <Pie
-                                  data={{
-                                    labels: ['Responded', 'Not Responded'],
-                                    datasets: [
-                                      {
-                                        data: [auditData.totalResponded, auditData.totalShared - auditData.totalResponded],
-                                        backgroundColor: ['#36a2eb', '#ff6384'],
-                                      },
-                                    ],
-                                  }}
-                                  
-                                />
+                                <Suspense fallback={<div>Loading</div>}>
+                                  <Pie
+                                    data={{
+                                      labels: ['Responded', 'Not Responded'],
+                                      datasets: [
+                                        {
+                                          data: [auditData.totalResponded, auditData.totalShared - auditData.totalResponded],
+                                          backgroundColor: ['#36a2eb', '#ff6384'],
+                                        },
+                                      ],
+                                    }}
+
+                                  />
+                                </Suspense>
                                 <Typography variant="body2" sx={{ mt: 2 }}>
                                   {auditData.totalResponded} out of {auditData.totalShared} responded
                                 </Typography>
@@ -342,12 +347,13 @@ const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
       </TableContainer>
 
       {modalOpen && (
-        <ViewResponseModal
-          open={modalOpen}
-          onClose={handleCloseModal}
-          response={selectedResponse}
-
-        />
+        <Suspense fallback={<div>Loading..</div>}>
+          <ViewResponseModal
+            open={modalOpen}
+            onClose={handleCloseModal}
+            response={selectedResponse}
+          />
+        </Suspense>
       )}
     </>
   );

@@ -8,7 +8,7 @@ import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import DataTable from 'examples/Tables/DataTable';
 import { db, auth } from "../../Firebase";
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import { collection, getDocs} from "firebase/firestore";
 import Loading from "components/States/loading";
 import EmptyState from "components/States/empty";
 import { useNavigate } from 'react-router-dom';

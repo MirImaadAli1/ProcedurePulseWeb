@@ -45,7 +45,7 @@ function BasicLayout({ image, children }) {
       <MDBox
         position="absolute"
         width="100%"
-        minHeight="100vh"
+        minHeight="100.5vh"
         sx={backgroundStyle}
       // backgroundImage: `url(${image})`,
       //({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
