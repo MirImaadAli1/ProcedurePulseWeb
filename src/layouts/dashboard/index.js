@@ -1,42 +1,55 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
 import Grid from '@mui/material/Grid';
-
-// Material Dashboard 2 React components
+import React, { useEffect, useState } from 'react';   
 import MDBox from 'components/MDBox';
-
-// Material Dashboard 2 React example components
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import Footer from 'examples/Footer';
 import ReportsBarChart from 'examples/Charts/BarCharts/ReportsBarChart';
 import ReportsLineChart from 'examples/Charts/LineCharts/ReportsLineChart';
 import ComplexStatisticsCard from 'examples/Cards/StatisticsCards/ComplexStatisticsCard';
-
-// Data
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { auth, db } from '../../Firebase';
 import reportsBarChartData from 'layouts/dashboard/data/reportsBarChartData';
 import reportsLineChartData from 'layouts/dashboard/data/reportsLineChartData';
-
-// Dashboard components
 import Projects from 'layouts/dashboard/components/Projects';
 import OrdersOverview from 'layouts/dashboard/components/OrdersOverview';
 
 function Dashboard() {
+  const [totalAudits, setTotalAudits] = useState(0);
+  const [totalResponses, setTotalResponses] = useState(0);
   const { sales, tasks } = reportsLineChartData;
+
+  useEffect(() => {
+    const fetchAuditAndResponseCount = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          // Fetch total number of audits for the user
+          const auditsCollectionRef = collection(db, 'Audit');
+          const auditsQuery = query(auditsCollectionRef, where('userId', '==', user.uid));
+          const auditsSnapshot = await getDocs(auditsQuery);
+          setTotalAudits(auditsSnapshot.size);
+
+          // Fetch total number of responses for the user's audits
+          const auditIds = auditsSnapshot.docs.map(doc => doc.id);
+          let responsesCount = 0;
+
+          for (const auditId of auditIds) {
+            const responsesCollectionRef = collection(db, 'Responses');
+            const responsesQuery = query(responsesCollectionRef, where('auditId', '==', auditId));
+            const responsesSnapshot = await getDocs(responsesQuery);
+            responsesCount += responsesSnapshot.size;
+          }
+
+          setTotalResponses(responsesCount);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchAuditAndResponseCount();
+  }, []);
 
   return (
     <DashboardLayout>
@@ -47,13 +60,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="dark"
-                icon="weekend"
-                title="Bookings"
-                count={281}
+                icon="library_books"
+                title="No. of User Audits"
+                count={totalAudits}
                 percentage={{
-                  color: 'success',
-                  amount: '+55%',
-                  label: 'than lask week',
+                  // color: 'success',
+                  // amount: '+3%',
+                  label: 'No. of Audits made by the user',
                 }}
               />
             </MDBox>
@@ -63,11 +76,11 @@ function Dashboard() {
               <ComplexStatisticsCard
                 icon="leaderboard"
                 title="Today's Users"
-                count="2,300"
+                count={totalResponses}  
                 percentage={{
-                  color: 'success',
-                  amount: '+3%',
-                  label: 'than last month',
+                  // color: 'success',
+                  // amount: '+3%',
+                  label: '`No. of responses`',
                 }}
               />
             </MDBox>
@@ -155,6 +168,7 @@ function Dashboard() {
           </Grid>
         </MDBox>
       </MDBox>
+      <Footer />
     </DashboardLayout>
   );
 }
