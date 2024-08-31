@@ -1,48 +1,38 @@
-## FormBuilder
+## Audits
 
-* #### src/components/FormBuilder/elements/layout/index.jsx
-The `Layout` component is a reusable React component designed to provide a structured layout for form elements. The component supports dynamic form element handling, including deletion, duplication, type selection, and setting the "required" status. The Layout component is highly customizable, allowing developers to pass child components that represent specific form elements.
+* #### src/layouts/audits/index.js
+The `audit` component is a React component designed to display and manage audit forms within a dashboard layout. It fetches audit data from Firebase, allowing users to view, edit, and delete existing audits. Well-suited for applications that require managing user-specific audit data.
 
-| Prop Name        | Type       | Required | Description                                                                                                                                    | Relations/Connections                                                                                              |
-|------------------|------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| item           |  `object`     | Yes      | An object representing the form element. It contains `id`, `value`, `required`, and `type` properties.                                          | Connected to all form element handler functions (`handleValue`, `deleteEl`, `handleRequired`, `handleElType`).      |
-| handleValue    | `func`   | Yes      | Function to handle changes in the form element's value.                                                                                         | Used in child components for updating the value of the specific form element represented by `item`.                |
-| deleteEl       | `func`   | Yes      | Function to delete the form element.                                                                                                            | Tied to the delete icon button, allowing the removal of the form element represented by `item`.                    |
-| duplicateElement | Function | Yes      | Function to duplicate the form element.                                                                                                         | Tied to the duplicate icon button, allowing the duplication of the form element represented by `item`.             |
-| children       | `node`       | No       | React children components that represent the specific form element to be rendered within the `Layout`.                                           | Directly rendered within the `Grid` component, providing the visual representation of the form element.            |
+| Prop Name      | Type     | Required | Description                                                                      |
+|----------------|----------|----------|----------------------------------------------------------------------------------|
+| `forms`        | Array    | Yes      | An array of audit forms fetched from Firebase, displayed in `AuditsTable`.       |
+| `selectedForm` | Object   | Yes      | The audit form currently selected for editing.                                   |
+| `editModalOpen`| Boolean  | Yes      | Controls the visibility of the `EditFormModal`.                                  |
+| `loading`      | Boolean  | Yes      | Indicates whether the component is fetching data, showing a loading state.       |
+| `handleEdit`   | Function | Yes      | Passed to `AuditsTable`, opens the `EditFormModal` with the selected form.       |
+| `handleDelete` | Function | Yes      | Passed to `AuditsTable`, deletes a selected form and updates the state.          |
+| `open`         | Boolean  | Yes      | Passed to `EditFormModal`, controls whether the modal is open.                   |
+| `onClose`      | Function | Yes      | Passed to `EditFormModal`, closes the modal without saving changes.              |
+| `formData`     | Object   | Yes      | Passed to `EditFormModal`, contains the data of the form being edited.           |
+| `onSave`       | Function | Yes      | Passed to `EditFormModal`, saves changes made to the form and updates the state. |
 
+* #### src/layouts/audits/components/Cards/index.js
+The `AuditsTable` component is a React component designed to display and manage audit forms within a table layout. It offers functionalities such as viewing, editing, and deleting audit forms, as well as expanding rows to show additional details. The component integrates Firebase for fetching audit data, and it also provides a modal for viewing detailed responses to the audits. It is designed to be a part of a larger audit management system, making it easy to track and interact with multiple audits.
 
-
-* #### src/components/FormBuilder/elements/TextField.jsx
-The `TextFieldInput` component is a React component designed to serve as a customizable input field for audit questions. It includes options for additional input types such as Yes/No/N/A checkboxes, comments, and image uploads. The component is flexible, allowing users to toggle these additional options on or off. It utilizes Material-UI icons and Tailwind CSS classes for styling.
-
-| Prop Name             | Type       | Required | Description                                                                                                                | Relations/Connections                                                                                              |
-|-----------------------|------------|----------|----------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| `item`                | `object`     | Yes      | An object representing the text field element. It contains `id`, `value`, `yesNoChecked`, `commentsChecked`, and `imageChecked` properties. | Connected to all functions handling value and checkbox changes (`handleValue`, `handleCheckboxChange`).              |
-| `handleValue`         | `func`   | Yes      | Function to handle changes in the text field's value.                                                                      | Used in the input field for updating the value of the text field represented by `item`.                             |
-| `handleCheckboxChange`| `func`   | Yes      | Function to handle the changes in the checkbox selections (Yes/No/N/A, Comments, Image).                                   | Tied to the checkbox inputs, enabling updates to the corresponding properties in `item`.                            |
-| `deleteEl`            | `func`   | Yes      | Function to delete the text field element.                                                                                 | Tied to the delete button, allowing the removal of the text field element represented by `item`.                    |
-
+| Prop Name    | Type     | Required | Description                                                                      |
+|--------------|----------|----------|----------------------------------------------------------------------------------|
+| `forms`      | Array    | Yes      | An array of audit forms to be displayed in the table.                             |
+| `handleEdit` | Function | Yes      | Function to initiate the editing of a selected audit form.                        |
+| `handleDelete`| Function| Yes      | Function to delete a selected audit form.                                         |
 
 * #### src/components/FormBuilder/Header.jsx
-The `Header` component is a React component designed to serve as a dynamic and customizable header for an audit form. It includes inputs for a title and a description, which can be edited in place. Material-UI's TextField is used for the input fields, and the component is styled using both Tailwind CSS and inline styles.
+The `EditFormModal` component is a React component designed to facilitate the editing of audit forms within a modal dialog. It allows users to update the title, description, and questions of an existing form. The component interacts with Firebase to persist changes in real-time and provides a user-friendly interface for managing form questions, including adding new questions and deleting existing ones. The modal is equipped with actions to save changes or cancel the editing process.
 
 #### Component Props
 
-| Prop Name        | Type     | Required | Description                                                                                           | Relations/Connections                                                                                          |
-|------------------|----------|----------|-------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| `title`          | `string`   | Yes      | The title of the form or audit. It is displayed as a large, bold text and can be edited by the user.   | Used in the `TextField` component for setting the initial value and updating the title via `setTitle`.          |
-| `description`    | `string`   | Yes      | The description of the form or audit. It provides additional context and can also be edited.           | Used in the `TextField` component for setting the initial value and updating the description via `setDescription`. |
-| `setTitle`       | `func` | Yes      | A function to update the title state in the parent component.                                          | Connected to the `onChange` event of the title `TextField` to handle updates to the title value.                |
-| `setDescription` | `func` | Yes      | A function to update the description state in the parent component.                                    | Connected to the `onChange` event of the description `TextField` to handle updates to the description value.     |
-
-
-* #### src/components/FormBuilder/index.jsx
-
-#### Overview
-
-The `FormBuilder` component is a powerful React tool for creating dynamic, customizable forms. It allows users to add, reorder, and configure form elements on the fly, with real-time data storage handled by Firebase.
-
-#### Component Props
-
-`FormBuilder` is a self-contained component and does not accept any props. All state and functionality are managed within the component itself.
+| Prop Name  | Type     | Required | Description                                                                      |
+|------------|----------|----------|----------------------------------------------------------------------------------|
+| `open`     | Boolean  | Yes      | Controls the visibility of the modal.                                            |
+| `onClose`  | Function | Yes      | Function to close the modal without saving changes.                              |
+| `formData` | Object   | Yes      | The data of the form being edited, including title, description, and questions.  |
+| `onSave`   | Function | Yes      | Function to save the updated form data and persist changes to Firebase.          |
