@@ -12,6 +12,7 @@ import Chip from '@mui/material/Chip';
 import PropTypes from 'prop-types';
 import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { db, auth } from '../../Firebase.js'; // Adjust path if necessary
+import Fuse from 'fuse.js';
 
 const style = {
   position: 'absolute',
@@ -39,53 +40,70 @@ const selectedListItemStyle = {
 };
 
 const selectedUserChipStyle = {
-  border: '1px solid #ccc', // Add border to the Chip
+  border: '1px solid #ccc', // Optional border
   borderRadius: '10px', // Rounded corners
   backgroundColor: '#4CAF50', // Green background color
   color: '#fff', // White text color
   margin: '4px',
+  padding: '8px 16px', // Padding inside the Chip
+};
+
+const resultContainerStyle = {
+  maxHeight: '300px', // Set a maximum height for the results container
+  overflowY: 'auto', // Enable vertical scrolling
+  marginTop: '16px',
 };
 
 const ShareModal = ({ open, handleClose, auditId }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [shareArrayList, setShareArrayList] = useState([]); // Array to visually track selected users
   const [message, setMessage] = useState(''); // State to handle the success message
+  const [fuse, setFuse] = useState(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const q = query(collection(db, 'Users'));
+      const querySnapshot = await getDocs(q);
+      const usersList = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setUsers(usersList);
+
+      const fuseInstance = new Fuse(usersList, {
+        keys: ['name'],
+        threshold: 0.3,
+      });
+      setFuse(fuseInstance);
+    };
+
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     if (searchTerm) {
-      const fetchUsers = async () => {
-        const q = query(
-          collection(db, 'Users'),
-          where('name', '>=', searchTerm),
-          where('name', '<=', searchTerm + '\uf8ff')
-        );
-        const querySnapshot = await getDocs(q);
-        const usersList = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setUsers(usersList);
-      };
-      fetchUsers();
+      const results = fuse.search(searchTerm).map(result => result.item);
+      setFilteredUsers(results);
     } else {
-      setUsers([]);
+      setFilteredUsers([]);
     }
-  }, [searchTerm]);
+  }, [searchTerm, fuse]);
 
   const handleUserSelect = (user) => {
-    setSelectedUsers((prevSelectedUsers) => {
-      if (prevSelectedUsers.find((u) => u.id === user.id)) {
-        return prevSelectedUsers.filter((u) => u.id !== user.id);
+    setSelectedUsers(prevSelectedUsers => {
+      if (prevSelectedUsers.find(u => u.id === user.id)) {
+        return prevSelectedUsers.filter(u => u.id !== user.id);
       } else {
         return [...prevSelectedUsers, user];
       }
     });
 
-    setShareArrayList((prevShareArrayList) => {
-      if (prevShareArrayList.find((u) => u.id === user.id)) {
-        return prevShareArrayList.filter((u) => u.id !== user.id);
+    setShareArrayList(prevShareArrayList => {
+      if (prevShareArrayList.find(u => u.id === user.id)) {
+        return prevShareArrayList.filter(u => u.id !== user.id);
       } else {
         return [...prevShareArrayList, user];
       }
@@ -113,6 +131,9 @@ const ShareModal = ({ open, handleClose, auditId }) => {
     }
 
     setMessage('Audit successfully shared!'); // Show success message
+    setSelectedUsers([]);
+    setShareArrayList([]);
+    setSearchTerm('');
     setTimeout(() => {
       setMessage(''); // Clear the message after 2 seconds
       handleClose(); // Close the modal after the message is shown
@@ -140,24 +161,42 @@ const ShareModal = ({ open, handleClose, auditId }) => {
           placeholder="Search users by name"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ mt: 2, mb: 2 }}
+          sx={{
+            mt: 2,
+            mb: 2,
+            '& .MuiInputBase-root': {
+              height: '60px', // Increase height of the input field
+            },
+            '& .MuiInputBase-input': {
+              fontSize: '1.5rem', // Increase font size
+            }
+          }}
         />
-        <List>
-          {users.map((user) => (
-            <ListItem
-              key={user.id}
-              button
-              onClick={() => handleUserSelect(user)}
-              style={
-                selectedUsers.some((u) => u.id === user.id)
-                  ? selectedListItemStyle
-                  : listItemStyle
-              }
-            >
-              <ListItemText primary={user.name} />
-            </ListItem>
-          ))}
-        </List>
+        {searchTerm === "" && !filteredUsers.length && (
+          <Typography variant="subtitle1" sx={{ mt: 2 }}>
+            No results found
+          </Typography>
+        )}
+        {filteredUsers.length > 0 && (
+          <Box sx={resultContainerStyle}>
+            <List>
+              {filteredUsers.map((user) => (
+                <ListItem
+                  key={user.id}
+                  button
+                  onClick={() => handleUserSelect(user)}
+                  style={
+                    selectedUsers.some((u) => u.id === user.id)
+                      ? selectedListItemStyle
+                      : listItemStyle
+                  }
+                >
+                  <ListItemText primary={user.name} />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        )}
         {shareArrayList.length > 0 && (
           <Box sx={{ mt: 3 }}>
             <Typography variant="subtitle1" gutterBottom>
@@ -168,7 +207,7 @@ const ShareModal = ({ open, handleClose, auditId }) => {
                 key={user.id}
                 label={user.name}
                 onDelete={() => handleUserSelect(user)} // Allow removal of users from the list
-                sx={selectedUserChipStyle}
+                style={selectedUserChipStyle}
               />
             ))}
           </Box>
@@ -190,8 +229,17 @@ const ShareModal = ({ open, handleClose, auditId }) => {
               '&:hover': {
                 backgroundColor: '#e0e0e0'
               }
-            }}>Cancel</Button>
-          <Button variant="contained" color="primary" onClick={handleShare} disabled={shareArrayList.length === 0} style={{ color: 'white', backgroundColor: '#2563eb', borderRadius: '10px', padding: '10px 20px' }}>
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleShare}
+            disabled={shareArrayList.length === 0}
+            style={{ color: 'white', backgroundColor: '#2563eb', borderRadius: '10px', padding: '10px 20px' }}
+          >
             Share
           </Button>
         </Box>

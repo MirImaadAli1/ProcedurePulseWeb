@@ -19,10 +19,16 @@ const FormBuilder = () => {
   const [openModal, setOpenModal] = useState(false);
   const [createdAuditId, setCreatedAuditId] = useState('');
   const [showAlert, setShowAlert] = useState(false);
+  const [showQuestionAlert, setShowQuestionAlert] = useState(false); // New state for question alert
 
   const handleSubmit = async () => {
     if (!title || !description) {
       setShowAlert(true);
+      return;
+    }
+
+    if (data.length === 0) { // Check if there are no questions
+      setShowQuestionAlert(true); // Show the error for no questions
       return;
     }
 
@@ -62,7 +68,7 @@ const FormBuilder = () => {
     } finally {
       setOpenModal(true);
       setShowAlert(false);
-
+      setShowQuestionAlert(false); // Reset question alert state
     }
   };
 
@@ -125,6 +131,11 @@ const FormBuilder = () => {
           {showAlert && (
             <Alert severity="error" onClose={() => setShowAlert(false)} style={{ marginBottom: '1rem' }}>
               Please fill in the title and description.
+            </Alert>
+          )}
+          {showQuestionAlert && (
+            <Alert severity="error" onClose={() => setShowQuestionAlert(false)} style={{ marginBottom: '1rem' }}>
+              Please submit at least 1 question.
             </Alert>
           )}
 

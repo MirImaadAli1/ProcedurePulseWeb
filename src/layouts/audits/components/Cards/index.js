@@ -10,7 +10,6 @@ import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-
 import { AddCircleOutlineOutlined, EditOutlined, DeleteOutlined, ExpandMoreOutlined } from '@mui/icons-material';
 import MDTypography from 'components/MDTypography';
 
@@ -172,6 +171,11 @@ const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
                       }}
                     >
                       {form.title}
+                    </MDTypography>
+                  </TableCell>
+                  <TableCell align="left">
+                    <MDTypography variant="body2">
+                      {new Date(form.createdAt.toMillis()).toLocaleDateString()}
                     </MDTypography>
                   </TableCell>
                   <TableCell align="center">

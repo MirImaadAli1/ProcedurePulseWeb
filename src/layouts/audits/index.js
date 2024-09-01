@@ -30,6 +30,10 @@ function Audits() {
             id: doc.id,
             ...doc.data(),
           }));
+  
+          // Sort forms by createdAt date in descending order
+          userForms.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+  
           startTransition(() => {
             setForms(userForms);
           });
@@ -42,6 +46,7 @@ function Audits() {
     };
     fetchForms();
   }, []);
+  
 
   const handleEdit = (form) => {
     startTransition(() => {

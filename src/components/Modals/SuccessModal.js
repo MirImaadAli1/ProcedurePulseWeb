@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -38,6 +39,7 @@ const buttonStyle = {
 
 const SuccessModal = ({ open, handleClose, auditId }) => {
   const [shareOpen, setShareOpen] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleShareOpen = () => {
     setShareOpen(true);
@@ -45,6 +47,11 @@ const SuccessModal = ({ open, handleClose, auditId }) => {
 
   const handleShareClose = () => {
     setShareOpen(false);
+  };
+
+  const handleViewAudit = () => {
+    // Navigate to the audit page with the given auditId
+    navigate(`/audits`);
   };
 
   return (
@@ -85,6 +92,7 @@ const SuccessModal = ({ open, handleClose, auditId }) => {
               variant="contained"
               color="primary"
               style={{ color: '#000000', borderRadius: '10px', backgroundColor: '#f0f0f0', padding: '10px 20px' }}
+              onClick={handleViewAudit} // Add onClick handler for navigation
             >
               View Audit
             </Button>

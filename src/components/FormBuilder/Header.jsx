@@ -12,8 +12,7 @@ const Header = ({ title, description, setTitle, setDescription }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`transition-transform duration-300 ${isHovered ? 'transform scale-105 shadow-2xl' : ''
-          }`}
+        className={`transition-transform duration-300 ${isHovered ? 'transform scale-105 shadow-2xl' : ''}`}
       >
         {/* Color Bar */}
         <div
@@ -30,7 +29,7 @@ const Header = ({ title, description, setTitle, setDescription }) => {
           <div style={{ position: 'relative' }}>
             <TextField
               fullWidth
-              defaultValue={title}
+              value={title} // Use value instead of defaultValue
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Audit Title"
               variant="standard"
@@ -48,7 +47,7 @@ const Header = ({ title, description, setTitle, setDescription }) => {
           <div style={{ position: 'relative' }}>
             <TextField
               fullWidth
-              defaultValue={description}
+              value={description} // Use value instead of defaultValue
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Form description"
               variant="outlined"
