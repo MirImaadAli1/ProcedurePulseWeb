@@ -49,13 +49,12 @@ const CreateAudit = lazy(() => import('layouts/createAudit'));
 const Notifications = lazy(() => import('layouts/notifications'));
 const SignIn = lazy(() => import('layouts/authentication/sign-in'));
 const SignUp = lazy(() => import('layouts/authentication/sign-up'));
-const LandingPage = lazy(() => import('layouts/landing-page'));
 const Audits = lazy(() => import('layouts/audits'));
 const Audit_search = lazy(() => import('layouts/audit-search'));
 const SharedAudit = lazy(() => import('layouts/sharedAudits'));
 const YourResponses = lazy(() => import('layouts/yourResponses'));
 const RespondAudit = lazy(() => import('layouts/respondAudit'));
-
+import LandingPage from 'layouts/landing-page';
 const ProtectedDashboard = withAuth(Dashboard);
 const ProtectedCreateAudit = withAuth(CreateAudit);
 const ProtectedNotifications = withAuth(Notifications);
@@ -163,9 +162,7 @@ const routes = [
     key: 'landing-page',
     route: '/',
     component: (
-      <Suspense fallback={<div>Loading Landing Page...</div>}>
         <LandingPage />
-      </Suspense>
     ),
   },
   {

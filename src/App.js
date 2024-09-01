@@ -3,6 +3,9 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
+// index.js or App.js
+import '@fontsource/open-sans'; // Import Open Sans font
+
 import Sidenav from 'examples/Sidenav';
 import theme from 'assets/theme';
 // Removed themeDark import
@@ -66,13 +69,11 @@ export default function App() {
           <Route
             path={route.route}
             element={
-              <Suspense fallback={<div>Loading...</div>}>
-                {route.private ? (
-                  <ProtectedRoute>{route.component}</ProtectedRoute>
-                ) : (
-                  route.component
-                )}
-              </Suspense>
+              route.private ? (
+                <ProtectedRoute>{route.component}</ProtectedRoute>
+              ) : (
+                route.component
+              )
             }
             key={route.key}
           />
