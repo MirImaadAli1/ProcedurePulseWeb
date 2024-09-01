@@ -1,23 +1,18 @@
-import { useState, useMemo, useEffect, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-// index.js or App.js
 import '@fontsource/open-sans'; // Import Open Sans font
 
 import Sidenav from 'examples/Sidenav';
 import theme from 'assets/theme';
-// Removed themeDark import
 import ProtectedRoute from 'components/PrivateRoute';
-
-// Images
 import brandWhite from 'assets/images/logo-ct.png';
-// import brandDark from 'assets/images/logo-ct-dark.png';
-
 import routes from 'routes';
 import { useMaterialUIController, setMiniSidenav } from 'context';
 import { AuthProvider } from 'context/authContext';
+import { initializeFirebase } from './Firebase'; // Import Firebase initialization
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -29,9 +24,15 @@ export default function App() {
     sidenavColor,
     transparentSidenav,
     whiteSidenav,
-    // Removed darkMode
   } = controller; 
   const [onMouseEnter, setOnMouseEnter] = useState(false);
+  const [firebaseInitialized, setFirebaseInitialized] = useState(false);
+
+  useEffect(() => {
+    // Initialize Firebase after the component mounts
+    initializeFirebase();
+    setFirebaseInitialized(true);
+  }, []);
 
   const handleOnMouseEnter = () => {
     if (miniSidenav && !onMouseEnter) {
@@ -46,8 +47,6 @@ export default function App() {
       setOnMouseEnter(false);
     }
   };
-
-
 
   useEffect(() => {
     document.body.setAttribute('dir', direction);
@@ -82,6 +81,11 @@ export default function App() {
 
       return null;
     });
+
+  if (!firebaseInitialized) {
+    // Render a loading state while Firebase initializes
+    return <div>Loading...</div>;
+  }
 
   return (
     <AuthProvider>
