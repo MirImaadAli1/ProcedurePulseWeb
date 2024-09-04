@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { Modal, Typography, IconButton } from '@mui/material';
-import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
-import { Close } from '@mui/icons-material';
-import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+import { IoIosCheckmarkCircleOutline } from 'react-icons/io'; // Importing success icon
+import { Close } from '@mui/icons-material'; // Importing close icon from Material UI
+import PropTypes from 'prop-types'; // Importing PropTypes for prop validation
+import { useNavigate } from 'react-router-dom'; // Importing useNavigate for redirection
 
+// Modal style for positioning and design
 const modalStyle = {
   position: 'absolute',
   top: '50%',
@@ -19,6 +20,7 @@ const modalStyle = {
   position: 'relative', // For positioning the close button
 };
 
+// Style for black bar under the success message
 const blackBarStyle = {
   width: '100%',
   height: '2px',
@@ -31,27 +33,27 @@ const blackBarStyle = {
 const ResponseSuccess = ({ open, handleClose }) => {
   const navigate = useNavigate();
 
+  // Effect to automatically close the modal and redirect after 1 second
   useEffect(() => {
     if (open) {
-      // Redirect to the dashboard after 3 seconds
       const timer = setTimeout(() => {
-        handleClose();
-        navigate('/dashboard'); // Replace '/dashboard' with the path to your dashboard
+        handleClose(); // Close the modal
+        navigate('/dashboard'); // Redirect to dashboard
       }, 1000);
 
-      return () => clearTimeout(timer);
+      return () => clearTimeout(timer); // Clear the timer if the component unmounts
     }
   }, [open, handleClose, navigate]);
 
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      onClose={handleClose} // Close modal when clicking outside
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       BackdropProps={{
         style: {
-          backdropFilter: 'blur(5px)', // This blurs the background
+          backdropFilter: 'blur(5px)', // Blurs the background when the modal is open
         },
       }}
     >
@@ -62,26 +64,30 @@ const ResponseSuccess = ({ open, handleClose }) => {
           onClick={handleClose}
           style={{ position: 'absolute', top: '8px', right: '8px' }}
         >
-          <Close />
+          <Close /> {/* Close icon */}
         </IconButton>
 
+        {/* Success icon and text */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <IoIosCheckmarkCircleOutline style={{ color: 'green', fontSize: '128px' }} />
+          <IoIosCheckmarkCircleOutline style={{ color: 'green', fontSize: '128px' }} /> {/* Success icon */}
         </div>
+
+        {/* Success message */}
         <Typography id="modal-modal-title" variant="h6" component="h2" style={{ fontSize: '20px' }}>
           Responses Successfully Submitted
         </Typography>
 
-        {/* Black bar underneath the title with rounded ends */}
+        {/* Black bar below the message */}
         <div style={blackBarStyle}></div>
       </div>
     </Modal>
   );
 };
 
+// PropTypes validation for the open and handleClose props
 ResponseSuccess.propTypes = {
-  open: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired, // Boolean to control if modal is open
+  handleClose: PropTypes.func.isRequired, // Function to handle modal closing
 };
 
 export default ResponseSuccess;
