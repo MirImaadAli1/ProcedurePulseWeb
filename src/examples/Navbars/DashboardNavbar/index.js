@@ -7,9 +7,9 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import Icon from '@mui/material/Icon';
 import MDBox from 'components/MDBox';
-import CaughtUp from 'components/States/caughtUp';
+import CaughtUp from 'components/States/caughtUp'; // Component to display when all notifications are seen
 import MDTypography from 'components/MDTypography';
-import { collection, query, where, orderBy, getDocs, doc, getDoc, writeBatch } from 'firebase/firestore';
+import { collection, query, where, orderBy, getDocs, doc, getDoc, writeBatch } from 'firebase/firestore'; // Firebase imports
 import { db, auth } from '../../../Firebase';
 import {
   navbar,
@@ -17,74 +17,79 @@ import {
   navbarRow,
   navbarIconButton,
   navbarMobileMenu,
-} from 'examples/Navbars/DashboardNavbar/styles';
+} from 'examples/Navbars/DashboardNavbar/styles'; // Style imports for navbar
 import { useNavigate } from 'react-router-dom';
 import {
-  useMaterialUIController,
+  useMaterialUIController, // Custom hook to access global state
   setTransparentNavbar,
   setMiniSidenav,
   setOpenConfigurator,
-} from 'context';
-import Breadcrumbs from 'examples/Breadcrumbs';
-import { formatDistanceToNow } from 'date-fns';
-import Loading from 'components/States/loading';
+} from 'context'; // Global context and dispatch actions for navbar UI
+import Breadcrumbs from 'examples/Breadcrumbs'; // Breadcrumbs component
+import { formatDistanceToNow } from 'date-fns'; // Helper function to format dates
+import Loading from 'components/States/loading'; // Component to show when data is loading
 
 function DashboardNavbar({ absolute, light, isMini }) {
-  const [navbarType, setNavbarType] = useState();
-  const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
-  const [openMenu, setOpenMenu] = useState(false);
-  const [notifications, setNotifications] = useState([]);
-  const [viewedNotificationIds, setViewedNotificationIds] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
-  const [error, setError] = useState(null); // Add error state
-  const navigate = useNavigate(); // Initialize the navigate function
-  const route = useLocation().pathname.split('/').slice(1);
+  // State management
+  const [navbarType, setNavbarType] = useState(); // Tracks whether navbar is sticky or static
+  const [controller, dispatch] = useMaterialUIController(); // Get global state and dispatch from context
+  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller; // Destructure values from global state
+  const [openMenu, setOpenMenu] = useState(false); // Controls whether the notification menu is open
+  const [notifications, setNotifications] = useState([]); // Stores fetched notifications
+  const [viewedNotificationIds, setViewedNotificationIds] = useState([]); // Stores IDs of viewed notifications
+  const [loading, setLoading] = useState(true); // Tracks loading state for notifications
+  const [error, setError] = useState(null); // Tracks error state if fetching notifications fails
+  const navigate = useNavigate(); // React Router function to navigate between pages
+  const route = useLocation().pathname.split('/').slice(1); // Extract the current route for breadcrumb
 
+  // Function to mark notifications as seen
   const markNotificationsAsSeen = async (notificationIds) => {
     if (!notificationIds.length) return;
 
     console.log('Marking notifications as seen:', notificationIds);
-    const batch = writeBatch(db);
+    const batch = writeBatch(db); // Use Firebase batch update
 
     notificationIds.forEach(id => {
       if (id) {
-        const notificationRef = doc(db, 'Notifications', id);
-        batch.update(notificationRef, { seen: true });
+        const notificationRef = doc(db, 'Notifications', id); // Reference to each notification document
+        batch.update(notificationRef, { seen: true }); // Update the "seen" field
       } else {
         console.error('Invalid notification ID:', id);
       }
     });
 
     try {
-      await batch.commit();
+      await batch.commit(); // Commit the batch update
       console.log('Notifications marked as seen');
     } catch (error) {
       console.error('Error during batch commit:', error);
     }
   };
 
+  // Effect to manage navbar transparency based on scroll and fixed position
   useEffect(() => {
     if (fixedNavbar) {
-      setNavbarType('sticky');
+      setNavbarType('sticky'); // Set navbar type to sticky if it's fixed
     } else {
-      setNavbarType('static');
+      setNavbarType('static'); // Otherwise, set it to static
     }
 
     function handleTransparentNavbar() {
+      // Set transparent navbar based on scroll position and whether it's fixed
       setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
     }
 
-    window.addEventListener('scroll', handleTransparentNavbar);
+    window.addEventListener('scroll', handleTransparentNavbar); // Add event listener to handle scroll behavior
     handleTransparentNavbar();
 
-    return () => window.removeEventListener('scroll', handleTransparentNavbar);
+    return () => window.removeEventListener('scroll', handleTransparentNavbar); // Cleanup event listener on unmount
   }, [dispatch, fixedNavbar]);
 
+  // Effect to fetch notifications when the notification menu is opened
   useEffect(() => {
     const fetchNotifications = async () => {
       if (!auth.currentUser) {
-        setLoading(false);
+        setLoading(false); // If no user is authenticated, stop loading
         return;
       }
 
@@ -92,84 +97,82 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
       const notificationsQuery = query(
         collection(db, 'Notifications'),
-        where('receiverId', '==', userId),
-        where('seen', '==', false),
-        orderBy('sharedAt', 'desc')
+        where('receiverId', '==', userId), // Query notifications for the current user
+        where('seen', '==', false), // Only fetch unseen notifications
+        orderBy('sharedAt', 'desc') // Order by the timestamp when shared
       );
 
       try {
-        const notificationsSnapshot = await getDocs(notificationsQuery);
+        const notificationsSnapshot = await getDocs(notificationsQuery); // Fetch notifications
         const notificationsData = await Promise.all(notificationsSnapshot.docs.map(async (docSnapshot) => {
           const notification = docSnapshot.data();
 
-          const auditDocRef = doc(db, 'Audit', notification.auditId);
+          const auditDocRef = doc(db, 'Audit', notification.auditId); // Fetch related audit document
           const auditDocSnapshot = await getDoc(auditDocRef);
           const audit = auditDocSnapshot.data();
 
-          const senderDocRef = doc(db, 'Users', notification.senderId);
+          const senderDocRef = doc(db, 'Users', notification.senderId); // Fetch sender's user data
           const senderDocSnapshot = await getDoc(senderDocRef);
           const sender = senderDocSnapshot.data();
 
           return {
             ...notification,
             id: docSnapshot.id,  // Add the ID to track viewed notifications
-            auditTitle: audit ? audit.title : 'Unknown Audit',
-            senderName: sender ? sender.name : 'Unknown Sender',
-            sharedAt: formatDistanceToNow(notification.sharedAt.toDate(), { addSuffix: true }),
+            auditTitle: audit ? audit.title : 'Unknown Audit', // Handle unknown audit case
+            senderName: sender ? sender.name : 'Unknown Sender', // Handle unknown sender case
+            sharedAt: formatDistanceToNow(notification.sharedAt.toDate(), { addSuffix: true }), // Format shared date
           };
         }));
 
-        setNotifications(notificationsData);
+        setNotifications(notificationsData); // Update state with fetched notifications
         setError(null); // Clear any previous errors
       } catch (error) {
         console.error('Error fetching notifications:', error);
-        setError('Error fetching notifications');
+        setError('Error fetching notifications'); // Set error state if fetching fails
       } finally {
-        setLoading(false); // Set loading to false when done
+        setLoading(false); // Stop loading when fetching is complete
       }
     };
 
     if (openMenu) {
-      fetchNotifications();
+      fetchNotifications(); // Fetch notifications if menu is opened
     }
   }, [openMenu]);
 
-
-
-  const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
-  const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
+  // Event handlers for the navbar
+  const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav); // Toggle mini sidenav
+  const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator); // Open configuration panel
   const handleOpenMenu = (event) => {
-    setOpenMenu(event.currentTarget);
+    setOpenMenu(event.currentTarget); // Open notifications menu
   };
 
+  // Close menu and mark viewed notifications as seen
   const handleCloseMenu = useCallback(() => {
     setOpenMenu(false);
-    // Mark viewed notifications as seen
     if (viewedNotificationIds.length > 0) {
-      markNotificationsAsSeen(viewedNotificationIds);
-      setViewedNotificationIds([]);
+      markNotificationsAsSeen(viewedNotificationIds); // Mark notifications as seen when menu closes
+      setViewedNotificationIds([]); // Clear viewed notifications state
     }
   }, [viewedNotificationIds]);
 
+  // Track viewed notifications
   const handleNotificationView = (notificationId) => {
     if (!viewedNotificationIds.includes(notificationId)) {
-      setViewedNotificationIds((prevIds) => [...prevIds, notificationId]);
+      setViewedNotificationIds((prevIds) => [...prevIds, notificationId]); // Add notification to viewed list
     }
   };
 
+  // Handle notification click to navigate to a specific audit
   const handleNotificationClick = async (notificationId, auditId) => {
     try {
-      // Mark this notification as seen
-      await markNotificationsAsSeen([notificationId]); 
-  
-      // Navigate to RespondAudit with the auditId
-      navigate(`/respond-audit/${auditId}`); 
+      await markNotificationsAsSeen([notificationId]); // Mark notification as seen
+      navigate(`/respond-audit/${auditId}`); // Navigate to audit response page
     } catch (error) {
       console.error('Error handling notification click:', error);
     }
   };
-  
 
+  // Function to render the notification menu
   const renderMenu = () => (
     <Menu
       anchorEl={openMenu}
@@ -178,11 +181,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
         vertical: 'bottom',
         horizontal: 'left',
       }}
-      open={Boolean(openMenu)}
-      onClose={handleCloseMenu}
+      open={Boolean(openMenu)} // Check if the menu should be open
+      onClose={handleCloseMenu} // Close menu handler
       sx={{ mt: 2 }}
     >
-      {loading ? ( // Show Loading component if loading
+      {loading ? ( // Show loading state if data is still being fetched
         <Loading />
       ) : error ? ( // Show error message if there's an error
         <MDBox p={2} display="flex" flexDirection="column">
@@ -190,7 +193,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
             {error}
           </MDTypography>
         </MDBox>
-      ) : notifications.length > 0 ? (
+      ) : notifications.length > 0 ? ( // If there are notifications, map over them
         notifications.map((notification, index) => (
           <MDBox
             key={index}
@@ -199,14 +202,14 @@ function DashboardNavbar({ absolute, light, isMini }) {
             flexDirection="column"
             border="1px solid"
             borderRadius="10px"
-            borderColor="grey.300" // Adjust color as needed
-            mb={2} // Add margin-bottom for spacing between notifications
+            borderColor="grey.300" // Set border color
+            mb={2} // Spacing between notifications
             onClick={() => {
-              handleNotificationView(notification.id);
+              handleNotificationView(notification.id); // Mark as viewed
               handleNotificationClick(notification.id, notification.auditId); // Navigate to RespondAudit
             }}
-
           >
+            {/* Display notification details */}
             <MDTypography variant="body2" color="textPrimary">
               {notification.senderName} shared audit "{notification.auditTitle}" with you
             </MDTypography>
@@ -217,12 +220,13 @@ function DashboardNavbar({ absolute, light, isMini }) {
         ))
       ) : (
         <MDBox p={2} display="flex" flexDirection="column">
-          <CaughtUp />
+          <CaughtUp /> {/* Display this if all notifications have been viewed */}
         </MDBox>
       )}
     </Menu>
   );
 
+  // Style for icons based on theme settings
   const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
     color: () => {
       let colorValue = light || darkMode ? white.main : dark.main;
@@ -237,17 +241,19 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
   return (
     <AppBar
-      position={absolute ? 'absolute' : navbarType}
+      position={absolute ? 'absolute' : navbarType} // Set the position based on navbar type
       color="inherit"
       sx={(theme) => navbar(theme, { transparentNavbar, absolute, light, darkMode })}
     >
       <Toolbar sx={(theme) => navbarContainer(theme)}>
+        {/* Breadcrumbs for showing navigation path */}
         <MDBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
           <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
         </MDBox>
-        {isMini ? null : (
+        {!isMini && (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
             <MDBox color={light ? 'white' : 'inherit'}>
+              {/* Mini sidenav toggle button */}
               <IconButton
                 size="small"
                 disableRipple
@@ -259,6 +265,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                   {miniSidenav ? 'menu_open' : 'menu'}
                 </Icon>
               </IconButton>
+              {/* Notifications menu button */}
               <IconButton
                 size="small"
                 disableRipple
@@ -277,21 +284,23 @@ function DashboardNavbar({ absolute, light, isMini }) {
           </MDBox>
         )}
       </Toolbar>
-      {renderMenu()}
+      {renderMenu()} {/* Render the notification menu */}
     </AppBar>
   );
 }
 
+// PropTypes to validate the props
 DashboardNavbar.propTypes = {
   absolute: PropTypes.bool,
   light: PropTypes.bool,
   isMini: PropTypes.bool,
 };
 
+// Default props for the component
 DashboardNavbar.defaultProps = {
   absolute: false,
   light: false,
   isMini: false,
 };
 
-export default DashboardNavbar;
+export default DashboardNavbar; // Export the component
