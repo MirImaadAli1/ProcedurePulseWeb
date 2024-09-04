@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Modal, Typography, Button, IconButton } from '@mui/material';
-import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
-import { Close } from '@mui/icons-material';
-import PropTypes from 'prop-types';
-import ShareModal from './ShareModal'; // Import the ShareModal component
+import { Modal, Typography, Button, IconButton } from '@mui/material'; // Importing Material-UI components for modal and buttons.
+import { IoIosCheckmarkCircleOutline } from 'react-icons/io'; // Importing success icon.
+import { Close } from '@mui/icons-material'; // Importing close icon from Material UI.
+import PropTypes from 'prop-types'; // Importing PropTypes for prop validation.
+import ShareModal from './ShareModal'; // Importing ShareModal component to handle audit sharing.
 
+// Styles for the main modal
 const modalStyle = {
   position: 'absolute',
   top: '50%',
@@ -19,6 +20,7 @@ const modalStyle = {
   position: 'relative', // For positioning the close button
 };
 
+// Styles for the black bar below the success message
 const blackBarStyle = {
   width: '100%',
   height: '2px',
@@ -28,24 +30,29 @@ const blackBarStyle = {
   borderRadius: '10px',
 };
 
+// Styles for the buttons
 const buttonStyle = {
   borderRadius: '10px',
-  padding:'10px'
+  padding: '10px',
 };
 
+// Main SuccessModal component
 const SuccessModal = ({ open, handleClose, auditId }) => {
-  const [shareOpen, setShareOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false); // State to control visibility of ShareModal
 
+  // Function to open the ShareModal
   const handleShareOpen = () => {
     setShareOpen(true);
   };
 
+  // Function to close the ShareModal
   const handleShareClose = () => {
     setShareOpen(false);
   };
 
   return (
     <>
+      {/* Modal for displaying the success message */}
       <Modal
         open={open}
         onClose={handleClose}
@@ -53,7 +60,7 @@ const SuccessModal = ({ open, handleClose, auditId }) => {
         aria-describedby="modal-modal-description"
         BackdropProps={{
           style: {
-            backdropFilter: 'blur(5px)', // This blurs the background
+            backdropFilter: 'blur(5px)', // Blurs the background when modal is open
           },
         }}
       >
@@ -67,6 +74,7 @@ const SuccessModal = ({ open, handleClose, auditId }) => {
             <Close />
           </IconButton>
 
+          {/* Success icon and message */}
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <IoIosCheckmarkCircleOutline style={{ color: 'green', fontSize: '128px' }} />
           </div>
@@ -74,9 +82,10 @@ const SuccessModal = ({ open, handleClose, auditId }) => {
             AUDIT SUCCESSFULLY CREATED
           </Typography>
 
-          {/* Black bar underneath the title with rounded ends */}
+          {/* Black bar below the success message */}
           <div style={blackBarStyle}></div>
 
+          {/* Buttons for "View Audit" and "Share Audit" */}
           <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '24px' }}>
             <Button
               variant="contained"
@@ -88,7 +97,7 @@ const SuccessModal = ({ open, handleClose, auditId }) => {
             <Button
               variant="contained"
               color="primary"
-              onClick={handleShareOpen}
+              onClick={handleShareOpen} // Open the ShareModal when clicked
               style={buttonStyle}
             >
               Share Audit
@@ -103,10 +112,11 @@ const SuccessModal = ({ open, handleClose, auditId }) => {
   );
 };
 
+// PropTypes validation to ensure correct prop types
 SuccessModal.propTypes = {
-  open: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
-  auditId: PropTypes.string.isRequired, // Expecting auditId as a prop
+  open: PropTypes.bool.isRequired, // Boolean to control modal visibility
+  handleClose: PropTypes.func.isRequired, // Function to close the modal
+  auditId: PropTypes.string.isRequired, // Audit ID to be passed to the ShareModal
 };
 
 export default SuccessModal;
