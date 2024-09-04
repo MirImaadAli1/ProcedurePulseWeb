@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db, auth } from '../../Firebase'; // Ensure this path is correct
+import { db, auth } from '../../Firebase'; // Firebase configuration import
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 
 function PieChartComponent() {
-    const [pieChartData, setPieChartData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [noData, setNoData] = useState(false);
-    const currentUser = auth.currentUser;
+    const [pieChartData, setPieChartData] = useState([]); // Stores chart data
+    const [loading, setLoading] = useState(true); // Loading state
+    const [noData, setNoData] = useState(false); // No data state
+    const currentUser = auth.currentUser; // Get current authenticated user
   
     useEffect(() => {
         if (!currentUser) {
@@ -20,7 +20,7 @@ function PieChartComponent() {
 
         const currentUserId = currentUser.uid;
 
-        // Fetch audits shared with the user
+        // Function to fetch audits shared with the user
         const fetchSharedAudits = async () => {
             try {
                 const sharedAuditsCollectionRef = collection(db, 'SharedAudits');
@@ -36,16 +36,18 @@ function PieChartComponent() {
                     return;
                 }
 
-                // Fetch responses to these audits by the current user
+                // Fetch responses for these audits by the current user
                 const responsesCollectionRef = collection(db, 'Responses');
                 const responsesQueries = sharedAuditIds.map(auditId => 
                     query(responsesCollectionRef, where('auditId', '==', auditId), where('responderId', '==', currentUserId))
                 );
 
+                // Get all responses
                 const responsesSnapshots = await Promise.all(responsesQueries.map(q => getDocs(q)));
                 const respondedCount = responsesSnapshots.reduce((total, snapshot) => total + snapshot.size, 0);
                 const notRespondedCount = sharedAudits.length - respondedCount;
 
+                // Update chart data
                 setPieChartData([
                     { name: 'Responded', value: respondedCount },
                     { name: 'Not Responded', value: notRespondedCount },
@@ -60,9 +62,12 @@ function PieChartComponent() {
         };
 
         fetchSharedAudits();
-    }, [currentUser]);
+    }, [currentUser]); // Re-run if currentUser changes
 
+    // Show loading state while data is being fetched
     if (loading) return <MDBox py={3} display="flex" justifyContent="center"><div>Loading...</div></MDBox>;
+
+    // Show message if no data is available
     if (noData) return <MDBox py={3} display="flex" justifyContent="center"><div>No data available</div></MDBox>;
 
     return (
@@ -81,6 +86,8 @@ function PieChartComponent() {
                     Response Status of Shared Audits
                 </MDTypography>
             </MDBox>
+
+            {/* Chart rendering */}
             <MDBox pt={3}>
                 <PieChart width={400} height={400}>
                     <Pie
@@ -93,6 +100,7 @@ function PieChartComponent() {
                         fill="#8884d8"
                         label
                     >
+                        {/* Dynamic cell color alternation */}
                         {pieChartData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#2b79e3' : '#ff008b'} />
                         ))}
