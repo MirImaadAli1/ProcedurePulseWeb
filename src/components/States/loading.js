@@ -15,7 +15,7 @@ const Loading = () => {
             textAlign="center" // Center the text
         >
             <FaRegHourglass size={100} />
-            <Typography variant="h4" mb={2} mt={2}> {/* Apply margin-bottom directly here */}
+            <Typography variant="h4" mb={2} mt={2}> //* Apply margin-bottom directly here
                 loading
             </Typography>
         </Box>
