@@ -87,7 +87,7 @@ function PieChartComponent() {
                 </MDTypography>
             </MDBox>
 
-            {/* Chart rendering */}
+            // Chart rendering */}
             <MDBox pt={3}>
                 <PieChart width={400} height={400}>
                     <Pie
@@ -100,7 +100,7 @@ function PieChartComponent() {
                         fill="#8884d8"
                         label
                     >
-                        {/* Dynamic cell color alternation */}
+                        //* Dynamic cell color alternation
                         {pieChartData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#2b79e3' : '#ff008b'} />
                         ))}
