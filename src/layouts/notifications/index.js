@@ -78,7 +78,21 @@ function Notifications() {
           ) : (
             <Grid container spacing={3} justifyContent="center">
               <Grid item xs={12} lg={8}>
-                <Card>
+                <MDBox
+                  mx={2}
+                  mt={-3}
+                  py={3}
+                  px={2}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                >
+                  <MDTypography variant="h6" color="white">
+                    Notifications
+                  </MDTypography>
+                </MDBox>
+                <Card style={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
                   <MDBox pt={2} px={2}>
                     {notifications.length > 0 ? (
                       notifications.map((notification) => (
@@ -86,7 +100,7 @@ function Notifications() {
                           key={notification.id}
                           mb={2}
                           onClick={() => handleNotificationClick(notification.auditId)} // Add click event
-                          style={{ cursor: 'pointer', border: '1px solid #ccc', padding: '10px', borderRadius: '5px' }} // Optional: Add some styling to make it look clickable
+                          style={{ cursor: 'pointer', border: '1px solid #ccc', padding: '10px', borderRadius: '5px', backgroundColor: 'rgba(255, 255, 255, 0.8)' }} // Optional: Add some styling to make it look clickable
                         >
                           <MDTypography variant="body1">
                             <strong>{notification.senderName}</strong> shared an audit{' '}
@@ -96,7 +110,7 @@ function Notifications() {
                         </MDBox>
                       ))
                     ) : (
-                      <EmptyState/> // Display empty state if no notifications
+                      <EmptyState /> // Display empty state if no notifications
                     )}
                   </MDBox>
                 </Card>

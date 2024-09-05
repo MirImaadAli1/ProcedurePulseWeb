@@ -47,13 +47,22 @@ const Header = ({ title, description, setTitle, setDescription }) => {
           <div style={{ position: 'relative' }}>
             <TextField
               fullWidth
-              value={description} // Use value instead of defaultValue
+              value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Form description"
-              variant="outlined"
+              variant="filled"
               InputProps={{
                 disableUnderline: true,
-                style: { fontSize: '20px', color: '#6B7280', marginTop: '15px' },
+                style: {
+                  fontSize: '20px',
+                  color: '#6B7280',
+                  padding: 0, // Removes padding
+                  marginTop: 0, // Ensures no margin
+                  height: 'auto', // Let the height be auto-adjusted
+                },
+              }}
+              inputProps={{
+                style: { padding: '15px' } // Ensure padding inside the input itself is removed
               }}
             />
           </div>
