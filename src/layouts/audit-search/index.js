@@ -192,11 +192,16 @@ function AuditSearch() {
 
                   <MDBox pt={3}>
                     {searchTerm === "" && !isLoading && (
-                      <div className="flex justify-center mb-3">
-                        <MDTypography variant="h6" color="text">
-                          Try searching for an audit!
-                        </MDTypography>
-                      </div>
+                      <>
+                        <div className="flex justify-center mb-3">
+                          <EmptyState />
+                        </div>
+                        <div className="flex justify-center mb-3">
+                          <MDTypography variant="h6" color="text">
+                            Try searching for an audit
+                          </MDTypography>
+                        </div>
+                      </>
                     )}
                     {searchTerm !== "" && filteredRows.length === 0 && !isLoading && (
                       <EmptyState />
