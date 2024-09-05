@@ -103,16 +103,16 @@ const ViewResponseModal = ({ open, onClose, response }) => {
                                     }}
                                 >
                                     <Typography variant="subtitle1" sx={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
-                                        {question.questionNumber}: {question.value} //* Display question
+                                        {question.questionNumber}: {question.value} {/* Display question */}
                                     </Typography>
                                     <Typography variant="body1" sx={{ fontSize: '1rem' }}>
                                         {answer ? (
                                             <>
                                                 {answer.comments && (
-                                                    <div><strong>Comments:</strong> {answer.comments}</div> //* Display comments
+                                                    <div><strong>Comments:</strong> {answer.comments}</div> {/* Display comments */}
                                                 )}
                                                 {answer.yesNoNa && (
-                                                    <div><strong>Yes/No:</strong> {answer.yesNoNa}</div> //* Display yes/no answer
+                                                    <div><strong>Yes/No:</strong> {answer.yesNoNa}</div> {/* Display yes/no answer */}
                                                 )}
                                                 {answer.imageUrl && answer.imageUrl !== "" ? (
                                                     <div>
