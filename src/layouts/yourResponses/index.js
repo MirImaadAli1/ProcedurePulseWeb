@@ -10,7 +10,6 @@ import DataTable from 'examples/Tables/DataTable';
 import { db, auth } from "../../Firebase";
 import { collection, getDocs } from 'firebase/firestore';
 import Loading from "components/States/loading";
-import EmptyState from "components/States/empty";
 import ResponseModal from './components/ResponseModal';
 
 function YourResponses() {
@@ -137,7 +136,11 @@ function YourResponses() {
                     <Loading />
                 )}
                 {noData && !loading && (
-                    <EmptyState />
+                    <MDBox mx={2} mt={-3} py={3} px={2} variant="gradient" bgColor="info" borderRadius="lg" coloredShadow="info">
+                        <MDTypography variant="h6" color="white">
+                            Respond to Audits shared with you to make them appear here
+                        </MDTypography>
+                    </MDBox>
                 )}
                 {!loading && !noData && (
                     <Grid container spacing={6}>
@@ -154,7 +157,7 @@ function YourResponses() {
                                     coloredShadow="info"
                                 >
                                     <MDTypography variant="h6" color="white">
-                                        Your Responses
+                                        Response Status of Shared Audits
                                     </MDTypography>
                                 </MDBox>
 

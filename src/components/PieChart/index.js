@@ -63,7 +63,7 @@ function PieChartComponent() {
     }, [currentUser]);
 
     if (loading) return <MDBox py={3} display="flex" justifyContent="center"><div>Loading...</div></MDBox>;
-    if (noData) return <MDBox py={3} display="flex" justifyContent="center"><div>No data available</div></MDBox>;
+    if (noData) return <MDBox py={3} display="flex" justifyContent="center"><di>Respond to shared Audits to see your data</di></MDBox>;
 
     return (
         <MDBox>

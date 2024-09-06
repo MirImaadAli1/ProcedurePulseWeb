@@ -41,7 +41,7 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         marginLeft: '20px',
-        maxWidth: '350px',
+        maxWidth: '490px',
         padding: '10px',
     borderRadius: '8px',
         backgroundColor: '#403e3e',
