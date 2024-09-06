@@ -1,51 +1,57 @@
-function navbar(theme, ownerState) {
-  // Destructuring properties from the theme and ownerState
-  const { palette, boxShadows, functions, transitions, breakpoints, borders } = theme;
-  const { transparentNavbar, absolute, light, darkMode } = ownerState; // Navbar-specific state values
+/**
+=========================================================
+* Material Dashboard 2 React - v2.2.0
+=========================================================
 
-  const { dark, white, text, transparent, background } = palette; // Color palette from theme
-  const { navbarBoxShadow } = boxShadows; // Box shadow for navbar
-  const { rgba, pxToRem } = functions; // Utility functions (rgba for colors, pxToRem for rem conversions)
-  const { borderRadius } = borders; // Border radius from theme
+* Product Page: https://www.creative-tim.com/product/material-dashboard-react
+* Copyright 2023 Creative Tim (https://www.creative-tim.com)
+
+Coded by www.creative-tim.com
+
+ =========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+*/
+function navbar(theme, ownerState) {
+  const { palette, boxShadows, functions, transitions, breakpoints, borders } = theme;
+  const { transparentNavbar, absolute, light, darkMode } = ownerState;
+
+  const { dark, white, text, transparent, background } = palette;
+  const { navbarBoxShadow } = boxShadows;
+  const { rgba, pxToRem } = functions;
+  const { borderRadius } = borders;
 
   return {
-    // Set the box shadow based on the navbar state
     boxShadow: transparentNavbar || absolute ? 'none' : navbarBoxShadow,
-
-    // Backdrop filter adds a blur effect if not transparent or absolute
     backdropFilter: transparentNavbar || absolute ? 'none' : `saturate(200%) blur(${pxToRem(30)})`,
-
-    // Background color adjusts based on the navbar state and theme (transparent, dark mode, or light mode)
     backgroundColor:
       transparentNavbar || absolute
-        ? `${transparent.main} !important` // Fully transparent navbar if state demands
-        : rgba(darkMode ? background.default : white.main, 0.8), // Set background color with some opacity based on mode
+        ? `${transparent.main} !important`
+        : rgba(darkMode ? background.default : white.main, 0.8),
 
-    // Color adjustments for navbar text
     color: () => {
       let color;
+
       if (light) {
-        color = white.main; // Light mode text color
+        color = white.main;
       } else if (transparentNavbar) {
-        color = text.main; // Transparent navbar text color
+        color = text.main;
       } else {
-        color = dark.main; // Dark mode text color
+        color = dark.main;
       }
+
       return color;
     },
-
-    // Position and spacing for the navbar based on absolute positioning
     top: absolute ? 0 : pxToRem(12),
-    minHeight: pxToRem(75), // Minimum height for the navbar
-    display: 'grid', // Use grid layout to align items
+    minHeight: pxToRem(75),
+    display: 'grid',
     alignItems: 'center',
-    borderRadius: borderRadius.xl, // Set border radius
+    borderRadius: borderRadius.xl,
     paddingTop: pxToRem(8),
     paddingBottom: pxToRem(8),
-    paddingRight: absolute ? pxToRem(8) : 0, // Conditionally add padding based on absolute state
+    paddingRight: absolute ? pxToRem(8) : 0,
     paddingLeft: absolute ? pxToRem(16) : 0,
 
-    // Apply transitions to all elements within the navbar for smooth animations
     '& > *': {
       transition: transitions.create('all', {
         easing: transitions.easing.easeInOut,
@@ -53,13 +59,11 @@ function navbar(theme, ownerState) {
       }),
     },
 
-    // Specific styles for the toolbar inside the navbar
     '& .MuiToolbar-root': {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
 
-      // Responsive adjustments for larger screens
       [breakpoints.up('sm')]: {
         minHeight: 'auto',
         padding: `${pxToRem(4)} ${pxToRem(16)}`,
@@ -67,3 +71,64 @@ function navbar(theme, ownerState) {
     },
   };
 }
+
+const navbarContainer = ({ breakpoints }) => ({
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  justifyContent: 'space-between',
+  pt: 0.5,
+  pb: 0.5,
+
+  [breakpoints.up('md')]: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: '0',
+    paddingBottom: '0',
+  },
+});
+
+const navbarRow = ({ breakpoints }, { isMini }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  width: '100%',
+
+  [breakpoints.up('md')]: {
+    justifyContent: isMini ? 'space-between' : 'stretch',
+    width: isMini ? '100%' : 'max-content',
+  },
+
+  [breakpoints.up('xl')]: {
+    justifyContent: 'stretch !important',
+    width: 'max-content !important',
+  },
+});
+
+const navbarIconButton = ({ typography: { size }, breakpoints }) => ({
+  px: 1,
+
+  '& .material-icons, .material-icons-round': {
+    fontSize: `${size.xl} !important`,
+  },
+
+  '& .MuiTypography-root': {
+    display: 'none',
+
+    [breakpoints.up('sm')]: {
+      display: 'inline-block',
+      lineHeight: 1.2,
+      ml: 0.5,
+    },
+  },
+});
+
+const navbarMobileMenu = ({ breakpoints }) => ({
+  display: 'inline-block',
+  lineHeight: 0,
+
+  [breakpoints.up('xl')]: {
+    display: 'none',
+  },
+});
+
+export { navbar, navbarContainer, navbarRow, navbarIconButton, navbarMobileMenu };
