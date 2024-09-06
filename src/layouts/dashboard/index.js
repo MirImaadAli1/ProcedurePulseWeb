@@ -1,12 +1,13 @@
 import Grid from '@mui/material/Grid';
 import React, { useEffect, useState } from 'react';
 import MDBox from 'components/MDBox';
+import MDTypography from 'components/MDTypography'; // Import MDTypography
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import ComplexStatisticsCard from 'examples/Cards/StatisticsCards/ComplexStatisticCard';
 import PieChartComponent from 'components/PieChart'; // Import the PieChartComponent
 import AuditsList from 'components/UnrespondedAuditsList'; // Import the AuditsList component
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDoc, doc } from 'firebase/firestore';
 import { auth, db } from '../../Firebase';
 import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress
 
@@ -15,8 +16,9 @@ function Dashboard() {
     const [totalResponses, setTotalResponses] = useState(0);
     const [respondedAudits, setRespondedAudits] = useState([]);
     const [unrespondedAudits, setUnrespondedAudits] = useState([]);
-    const [respondedAuditCount, setRespondedAuditCount] = useState(0); // New state for responded audit count
+    const [respondedAuditCount, setRespondedAuditCount] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [userName, setUserName] = useState(''); // State to hold the user's name
 
     useEffect(() => {
         const fetchAuditAndResponseCount = async () => {
@@ -24,6 +26,16 @@ function Dashboard() {
             try {
                 const user = auth.currentUser;
                 if (user) {
+                    // Fetch user's name from the 'Users' collection
+                    const userDocRef = doc(db, 'Users', user.uid);
+                    const userDocSnap = await getDoc(userDocRef);
+
+                    if (userDocSnap.exists()) {
+                        setUserName(userDocSnap.data().name || 'User');
+                    } else {
+                        console.log('No such document!');
+                    }
+
                     // Fetch total number of audits for the user
                     const auditsCollectionRef = collection(db, 'Audit');
                     const auditsQuery = query(auditsCollectionRef, where('userId', '==', user.uid));
@@ -35,7 +47,7 @@ function Dashboard() {
                     let responsesCount = 0;
                     let responded = [];
                     let unresponded = [];
-                    let respondedCount = 0; // Variable to count responded audits
+                    let respondedCount = 0;
 
                     for (const auditId of auditIds) {
                         const responsesCollectionRef = collection(db, 'Responses');
@@ -45,7 +57,7 @@ function Dashboard() {
                         const auditDoc = auditsSnapshot.docs.find(doc => doc.id === auditId);
                         if (responsesSnapshot.size > 0) {
                             responded.push(auditDoc.data().title);
-                            respondedCount++; // Increment responded count
+                            respondedCount++;
                         } else {
                             unresponded.push(auditDoc.data().title);
                         }
@@ -54,7 +66,7 @@ function Dashboard() {
                     setTotalResponses(responsesCount);
                     setRespondedAudits(responded);
                     setUnrespondedAudits(unresponded);
-                    setRespondedAuditCount(respondedCount); // Update responded audit count
+                    setRespondedAuditCount(respondedCount);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -75,8 +87,13 @@ function Dashboard() {
                 </MDBox>
             ) : (
                 <MDBox py={3}>
+                    <MDBox mb={4}>
+                        <MDTypography variant="h4" fontWeight="medium">
+                            Welcome, {userName}
+                        </MDTypography>
+                        </MDBox>
                     <Grid container spacing={3}>
-                        <Grid item xs={12} md={6} lg={3}>
+                        <Grid item xs={12} md={6} lg={3.75}>
                             <MDBox mb={1.5}>
                                 <ComplexStatisticsCard
                                     color="dark"
@@ -89,7 +106,7 @@ function Dashboard() {
                                 />
                             </MDBox>
                         </Grid>
-                        <Grid item xs={12} md={6} lg={3}>
+                        <Grid item xs={12} md={6} lg={3.75}>
                             <MDBox mb={1.5}>
                                 <ComplexStatisticsCard
                                     icon="leaderboard"
@@ -101,13 +118,13 @@ function Dashboard() {
                                 />
                             </MDBox>
                         </Grid>
-                        <Grid item xs={12} md={6} lg={3}>
+                        <Grid item xs={12} md={6} lg={3.75}>
                             <MDBox mb={1.5}>
                                 <ComplexStatisticsCard
                                     color="primary"
                                     icon="person_add"
                                     title="Responded Audits"
-                                    count={respondedAuditCount} // Use the respondedAuditCount state here
+                                    count={respondedAuditCount}
                                     percentage={{
                                         color: 'success',
                                         amount: '',
@@ -127,16 +144,6 @@ function Dashboard() {
                             </Grid>
                         </Grid>
                     </MDBox>
-                    {/* <MDBox mt={4.5}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} md={6} lg={8}>
-                                <Projects />
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <OrdersOverview />
-                            </Grid>
-                        </Grid>
-                    </MDBox> */}
                 </MDBox>
             )}
         </DashboardLayout>

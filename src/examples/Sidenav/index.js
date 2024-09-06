@@ -14,6 +14,7 @@ import sidenavLogoLabel from 'examples/Sidenav/styles/sidenav';
 import { useMaterialUIController, setMiniSidenav, setTransparentSidenav, setWhiteSidenav } from 'context';
 import { useAuth } from 'context/authContext'; // Adjust path as needed
 import { auth } from '../../Firebase'; // Adjust the import based on your firebase setup
+import ProcedurePulseLogo from '../../assets/images/procedurepulse-darkbg2.png'
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
@@ -131,13 +132,13 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           </MDTypography>
         </MDBox>
         <MDBox component={NavLink} to="/" display="flex" alignItems="center">
-          {brand && <MDBox component="img" src={brand} alt="Brand" width="2rem" />}
+          {brand && <MDBox component="img" src={ProcedurePulseLogo} alt="Brand" width="2rem" />}
           <MDBox
             width={!brandName && '100%'}
             sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
           >
             <MDTypography component="h6" variant="button" fontWeight="medium" color={textColor}>
-              {brandName}
+              {brandName} {/* Displays company name in sidenavbar on top */}
             </MDTypography>
           </MDBox>
         </MDBox>
