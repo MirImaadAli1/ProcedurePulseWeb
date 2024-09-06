@@ -5,7 +5,9 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import Icon from '@mui/material/Icon';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MDBox from 'components/MDBox';
 import CaughtUp from 'components/States/caughtUp';
 import MDTypography from 'components/MDTypography';
@@ -36,9 +38,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const [openMenu, setOpenMenu] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [viewedNotificationIds, setViewedNotificationIds] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
-  const [error, setError] = useState(null); // Add error state
-  const navigate = useNavigate(); // Initialize the navigate function
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [profileMenuAnchor, setProfileMenuAnchor] = useState(null); // State for profile menu
+  const [userProfile, setUserProfile] = useState(null); // State for user profile data
+  const navigate = useNavigate();
   const route = useLocation().pathname.split('/').slice(1);
 
   const markNotificationsAsSeen = async (notificationIds) => {
@@ -112,7 +116,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
           return {
             ...notification,
-            id: docSnapshot.id,  // Add the ID to track viewed notifications
+            id: docSnapshot.id,
             auditTitle: audit ? audit.title : 'Unknown Audit',
             senderName: sender ? sender.name : 'Unknown Sender',
             sharedAt: formatDistanceToNow(notification.sharedAt.toDate(), { addSuffix: true }),
@@ -120,12 +124,12 @@ function DashboardNavbar({ absolute, light, isMini }) {
         }));
 
         setNotifications(notificationsData);
-        setError(null); // Clear any previous errors
+        setError(null);
       } catch (error) {
         console.error('Error fetching notifications:', error);
         setError('Error fetching notifications');
       } finally {
-        setLoading(false); // Set loading to false when done
+        setLoading(false);
       }
     };
 
@@ -134,7 +138,19 @@ function DashboardNavbar({ absolute, light, isMini }) {
     }
   }, [openMenu]);
 
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (auth.currentUser) {
+        const userDocRef = doc(db, 'Users', auth.currentUser.uid);
+        const userDocSnapshot = await getDoc(userDocRef);
+        if (userDocSnapshot.exists()) {
+          setUserProfile(userDocSnapshot.data());
+        }
+      }
+    };
 
+    fetchUserProfile();
+  }, []);
 
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
@@ -144,7 +160,6 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
   const handleCloseMenu = useCallback(() => {
     setOpenMenu(false);
-    // Mark viewed notifications as seen
     if (viewedNotificationIds.length > 0) {
       markNotificationsAsSeen(viewedNotificationIds);
       setViewedNotificationIds([]);
@@ -159,16 +174,20 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
   const handleNotificationClick = async (notificationId, auditId) => {
     try {
-      // Mark this notification as seen
-      await markNotificationsAsSeen([notificationId]); 
-  
-      // Navigate to RespondAudit with the auditId
-      navigate(`/respond-audit/${auditId}`); 
+      await markNotificationsAsSeen([notificationId]);
+      navigate(`/respond-audit/${auditId}`);
     } catch (error) {
       console.error('Error handling notification click:', error);
     }
   };
-  
+
+  const handleProfileMenuOpen = (event) => {
+    setProfileMenuAnchor(event.currentTarget);
+  };
+
+  const handleProfileMenuClose = () => {
+    setProfileMenuAnchor(null);
+  };
 
   const renderMenu = () => (
     <Menu
@@ -182,9 +201,9 @@ function DashboardNavbar({ absolute, light, isMini }) {
       onClose={handleCloseMenu}
       sx={{ mt: 2 }}
     >
-      {loading ? ( // Show Loading component if loading
+      {loading ? (
         <Loading />
-      ) : error ? ( // Show error message if there's an error
+      ) : error ? (
         <MDBox p={2} display="flex" flexDirection="column">
           <MDTypography variant="body2" color="error">
             {error}
@@ -199,13 +218,12 @@ function DashboardNavbar({ absolute, light, isMini }) {
             flexDirection="column"
             border="1px solid"
             borderRadius="10px"
-            borderColor="grey.300" // Adjust color as needed
-            mb={2} // Add margin-bottom for spacing between notifications
+            borderColor="grey.300"
+            mb={2}
             onClick={() => {
               handleNotificationView(notification.id);
-              handleNotificationClick(notification.id, notification.auditId); // Navigate to RespondAudit
+              handleNotificationClick(notification.id, notification.auditId);
             }}
-
           >
             <MDTypography variant="body2" color="textPrimary">
               {notification.senderName} shared audit "{notification.auditTitle}" with you
@@ -222,6 +240,62 @@ function DashboardNavbar({ absolute, light, isMini }) {
       )}
     </Menu>
   );
+
+  const renderProfileMenu = () => (
+    <Menu
+      anchorEl={profileMenuAnchor}
+      anchorReference={null}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}
+      open={Boolean(profileMenuAnchor)}
+      onClose={handleProfileMenuClose}
+      style={{
+        marginTop: '16px',
+        minWidth: '10vw',  // Ensure minimum width
+        borderRadius: '10px',  // Border radius for the entire menu
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',  // Subtle shadow for a better look
+      }}
+    >
+      {userProfile ? (
+        <>
+          <MenuItem
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              border: '1px solid rgba(0, 0, 0, 0.1)',  // Light border around each item
+              borderRadius: '10px',  // Rounded corners for each item
+              padding: '8px 16px',  // Padding for better spacing
+              marginBottom: '8px',  // Margin bottom for spacing between items
+            }}
+          >
+            <MDTypography variant="body1" fontWeight="bold" color="textPrimary">
+              {userProfile.name}
+            </MDTypography>
+            <MDTypography variant="body2" color="textSecondary">
+              {userProfile.email}
+            </MDTypography>
+          </MenuItem>
+        </>
+      ) : (
+        <MenuItem
+          style={{
+            border: '1px solid rgba(0, 0, 0, 0.1)',  // Light border around each item
+            borderRadius: '10px',  // Rounded corners for each item
+            padding: '8px 16px',  // Padding for better spacing
+          }}
+        >
+          <MDTypography variant="body2" color="textSecondary">
+            Loading profile...
+          </MDTypography>
+        </MenuItem>
+      )}
+    </Menu>
+  );
+  
+
 
   const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
     color: () => {
@@ -273,11 +347,23 @@ function DashboardNavbar({ absolute, light, isMini }) {
                   notifications
                 </Icon>
               </IconButton>
+              <IconButton
+                size="small"
+                disableRipple
+                color="inherit"
+                sx={navbarIconButton}
+                aria-controls="profile-menu"
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+              >
+                <AccountCircleIcon sx={iconsStyle} fontSize="medium" />
+              </IconButton>
             </MDBox>
           </MDBox>
         )}
       </Toolbar>
       {renderMenu()}
+      {renderProfileMenu()}
     </AppBar>
   );
 }

@@ -7,9 +7,10 @@ import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import AuditsTable from './components/Cards';
-
-const MDBox = lazy(() => import('components/MDBox'));
-const MDTypography = lazy(() => import('components/MDTypography'));
+import EmptyState from 'components/States/empty';
+import MDBox from 'components/MDBox';
+import MDTypography from 'components/MDTypography';
+import Loading from 'components/States/loading';
 const EditFormModal = lazy(() => import('./components/EditFormModel'));
 
 function Audits() {
@@ -86,10 +87,6 @@ function Audits() {
     }
   };
 
-  if (loading) {
-    return <MDTypography variant="h6">Loading...</MDTypography>;
-  }
-
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <DashboardLayout>
@@ -113,9 +110,13 @@ function Audits() {
                   </MDTypography>
                 </MDBox>
                 <MDBox pt={3}>
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <AuditsTable forms={forms} handleEdit={handleEdit} handleDelete={handleDelete} />
-                  </Suspense>
+                  {forms.length === 0 ? (
+                    <EmptyState /> 
+                  ) : (
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <AuditsTable forms={forms} handleEdit={handleEdit} handleDelete={handleDelete} />
+                    </Suspense>
+                  )}
                 </MDBox>
               </Card>
             </Grid>

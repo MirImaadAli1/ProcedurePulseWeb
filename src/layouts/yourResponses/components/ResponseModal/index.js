@@ -8,17 +8,16 @@ import Button from '@mui/material/Button';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
-
 import { collection, query, where, getDocs, getDoc, doc } from 'firebase/firestore';
 import { db, storage } from '../../../../Firebase'; // Adjust import based on your project structure
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'; // For image upload
 
 const ResponseModal = ({ open, onClose, formData, onSave }) => {
     const [auditData, setAuditData] = useState(null);
-    const [responses, setResponses] = useState([]);
+    const [responses, setResponses] = useState({});
     const [updatedResponses, setUpdatedResponses] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [uploading, setUploading] = useState(false);  // Added the uploading state
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         const fetchAuditData = async () => {
@@ -42,8 +41,6 @@ const ResponseModal = ({ open, onClose, formData, onSave }) => {
                 const responsesSnapshot = await getDocs(responsesQuery);
                 const auditResponses = responsesSnapshot.docs.map(doc => doc.data());
 
-                console.log("Audit Responses:", auditResponses); // Debugging line
-
                 // Map responses using questionNumber
                 const responseMap = {};
                 auditResponses.forEach(response => {
@@ -51,18 +48,22 @@ const ResponseModal = ({ open, onClose, formData, onSave }) => {
                         responseMap[answer.questionNumber] = {
                             comments: answer.comments || '',
                             imageUrl: answer.imageUrl || '',
-                            yesNoNa: answer.yesNoNa || ''
+                            yesNoNa: answer.yesNoNa || '' // Ensure that yesNoNa is correctly mapped
                         };
                     });
                 });
 
                 setResponses(responseMap);
-                setUpdatedResponses(Object.entries(responseMap).map(([questionNumber, response]) => ({
+
+                // Initialize updatedResponses with data from responseMap
+                const initialUpdatedResponses = Object.keys(responseMap).map(questionNumber => ({
                     questionNumber,
-                    comments: response.comments || '',
-                    imageUrl: response.imageUrl || '',
-                    yesNoNa: response.yesNoNa || '',
-                })));
+                    comments: responseMap[questionNumber].comments || '',
+                    imageUrl: responseMap[questionNumber].imageUrl || '',
+                    yesNoNa: responseMap[questionNumber].yesNoNa || '', // Initialize yesNoNa
+                }));
+
+                setUpdatedResponses(initialUpdatedResponses);
             } catch (error) {
                 console.error('Error fetching audit data:', error);
             } finally {
@@ -100,10 +101,9 @@ const ResponseModal = ({ open, onClose, formData, onSave }) => {
                 setUploading(false);
             },
             async () => {
-                // On successful upload
                 try {
                     const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                    handleChange(questionNumber, 'imageUrl', downloadURL); // Store the URL in the response
+                    handleChange(questionNumber, 'imageUrl', downloadURL);
                     setUploading(false);
                 } catch (error) {
                     console.error('Error getting download URL:', error);
@@ -131,14 +131,14 @@ const ResponseModal = ({ open, onClose, formData, onSave }) => {
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 width: 500,
-                maxWidth: '90vw', // Ensure it doesn't exceed viewport width
+                maxWidth: '90vw',
                 maxHeight: '90vh',
-                bgcolor: 'background.paper', // Solid background color
+                bgcolor: 'background.paper',
                 borderRadius: 2,
                 boxShadow: 24,
                 p: 4,
-                outline: 'none', // Remove focus outline
-                overflowY: 'auto', // Hide overflow
+                outline: 'none',
+                overflowY: 'auto',
             }}>
                 <Typography id="response-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
                     Audit Name: {auditData ? auditData.title : 'Loading...'}
@@ -152,37 +152,34 @@ const ResponseModal = ({ open, onClose, formData, onSave }) => {
                                 <Typography variant="subtitle1">
                                     Question Number: {questionNumber}
                                 </Typography>
-                                {/* <Typography variant="subtitle1" sx={{ marginTop: 2 }}>Select Yes/No/NA</Typography> */}
                                 <RadioGroup
                                     row
                                     value={yesNoNa}
                                     onChange={(e) => handleChange(questionNumber, 'yesNoNa', e.target.value)}
                                 >
-                                    <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-                                    <FormControlLabel value="no" control={<Radio />} label="No" />
-                                    <FormControlLabel value="na" control={<Radio />} label="NA" />
+                                    <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                    <FormControlLabel value="No" control={<Radio />} label="No" />
+                                    <FormControlLabel value="N/A" control={<Radio />} label="N/A" />
                                 </RadioGroup>
                                 <TextField
                                     fullWidth
                                     variant="outlined"
                                     multiline
-                                    minRows={1} // Adjust as needed
-                                    maxRows={3} // Adjust as needed
+                                    minRows={1}
+                                    maxRows={3}
                                     value={comments}
                                     onChange={(e) => handleChange(questionNumber, 'comments', e.target.value)}
                                     placeholder="Enter your comments"
                                     label="Comments"
                                     sx={{ marginTop: 1 }}
                                 />
-
                                 {imageUrl ? (
                                     <Box
                                         sx={{
                                             marginTop: 2,
                                             display: 'flex',
-                                            // justifyContent: 'space-between', // Pushes content to opposite sides
-                                            alignItems: 'center', // Align items vertically in the center
-                                            width: '100%', // Ensures the Box takes full width
+                                            alignItems: 'center',
+                                            width: '100%',
                                             flexDirection: 'column',
                                         }}
                                     >
@@ -208,7 +205,6 @@ const ResponseModal = ({ open, onClose, formData, onSave }) => {
                                             </Button>
                                         </Box>
                                     </Box>
-
                                 ) : (
                                     <Box sx={{ marginTop: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <Typography variant="subtitle2" color="textSecondary">
@@ -230,7 +226,6 @@ const ResponseModal = ({ open, onClose, formData, onSave }) => {
                                         </Button>
                                     </Box>
                                 )}
-
                             </Box>
                         ))}
                         <div className='flex justify-end'>
@@ -240,7 +235,7 @@ const ResponseModal = ({ open, onClose, formData, onSave }) => {
                                 size="small"
                                 onClick={handleSave}
                                 sx={{ marginTop: 2 }}
-                                disabled={uploading} // Disable save while uploading
+                                disabled={uploading}
                             >
                                 Save
                             </Button>
@@ -255,9 +250,7 @@ const ResponseModal = ({ open, onClose, formData, onSave }) => {
 ResponseModal.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    formData: PropTypes.shape({
-        auditId: PropTypes.string.isRequired,
-    }).isRequired,
+    formData: PropTypes.object.isRequired,
     onSave: PropTypes.func.isRequired,
 };
 

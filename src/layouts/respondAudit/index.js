@@ -44,6 +44,7 @@ function RespondAudit() {
     const [successModalOpen, setSuccessModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false); // State for edit modal
     const [auditOwner, setAuditOwner] = useState('');
+    const [uploading, setUploading] = useState(false); // State to track uploading status
     const [hasResponded, setHasResponded] = useState(false); // State to check if the user has responded
 
     useEffect(() => {
@@ -108,10 +109,13 @@ function RespondAudit() {
     const handleImageChange = async (questionNumber, event) => {
         const file = event.target.files[0];
         if (file) {
+            setUploading(true); // Start uploading
+
             const storageRef = ref(storage, `audit-images/${auditId}/${questionNumber}-${file.name}`);
             try {
                 await uploadBytes(storageRef, file);
                 const downloadURL = await getDownloadURL(storageRef);
+
                 setAnswers((prevAnswers) => ({
                     ...prevAnswers,
                     [questionNumber]: {
@@ -119,23 +123,33 @@ function RespondAudit() {
                         imageUrl: downloadURL,
                     },
                 }));
+                setUploading(false); // Finish uploading
+
             } catch (error) {
                 console.error('Error uploading image:', error);
+                setUploading(false); // Handle error case
             }
         }
     };
 
+
+
     const handleSubmit = async () => {
+        if (uploading) {
+            alert('Please wait until all images are uploaded.'); // Notify user to wait
+            return;
+        }
+    
         try {
             const userId = auth.currentUser?.uid;
-
+    
             const formattedAnswers = Object.keys(answers).map(questionNumber => ({
                 questionNumber,
                 yesNoNa: answers[questionNumber]?.yesNoNa || '',
                 comments: answers[questionNumber]?.comments || '',
                 imageUrl: answers[questionNumber]?.imageUrl || '',
             }));
-
+    
             await addDoc(collection(db, "Responses"), {
                 auditId,
                 auditOwner,
@@ -143,14 +157,13 @@ function RespondAudit() {
                 respondedAt: new Date(),
                 answers: formattedAnswers,
             });
-
+    
             setSuccessModalOpen(true); // Open the success modal
         } catch (error) {
             console.error("Error submitting responses:", error);
             alert("Failed to submit responses.");
         }
     };
-
     return (
         <DashboardLayout>
             <DashboardNavbar />
