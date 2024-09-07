@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -10,16 +10,13 @@ import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import { AddCircleOutlineOutlined, EditOutlined, DeleteOutlined, ExpandMoreOutlined } from '@mui/icons-material';
+import { AddCircleOutlineOutlined, EditOutlined, DeleteOutlined, ExpandMoreOutlined, InfoOutlined } from '@mui/icons-material';
 import MDTypography from 'components/MDTypography';
-
+import { Pie } from 'react-chartjs-2';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../../../Firebase'; // Adjust the import path as needed
 import '../../../../chartSetup'; // Import chart setup file
-
-
-const ViewResponseModal = lazy(() => import('components/Modals/ViewResponse')); // Lazy load the modal
-const Pie = lazy(() => import('react-chartjs-2').then(module => ({ default: module.Pie }))); // Lazy load Pie chart
+import ViewResponseModal from 'components/Modals/ViewResponse'; // Import the modal
 
 const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
   const [openRow, setOpenRow] = useState(null);
@@ -173,18 +170,13 @@ const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
                       {form.title}
                     </MDTypography>
                   </TableCell>
-                  <TableCell align="left">
-                    <MDTypography variant="body2">
-                      {new Date(form.createdAt.toMillis()).toLocaleDateString()}
-                    </MDTypography>
-                  </TableCell>
-                  <TableCell align="center">
-                    <IconButton
-                      onClick={() => handleToggle(form.id)}
-                      aria-label={openRow === form.id ? 'Collapse row' : 'Expand row'}
+                  <TableCell align="center"><IconButton
+                      onClick={() => handleExpandToggle(form.id)}
+                      aria-label={expandedRow === form.id ? 'Collapse details' : 'Expand details'}
                     >
-                      <AddCircleOutlineOutlined />
+                      <ExpandMoreOutlined />
                     </IconButton>
+                    
                     <IconButton onClick={() => handleEdit(form)} aria-label="Edit form">
                       <EditOutlined />
                     </IconButton>
@@ -192,10 +184,10 @@ const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
                       <DeleteOutlined />
                     </IconButton>
                     <IconButton
-                      onClick={() => handleExpandToggle(form.id)}
-                      aria-label={expandedRow === form.id ? 'Collapse details' : 'Expand details'}
+                      onClick={() => handleToggle(form.id)}
+                      aria-label={openRow === form.id ? 'Collapse row' : 'Expand row'}
                     >
-                      <ExpandMoreOutlined />
+                      <InfoOutlined />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -326,20 +318,18 @@ const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
                             </Box>
                             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                               <Box sx={{ position: 'relative', width: '150px', height: '150px' }}>
-                                <Suspense fallback={<div>Loading</div>}>
-                                  <Pie
-                                    data={{
-                                      labels: ['Responded', 'Not Responded'],
-                                      datasets: [
-                                        {
-                                          data: [auditData.totalResponded, auditData.totalShared - auditData.totalResponded],
-                                          backgroundColor: ['#36a2eb', '#ff6384'],
-                                        },
-                                      ],
-                                    }}
-
-                                  />
-                                </Suspense>
+                                <Pie
+                                  data={{
+                                    labels: ['Responded', 'Not Responded'],
+                                    datasets: [
+                                      {
+                                        data: [auditData.totalResponded, auditData.totalShared - auditData.totalResponded],
+                                        backgroundColor: ['#36a2eb', '#ff6384'],
+                                      },
+                                    ],
+                                  }}
+                                  
+                                />
                                 <Typography variant="body2" sx={{ mt: 2 }}>
                                   {auditData.totalResponded} out of {auditData.totalShared} responded
                                 </Typography>
@@ -358,13 +348,12 @@ const AuditsTable = ({ forms, handleEdit, handleDelete }) => {
       </TableContainer>
 
       {modalOpen && (
-        <Suspense fallback={<div>Loading..</div>}>
-          <ViewResponseModal
-            open={modalOpen}
-            onClose={handleCloseModal}
-            response={selectedResponse}
-          />
-        </Suspense>
+        <ViewResponseModal
+          open={modalOpen}
+          onClose={handleCloseModal}
+          response={selectedResponse}
+
+        />
       )}
     </>
   );
