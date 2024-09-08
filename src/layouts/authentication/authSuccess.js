@@ -26,9 +26,10 @@ const AuthSuccess = ({ open, onClose, redirectPath }) => {
           padding: '20px',
         }}
       >
-        <FaCheckCircle style={{ color: 'green', fontSize: '200px' }} />
+        {/* Reduced the icon size */}
+        <FaCheckCircle style={{ color: 'green', fontSize: '50px' }} />
         <MDTypography variant="h4" color="textPrimary" mt={2} mb={2}>
-          Operation Successful!
+          Successful!
         </MDTypography>
         <button
           className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-md whitespace-nowrap mr-2"
@@ -49,7 +50,7 @@ const AuthSuccess = ({ open, onClose, redirectPath }) => {
 AuthSuccess.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  redirectPath: PropTypes.string.isRequired, // Add this prop type
+  redirectPath: PropTypes.string.isRequired,
 };
 
 export default AuthSuccess;

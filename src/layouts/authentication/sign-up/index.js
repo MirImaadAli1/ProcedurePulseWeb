@@ -22,6 +22,7 @@ function Basic() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [reconfirmPassword, setReconfirmPassword] = useState(''); // Added reconfirm password field
   const [rememberMe, setRememberMe] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [failureModalOpen, setFailureModalOpen] = useState(false);
@@ -33,29 +34,35 @@ function Basic() {
 
   const SignUp = async (e) => {
     e.preventDefault();
+    
+    if (password !== reconfirmPassword) {
+      // If passwords don't match, show failure modal
+      setErrorMessage('Passwords do not match');
+      setFailureModalOpen(true);
+      return;
+    }
 
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-
+  
         setDoc(doc(db, "Users", user.uid), {
           uid: user.uid,
           name: username,
           email: user.email,
-        })
-
+        });
+  
         // Show success modal
         setSuccessModalOpen(true);
-
+  
       })
       .catch((error) => {
-        // Handle sign-up errors
-        setErrorMessage(`Error creating user: ${error.message}`);
+        // Handle other sign-up errors
+        setErrorMessage('Invalid Username/Password');
         setFailureModalOpen(true);
         console.log(error.message);
       });
   };
-
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
@@ -125,6 +132,20 @@ function Basic() {
                 fullWidth
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                variant="outlined"
+                InputProps={{
+                  style: { color: 'dark' },
+                }}
+              />
+            </MDBox>
+            {/* Added reconfirm password input */}
+            <MDBox mb={2}>
+              <MDInput
+                type="password"
+                label="Reconfirm Password"
+                fullWidth
+                value={reconfirmPassword}
+                onChange={(e) => setReconfirmPassword(e.target.value)}
                 variant="outlined"
                 InputProps={{
                   style: { color: 'dark' },
