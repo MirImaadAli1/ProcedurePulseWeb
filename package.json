@@ -39,6 +39,7 @@
     "react-scripts": "5.0.1",
     "react-table": "7.8.0",
     "react-uuid": "^2.0.0",
+    "react-window": "^1.8.10",
     "recharts": "^2.12.7",
     "stylis": "4.1.4",
     "stylis-plugin-rtl": "2.1.1"

@@ -190,7 +190,7 @@ function AuditSearch() {
                     />
                   </MDBox>
 
-                  <MDBox pt={3}>
+                  <MDBox pt={3} style={{ overflowX: 'auto' }}>
                     {searchTerm === "" && !isLoading && (
                       <>
                         <div className="flex justify-center mb-3">
@@ -207,13 +207,15 @@ function AuditSearch() {
                       <EmptyState />
                     )}
                     {filteredRows.length > 0 && (
-                      <DataTable
-                        table={{ columns, rows: filteredRows }}
-                        isSorted={false}
-                        entriesPerPage={false}
-                        showTotalEntries={false}
-                        noEndBorder
-                      />
+                      <div style={{ width: '100%', overflowX: 'auto' }}>
+                        <DataTable
+                          table={{ columns, rows: filteredRows }}
+                          isSorted={false}
+                          entriesPerPage={false}
+                          showTotalEntries={false}
+                          noEndBorder
+                        />
+                      </div>
                     )}
                   </MDBox>
                 </Card>

@@ -112,9 +112,9 @@ function Dashboard() {
                                     className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-md whitespace-nowrap mr-2"
                                     onClick={handleCreateAudit}
                                     style={{
-                                        padding: '6px 16px',
-                                        fontSize: '0.875rem',
-                                        minHeight: '36px',
+                                        padding: '10px 24px', // Increased padding for a larger button
+                                        fontSize: '1rem', // Increased font size for a bigger button text
+                                        minHeight: '48px',
                                     }}
                                 >
                                     Create Audits
@@ -125,9 +125,9 @@ function Dashboard() {
                                     className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-md whitespace-nowrap"
                                     onClick={handleSearchAudit}
                                     style={{
-                                        padding: '6px 16px',
-                                        fontSize: '0.875rem',
-                                        minHeight: '36px',
+                                        padding: '10px 24px', // Increased padding for a larger button
+                                        fontSize: '1rem', // Increased font size for a bigger button text
+                                        minHeight: '48px',
                                     }}
                                 >
                                     Search Audits
