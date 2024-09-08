@@ -7,9 +7,11 @@ import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import ComplexStatisticsCard from 'examples/Cards/StatisticsCards/ComplexStatisticCard';
 import PieChartComponent from 'components/PieChart'; // Import the PieChartComponent
 import AuditsList from 'components/UnrespondedAuditsList'; // Import the AuditsList component
-import { collection, query, where, getDoc, doc } from 'firebase/firestore';
+import { collection, query, where, getDoc, doc, getDocs } from 'firebase/firestore'; // Import getDocs
 import { auth, db } from '../../Firebase';
 import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress
+import { Button } from '@mui/material'; // Import MUI Button
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
 function Dashboard() {
     const [totalAudits, setTotalAudits] = useState(0);
@@ -19,6 +21,7 @@ function Dashboard() {
     const [respondedAuditCount, setRespondedAuditCount] = useState(0);
     const [loading, setLoading] = useState(true);
     const [userName, setUserName] = useState(''); // State to hold the user's name
+    const navigate = useNavigate(); // Initialize the useNavigate hook
 
     useEffect(() => {
         const fetchAuditAndResponseCount = async () => {
@@ -78,6 +81,15 @@ function Dashboard() {
         fetchAuditAndResponseCount();
     }, []);
 
+    // Handlers for button clicks
+    const handleCreateAudit = () => {
+        navigate('/createaudit'); // Navigate to the Create Audit page
+    };
+
+    const handleSearchAudit = () => {
+        navigate('/SearchAudits'); // Navigate to the Search Audit page
+    };
+
     return (
         <DashboardLayout>
             <DashboardNavbar />
@@ -91,7 +103,38 @@ function Dashboard() {
                         <MDTypography variant="h4" fontWeight="medium">
                             Welcome, {userName}
                         </MDTypography>
-                        </MDBox>
+                    </MDBox>
+                    {/* Buttons for Create Audit and Search Audit */}
+                    <MDBox mt={4} mb={4}>
+                        <Grid container spacing={2} justifyContent="center">
+                            <Grid item>
+                                <button
+                                    className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-md whitespace-nowrap mr-2"
+                                    onClick={handleCreateAudit}
+                                    style={{
+                                        padding: '6px 16px',
+                                        fontSize: '0.875rem',
+                                        minHeight: '36px',
+                                    }}
+                                >
+                                    Create Audits
+                                </button>
+                            </Grid>
+                            <Grid item>
+                                <button
+                                    className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-md whitespace-nowrap"
+                                    onClick={handleSearchAudit}
+                                    style={{
+                                        padding: '6px 16px',
+                                        fontSize: '0.875rem',
+                                        minHeight: '36px',
+                                    }}
+                                >
+                                    Search Audits
+                                </button>
+                            </Grid>
+                        </Grid>
+                    </MDBox>
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={6} lg={3.75}>
                             <MDBox mb={1.5}>
