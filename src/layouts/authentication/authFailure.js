@@ -18,12 +18,13 @@ const AuthFailure = ({ open, onClose, errorMessage }) => {
           padding: '20px',
         }}
       >
-        <FaTimesCircle style={{ color: 'red', fontSize: '200px' }} />
+        <FaTimesCircle style={{ color: 'red', fontSize: '40px' }} />
         <MDTypography variant="h4" color="textPrimary" mt={2}>
-          Operation Failed
+        Error!
         </MDTypography>
+        {/* Display the custom error message */}
         <MDTypography variant="body1" color="textSecondary" mt={2} mb={2}>
-          {errorMessage}
+        Invalid Username/Password
         </MDTypography>
         <button className="bg-blue-600 text-white py-2 px-4 font-semibold rounded-md whitespace-nowrap mr-2"
           onClick={onClose}
