@@ -33,7 +33,7 @@ const AuthFailure = ({ open, onClose, errorMessage }) => {
             fontSize: '0.875rem',
             minHeight: '36px',
           }}>
-          Try Again
+          Try Again!
         </button>
       </DialogContent>
     </Dialog>
