@@ -151,7 +151,7 @@ const FormBuilder = () => {
             renderItem={renderElements}
             onChange={handleOnChangeSort}
           />
-          <Tooltip title="Add Element" aria-label="add-element">
+          <Tooltip title="Click Here to Add Questions" aria-label="add-element">
             <IconButton
               aria-label="add-element"
               onClick={addElement}
